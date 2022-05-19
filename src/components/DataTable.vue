@@ -5,11 +5,18 @@
       :class="{'fixed-header': fixedHeader, 'wrap-lines': wrapLines }"
     >
       <table>
-        <thead v-if="headersComputed.length">
+        <thead v-if="headersWithCheckbox.length">
           <tr>
             <th
-              v-for="(header, index) in headersComputed"
+              v-for="(header, index) in headersWithCheckbox"
               :key="index"
+              :class="{
+                sortable: header.sortable,
+                'none': header.sortable && header.sorting === 'none',
+                'desc': header.sortable && header.sorting === 'desc',
+                'asc': header.sortable && header.sorting === 'asc',
+              }"
+              @click="header.sortable ? updateSortField(header.value) : null"
             >
               <MutipleSelectCheckBox
                 v-if="header.text === 'checkbox'"
@@ -17,7 +24,20 @@
                 :status="multipleSelectStatus"
                 @change="toggleSelectAll"
               />
-              <span v-else>{{ header.text }}</span>
+              <span
+                v-else
+                class="header-text">
+                {{ header.text }}
+                <span
+                  v-if="header.sortable"
+                  :key="header.sorting"
+                  class="sorting-icon"
+                  :class="{'desc': header.sorting === 'desc'}">
+                  <ArrowIcon
+                    class="sorting-icon__svg"
+                  />
+                </span>
+              </span>
             </th>
           </tr>
         </thead>
@@ -26,14 +46,14 @@
           name="body"
         />
         <template v-else>
-          <tbody v-if="items.length && headerComputedColumns.length">
+          <tbody v-if="items.length && headerColumns.length">
             <tr
-              v-for="(item) in itemsForDisplay"
+              v-for="(item) in itemsWithCheckbox"
               :key="JSON.stringify(item)"
               @click="clickItem(item)"
             >
               <td
-                v-for="(column, i) in headerComputedColumns"
+                v-for="(column, i) in headerColumns"
                 :key="i"
               >
                 <template v-if="column === 'checkbox'">
@@ -66,19 +86,20 @@
           :rows-items="rowsItems"
         />
       </div>
-      <div class="footer__pagination">
-        {{ `${paginationStart}-${paginationEnd}` }} of {{ itemsNumber }}
+      <div class="footer__items-index">
+        {{ `${firstIndexOfItemsInCurrentPage}-${lastIndexOfItemsInCurrentPage}` }}
+        of {{ numberOfItems }}
       </div>
       <div
-        class="footer__previous"
-        :class="{'firstPage': isFirstPage}"
+        class="footer__previous-page-click-button"
+        :class="{'first-page': isFirstPage}"
         @click="prevPage"
       >
         <span class="arrow arrow-right"></span>
       </div>
       <div
-        class="footer__next"
-        :class="{'lastPage': isLastPage}"
+        class="footer__next-page-click-button"
+        :class="{'last-page': isLastPage}"
         @click="nextPage"
       >
         <span class="arrow arrow-left"></span>
@@ -89,15 +110,26 @@
 
 <script setup lang="ts">
 import {
-  useSlots, computed, toRefs, PropType, ref,
+  useSlots, computed, toRefs, PropType, ref, watch,
 } from 'vue';
 import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
 import RowsSelector from './RowsSelector.vue';
 
-import type { Header } from '@/types/table.ts';
+import type { Header, Item } from '@/types/table';
+import ArrowIcon from '@/assets/long-arrow-up.svg'
 
-type Item = Record<string, any>
+type HeaderComputed = {
+  text: string,
+  value: string,
+  sortable?: boolean,
+  sorting?: 'none' | 'asc' | 'desc',
+}
+
+type SortCondition = {
+  fieldName: string,
+  type: 'asc' | 'desc',
+}
 
 const props = defineProps({
   bodyFontColor: {
@@ -166,9 +198,10 @@ const {
   bodyFontSize,
   headerFontColor,
   bodyFontColor,
-  emptyMessage,
   items,
   search,
+  rowsItems,
+  selectItems,
 } = toRefs(props);
 
 // css bind value
@@ -184,15 +217,25 @@ const ifHasBodySlot = computed(() => slots.body);
 // define emits
 const emits = defineEmits(['clickItem', 'update:selectItems', 'update:isAllSelected']);
 
-// click item
-const clickItem = (item: Record<string, string | number>) => {
-  emits('clickItem', item);
-};
+const isMutipleSelectable = computed((): boolean => selectItems.value !== null);
 
-// multi select
-// selectedItems
+// table header
+const initHeaders = (): HeaderComputed[] => {
+  headers.value.map((header) => {
+    const headerWithSorting = header;
+    if (header.sortable) headerWithSorting.sorting = 'none';
+    return headerWithSorting;
+  });
+  return isMutipleSelectable.value
+    ? [{ text: 'checkbox', value: 'checkbox' }, ...headers.value] : headers.value;
+};
+const headersWithCheckbox = ref(initHeaders());
+
+const headerColumns = computed((): string[] => headersWithCheckbox.value.map((header) => header.value));
+
+// multiple select
 const selectItemsComputed = computed({
-  get: () => props.selectItems,
+  get: () => selectItems.value,
   set: (value) => {
     emits('update:selectItems', value);
   },
@@ -207,8 +250,8 @@ const multipleSelectStatus = computed((): 'allSelected' | 'noneSelected' | 'part
   return 'partSelected';
 });
 
-// search items
-const searchItems = computed((): Item[] => {
+// items searching
+const itemsSearching = computed((): Item[] => {
   if (search.value !== '') {
     const regex = new RegExp(search.value, 'i');
     return items.value.filter((item) => regex.test(Object.values(item).join('')));
@@ -216,21 +259,101 @@ const searchItems = computed((): Item[] => {
   return items.value;
 });
 
-// items in page
+const sortCondition = ref<SortCondition | null>(null);
+
+const updateSortField = (fieldName: string) => {
+  console.log("fieldName");
+  console.log(fieldName);
+  let newSortingType: 'none' | 'asc' | 'desc' = 'none';
+  // update headers sorting
+  headersWithCheckbox.value.map((item) => {
+    const itemSortingUpdated = item;
+    if (item.sortable) {
+      if (item.value === fieldName) {
+        if (item.sorting === 'none') {
+          newSortingType = 'asc';
+        } else if (item.sorting === 'asc') {
+          newSortingType = 'desc';
+        } else {
+          newSortingType = 'none';
+        }
+        itemSortingUpdated.sorting = newSortingType;
+      } else {
+        itemSortingUpdated.sorting = 'none';
+      }
+    }
+    return itemSortingUpdated;
+  });
+
+  // update sort condition
+  if (newSortingType === 'none') {
+    sortCondition.value = null;
+  } else {
+    sortCondition.value = {
+      fieldName,
+      type: newSortingType,
+    };
+  }
+};
+
+// items sorting
+const itemsSorting = computed((): Item[] => {
+  if (sortCondition.value === null) return itemsSearching.value;
+  const { fieldName, type } = sortCondition.value;
+  const itemsSearchingSorted = [...itemsSearching.value];
+  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+  return itemsSearchingSorted.sort((a, b) => {
+    if (a[fieldName] < b[fieldName]) return type === 'asc' ? -1 : 1;
+    if (a[fieldName] > b[fieldName]) return type === 'asc' ? 1 : -1;
+    return 0;
+  });
+});
+
+// index info of items in current page.
+const currentPaginationNumber = ref(1);
+const numberOfItems = computed((): Number => itemsSearching.value.length);
+
+// rows rer page.
+const rowsPerPage = ref(rowsItems.value[0]);
+watch(rowsPerPage, () => {
+  currentPaginationNumber.value = 1;
+});
+
+const lastIndexOfItemsInCurrentPage = computed((): number => Math.min(
+  itemsSearching.value.length,
+  currentPaginationNumber.value * rowsPerPage.value,
+));
+
+const firstIndexOfItemsInCurrentPage = computed((): number => (currentPaginationNumber.value - 1) * rowsPerPage.value + 1);
+
+// page up, page down
+const maxPaginationNumber = computed((): number => Math.ceil(itemsSearching.value.length / rowsPerPage.value));
+const isLastPage = computed((): boolean => currentPaginationNumber.value === maxPaginationNumber.value);
+const isFirstPage = computed((): boolean => currentPaginationNumber.value === 1);
+
+const nextPage = () => {
+  if (isLastPage.value) return;
+  currentPaginationNumber.value += 1;
+};
+
+const prevPage = () => {
+  if (isFirstPage.value) return;
+  currentPaginationNumber.value -= 1;
+};
+
+// items in current page
 const itemsInPage = computed((): Item[] => {
   const res: Item[] = [];
-  for (let i = paginationStart.value - 1; i < paginationEnd.value; i += 1) {
-    res.push(searchItems.value[i]);
+  for (let i = firstIndexOfItemsInCurrentPage.value - 1;
+    i < lastIndexOfItemsInCurrentPage.value; i += 1) {
+    res.push(itemsSorting.value[i]);
   }
   return res;
 });
 
-// itemsForDisplay
-const itemsForDisplay = computed((): Item[] => {
-  if (selectItemsComputed.value === null) {
-    // no multi select
-    return itemsInPage.value;
-  }
+// items with checkbox
+const itemsWithCheckbox = computed((): Item[] => {
+  if (!isMutipleSelectable.value) return itemsInPage.value;
   // multi select
   if (multipleSelectStatus.value === 'allSelected') {
     return itemsInPage.value.map((item) => ({ checkbox: true, ...item }));
@@ -238,7 +361,8 @@ const itemsForDisplay = computed((): Item[] => {
     return itemsInPage.value.map((item) => ({ checkbox: false, ...item }));
   }
   return itemsInPage.value.map((item) => {
-    const isSelected = selectItemsComputed.value.findIndex((selectItem) => JSON.stringify(selectItem) === JSON.stringify(item)) !== -1;
+    const isSelected = selectItemsComputed.value.findIndex((selectItem) => JSON.stringify(selectItem)
+      === JSON.stringify(item)) !== -1;
     return { checkbox: isSelected, ...item };
   });
 });
@@ -249,51 +373,22 @@ const toggleSelectAll = (isChecked: boolean): void => {
 
 const toggleSelectItem = (item: Item):void => {
   const isAlreadyChecked = item.checkbox;
+  // eslint-disable-next-line no-param-reassign
   delete item.checkbox;
   if (!isAlreadyChecked) {
-    const selectItems: Item[] = selectItemsComputed.value;
-    selectItems.unshift(item);
-    selectItemsComputed.value = selectItems;
+    const selectItemsArr: Item[] = selectItemsComputed.value;
+    selectItemsArr.unshift(item);
+    selectItemsComputed.value = selectItemsArr;
   } else {
-    selectItemsComputed.value = selectItemsComputed.value.filter((selectedItem) => JSON.stringify(selectedItem) !== JSON.stringify(item));
+    selectItemsComputed.value = selectItemsComputed.value.filter((selectedItem) => JSON.stringify(selectedItem)
+      !== JSON.stringify(item));
   }
 };
 
-// header
-const headersComputed = computed((): Header[] => selectItemsComputed.value !== null ? [{ text: 'checkbox', value: 'checkbox' }, ...headers.value] : headers.value);
-
-const headerComputedColumns = computed((): string[] => headersComputed.value.map((header) => header.value));
-
-// table footer
-// pageNumber
-const pageNumber = ref(1);
-
-// rowsPerPage
-const rowsPerPage = ref(25);
-
-// number of items
-const itemsNumber = computed((): Number => searchItems.value.length);
-
-const paginationEnd = computed((): number => Math.min(searchItems.value.length, pageNumber.value * rowsPerPage.value));
-
-const paginationStart = computed((): number => pageNumber.value * rowsPerPage.value - rowsPerPage.value + 1);
-
-const maxPageNumber = computed((): number => Math.ceil(items.value.length / rowsPerPage.value));
-
-const isLastPage = computed((): boolean => pageNumber.value === maxPageNumber.value);
-
-const isFirstPage = computed((): boolean => pageNumber.value === 1);
-
-const nextPage = () => {
-  if (isLastPage.value) return;
-  pageNumber.value += 1;
+// event of click item
+const clickItem = (item: Item) => {
+  emits('clickItem', item);
 };
-
-const prevPage = () => {
-  if (isFirstPage.value) return;
-  pageNumber.value -= 1;
-};
-
 </script>
 
 <style lang="scss" scoped>
@@ -341,7 +436,7 @@ const prevPage = () => {
       }
       th, td {
         text-align: left;
-        padding: 0px 16px;
+        padding: 0px 10px;
       }
       thead, tbody {
         position: relative;
@@ -354,6 +449,51 @@ const prevPage = () => {
           color: v-bind(headerFontColor);
           position: relative;
           background-color: #f8f8f8;
+          .header-text {
+            display: flex;
+            align-items: center;
+            height: v-bind(headerFontSizePx);
+          }
+
+          &.sortable {
+            cursor: pointer;
+            &.none {
+               &:hover {
+                .sorting-icon {
+                  opacity: 1;
+                }
+              }
+              .sorting-icon {
+                opacity: 0;
+                transition: opacity 0.5s ease;
+
+                &__svg {
+                  path {
+                    fill: rgb(158 158 158);
+                  }
+                }
+              }
+            }
+
+            &.desc {
+              path {
+                fill: v-bind(headerFontColor);
+              }
+            }
+          }
+
+          .sorting-icon {
+            display: inline-block;
+            width: v-bind(headerFontSizePx);
+            height: v-bind(headerFontSizePx);
+            &__svg {
+              width: v-bind(headerFontSizePx);
+              height: v-bind(headerFontSizePx);
+            }
+            &.desc {
+              transform: rotate(180deg);
+            }
+          }
         }
       }
       tbody {
@@ -399,35 +539,37 @@ const prevPage = () => {
     justify-content: right;
     padding: 10px 5px;
     box-sizing: border-box;
-  }
-  .footer__rows-per-page {
-    display: flex;
-    align-items: center;
-  }
-  .footer__pagination {
-    margin: 0px 20px 0px 10px;
-  }
-  .footer__previous, .footer__next {
-    margin-right: 5px;
-    cursor: pointer;
-    .arrow {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-top: 2px solid #000;
-      border-left: 2px solid #000;
-      &.arrow-left {
-        transform: rotate(135deg);
+
+    .footer__rows-per-page {
+      display: flex;
+      align-items: center;
+    }
+    .footer__items-index {
+      margin: 0px 20px 0px 10px;
+    }
+    .footer__previous-page-click-button, .footer__next-page-click-button {
+      margin-right: 5px;
+      cursor: pointer;
+      .arrow {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-top: 2px solid #000;
+        border-left: 2px solid #000;
+        &.arrow-left {
+          transform: rotate(135deg);
+        }
+        &.arrow-right {
+          transform: rotate(-45deg);
+        }
       }
-      &.arrow-right {
-        transform: rotate(-45deg);
+    }
+    .footer__previous-page-click-button.first-page, .footer__next-page-click-button.last-page {
+      cursor: not-allowed;
+      .arrow {
+        border-color: #e0e0e0;
       }
     }
   }
-  .footer__previous.firstPage, .footer__next.lastPage {
-    cursor: not-allowed;
-    .arrow {
-      border-color: grey;
-    }
-  }
+
 </style>

@@ -1,5 +1,8 @@
 <template>
-  <div class="rows-selector">
+  <div
+    id="easy-data-table__rows-selector"
+    class="rows-selector"
+  >
     <div
       class="rows-input__wrapper"
       @click="showList=!showList"
@@ -26,7 +29,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, PropType } from 'vue';
+import {
+  ref, computed, PropType, onMounted, onBeforeUnmount,
+} from 'vue';
 
 const props = defineProps({
   modelValue: { type: Number, required: true },
@@ -48,12 +53,39 @@ const changeSelectedRows = (value: number) => {
   rowsComputed.value = value;
   showList.value = false;
 };
+
+// Click outside to close rows selector
+// @ts-ignore
+const isDescendant = (parent, child) => {
+  let node = child.parentNode;
+  while (node != null) {
+    if (node === parent) {
+      return true;
+    }
+    node = node.parentNode;
+  }
+  return false;
+};
+
+// @ts-ignore
+const closeRowsSelector = (e) => {
+  const $rowsSelector = document.getElementById('easy-data-table__rows-selector');
+  if (!isDescendant($rowsSelector, e.target)) showList.value = false;
+};
+
+onMounted(() => {
+  document.addEventListener('click', closeRowsSelector);
+});
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', closeRowsSelector);
+});
 </script>
 
 <style scoped lang="scss">
   .rows-selector{
     display: inline-block;
-    min-width: 50px;
+    min-width: 45px;
     position: relative;
     margin: 0px 10px;
     .rows-input__wrapper {
@@ -69,9 +101,9 @@ const changeSelectedRows = (value: number) => {
         vertical-align: middle;
         width: 0px;
         height: 0px;
-        border-top: solid 8px black;
-        border-left: solid 8px transparent;
-        border-right: solid 8px transparent;
+        border-top: solid 6px black;
+        border-left: solid 6px transparent;
+        border-right: solid 6px transparent;
       }
     }
     ul.select-items {
