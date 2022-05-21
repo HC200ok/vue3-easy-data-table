@@ -47,6 +47,8 @@ $line-color: #fff;
 
 .multi-select__checkbox {
   position: relative;
+  width: $checkbox-size;
+  height: $checkbox-size;
 
   label {
     cursor: pointer;

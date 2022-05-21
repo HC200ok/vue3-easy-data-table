@@ -5,16 +5,16 @@
       :class="{'fixed-header': fixedHeader, 'wrap-lines': wrapLines }"
     >
       <table>
-        <thead v-if="headersWithCheckbox.length">
+        <thead v-if="headersForRender.length">
           <tr>
             <th
-              v-for="(header, index) in headersWithCheckbox"
+              v-for="(header, index) in headersForRender"
               :key="index"
               :class="{
                 sortable: header.sortable,
-                'none': header.sortable && header.sorting === 'none',
-                'desc': header.sortable && header.sorting === 'desc',
-                'asc': header.sortable && header.sorting === 'asc',
+                'none': header.sortable && header.sortType === null,
+                'desc': header.sortable && header.sortType === 'desc',
+                'asc': header.sortable && header.sortType === 'asc',
               }"
               @click="header.sortable ? updateSortField(header.value) : null"
             >
@@ -30,17 +30,24 @@
                 {{ header.text }}
                 <span
                   v-if="header.sortable"
-                  :key="header.sorting"
-                  class="sorting-icon"
-                  :class="{'desc': header.sorting === 'desc'}">
+                  :key="header.sortType ? header.sortType : 'none'"
+                  class="sortType-icon"
+                  :class="{'desc': header.sortType === 'desc'}">
                   <ArrowIcon
-                    class="sorting-icon__svg"
+                    class="sortType-icon__svg"
                   />
                 </span>
               </span>
             </th>
           </tr>
         </thead>
+        <th
+          v-if="loading"
+          class="loading-th"
+          :colspan="headerColumns.length"
+        >
+          <LoadingLine></LoadingLine>
+        </th>
         <slot
           v-if="ifHasBodySlot"
           name="body"
@@ -48,7 +55,7 @@
         <template v-else>
           <tbody v-if="items.length && headerColumns.length">
             <tr
-              v-for="(item) in itemsWithCheckbox"
+              v-for="(item) in itemsForRender"
               :key="JSON.stringify(item)"
               @click="clickItem(item)"
             >
@@ -56,7 +63,12 @@
                 v-for="(column, i) in headerColumns"
                 :key="i"
               >
-                <template v-if="column === 'checkbox'">
+                <slot
+                  v-if="slots[column]"
+                  :name="column"
+                  v-bind="item"
+                />
+                <template v-else-if="column === 'checkbox'">
                   <SingleSelectCheckBox
                     :checked="item[column]"
                     @change="toggleSelectItem(item)"
@@ -82,13 +94,13 @@
       <div class="footer__rows-per-page">
         rows per page:
         <RowsSelector
-          v-model="rowsPerPage"
+          v-model="rowsPerPageReactive"
           :rows-items="rowsItems"
         />
       </div>
       <div class="footer__items-index">
         {{ `${firstIndexOfItemsInCurrentPage}-${lastIndexOfItemsInCurrentPage}` }}
-        of {{ numberOfItems }}
+        of {{ totalItemsLength }}
       </div>
       <div
         class="footer__previous-page-click-button"
@@ -115,20 +127,25 @@ import {
 import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
 import RowsSelector from './RowsSelector.vue';
+import LoadingLine from './LoadingLine.vue';
 
-import type { Header, Item } from '@/types/table';
+import type { Header, Item, ClientSortOptions, ServerOptions } from '@/types/table';
 import ArrowIcon from '@/assets/long-arrow-up.svg'
 
-type HeaderComputed = {
+type SortType = 'asc' | 'desc'
+
+type HeaderForRender = {
   text: string,
   value: string,
   sortable?: boolean,
-  sorting?: 'none' | 'asc' | 'desc',
+  sortType?: SortType | null,
 }
 
-type SortCondition = {
-  fieldName: string,
-  type: 'asc' | 'desc',
+type ServerOptionsComputed = {
+  page: number,
+  rowsPerPage: number,
+  sortBy: string | null,
+  sortType: SortType | null,
 }
 
 const props = defineProps({
@@ -176,7 +193,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  selectItems: {
+  itemsSelected: {
     type: Array as PropType<Item[]> | null,
     default: null,
   },
@@ -184,65 +201,107 @@ const props = defineProps({
     type: String,
     default: '',
   },
+  rowsPerPage: {
+    type: Number,
+    default: 25,
+  },
   rowsItems: {
     type: Array as PropType<number[]>,
     default: () => [25, 50, 100],
   },
+  loading: {
+    type: Boolean,
+    deault: false,
+  },
+  serverOptions: {
+    type: Object as PropType<ServerOptions>,
+    default: () => {},
+  },
+  serverItemsLength: {
+    type: Number,
+    default: 0,
+  },
+  sortBy: {
+    type: String,
+    default: null,
+  },
+  sortType: {
+    type: String as PropType<SortType>,
+    default: null,
+  },
 });
 
+// css bind value
 const {
-  rowHeight,
-  headers,
-  maxHeight,
-  headerFontSize,
-  bodyFontSize,
   headerFontColor,
   bodyFontColor,
-  items,
-  search,
-  rowsItems,
-  selectItems,
 } = toRefs(props);
 
-// css bind value
-const trHeight = computed(() => `${rowHeight.value}px`);
-const headerFontSizePx = computed(() => `${headerFontSize.value}px`);
-const bodyFontSizePx = computed(() => `${bodyFontSize.value}px`);
-const tableMaxHeight = computed(() => `${maxHeight.value}px`);
+const rowHeight = computed(() => `${props.rowHeight}px`);
+const headerFontSizePx = computed(() => `${props.headerFontSize}px`);
+const bodyFontSizePx = computed(() => `${props.bodyFontSize}px`);
+const tableMaxHeight = computed(() => `${props.maxHeight}px`);
 
 // table body slot
 const slots = useSlots();
 const ifHasBodySlot = computed(() => slots.body);
 
 // define emits
-const emits = defineEmits(['clickItem', 'update:selectItems', 'update:isAllSelected']);
+const emits = defineEmits([
+  'clickItem',
+  'update:itemsSelected',
+  'update:isAllSelected',
+  'update:serverOptions',
+]);
 
-const isMutipleSelectable = computed((): boolean => selectItems.value !== null);
+const serverOptionsComputed = computed({
+  get: (): ServerOptionsComputed => ({
+    page: 1,
+    rowsPerPage: props.serverOptions.rowsPerPage ?? props.rowsPerPage,
+    sortBy: props.serverOptions.sortBy ?? null,
+    sortType: props.serverOptions.sortType ?? null,
+  }),
+  set: (value) => {
+    emits('update:serverOptions', value);
+  },
+});
 
-// table header
-const initHeaders = (): HeaderComputed[] => {
-  headers.value.map((header) => {
-    const headerWithSorting = header;
-    if (header.sortable) headerWithSorting.sorting = 'none';
-    return headerWithSorting;
+const isMutipleSelectable = computed((): boolean => props.itemsSelected !== null);
+
+const isServerSideMode = computed((): boolean => props.serverItemsLength > 0);
+
+// Table header related
+// headers for render (integrating sortType, checkbox...)
+const initHeadersForRender = (): HeaderForRender[] => {
+  const headersWithSortType = structuredClone(props.headers);
+  headersWithSortType.map((header: HeaderForRender) => {
+    const headerWithSortType = header;
+    if (header.sortable) headerWithSortType.sortType = null;
+    if (isServerSideMode.value && header.value === props.serverOptions.sortBy) {
+      headerWithSortType.sortType = props.serverOptions.sortType;
+    }
+    if (!isServerSideMode.value && header.value === props.sortBy) {
+      headerWithSortType.sortType = props.sortType;
+    }
+    return headerWithSortType;
   });
   return isMutipleSelectable.value
-    ? [{ text: 'checkbox', value: 'checkbox' }, ...headers.value] : headers.value;
+    ? [{ text: 'checkbox', value: 'checkbox' }, ...headersWithSortType] : headersWithSortType;
 };
-const headersWithCheckbox = ref(initHeaders());
+const headersForRender = ref(initHeadersForRender());
 
-const headerColumns = computed((): string[] => headersWithCheckbox.value.map((header) => header.value));
+const headerColumns = computed((): string[] => headersForRender.value.map((header) => header.value));
 
 // multiple select
 const selectItemsComputed = computed({
-  get: () => selectItems.value,
+  get: () => props.itemsSelected,
   set: (value) => {
-    emits('update:selectItems', value);
+    emits('update:itemsSelected', value);
   },
 });
 
 const multipleSelectStatus = computed((): 'allSelected' | 'noneSelected' | 'partSelected' => {
-  if (selectItemsComputed.value.length === items.value.length) {
+  if (selectItemsComputed.value.length === props.items.length) {
     return 'allSelected';
   } if (selectItemsComputed.value.length === 0) {
     return 'noneSelected';
@@ -252,89 +311,140 @@ const multipleSelectStatus = computed((): 'allSelected' | 'noneSelected' | 'part
 
 // items searching
 const itemsSearching = computed((): Item[] => {
-  if (search.value !== '') {
-    const regex = new RegExp(search.value, 'i');
-    return items.value.filter((item) => regex.test(Object.values(item).join('')));
+  // searching feature is not available in server-side mode
+  if (!isServerSideMode.value && props.search !== '') {
+    const regex = new RegExp(props.search, 'i');
+    return props.items.filter((item) => regex.test(Object.values(item).join('')));
   }
-  return items.value;
+  return props.items;
 });
 
-const sortCondition = ref<SortCondition | null>(null);
+const currentPaginationNumber = ref(1);
 
-const updateSortField = (fieldName: string) => {
-  console.log("fieldName");
-  console.log(fieldName);
-  let newSortingType: 'none' | 'asc' | 'desc' = 'none';
-  // update headers sorting
-  headersWithCheckbox.value.map((item) => {
+// rows per page.
+const rowsPerPageReactive = ref(props.rowsPerPage);
+watch(rowsPerPageReactive, (value) => {
+  if (isServerSideMode.value) {
+    serverOptionsComputed.value = {
+      ...serverOptionsComputed.value,
+      page: 1,
+      rowsPerPage: value,
+    };
+  }
+  currentPaginationNumber.value = 1;
+});
+
+const initClientSortOptions = (): ClientSortOptions | null => {
+  if (props.sortBy && props.sortType) {
+    return {
+      sortBy: props.sortBy,
+      sortDesc: props.sortType === 'desc',
+    };
+  }
+  return null;
+};
+
+const clientSortOptions = ref<ClientSortOptions | null>(initClientSortOptions);
+
+const updateSortField = (newSortBy: string) => {
+  let newSortType: SortType | null = null;
+  // update headers sortType
+  headersForRender.value.map((item) => {
     const itemSortingUpdated = item;
     if (item.sortable) {
-      if (item.value === fieldName) {
-        if (item.sorting === 'none') {
-          newSortingType = 'asc';
-        } else if (item.sorting === 'asc') {
-          newSortingType = 'desc';
+      if (item.value === newSortBy) {
+        if (item.sortType === null) {
+          newSortType = 'asc';
+        } else if (item.sortType === 'asc') {
+          newSortType = 'desc';
         } else {
-          newSortingType = 'none';
+          newSortType = null;
         }
-        itemSortingUpdated.sorting = newSortingType;
+        itemSortingUpdated.sortType = newSortType;
       } else {
-        itemSortingUpdated.sorting = 'none';
+        itemSortingUpdated.sortType = null;
       }
     }
     return itemSortingUpdated;
   });
 
-  // update sort condition
-  if (newSortingType === 'none') {
-    sortCondition.value = null;
+  if (isServerSideMode.value) {
+    // update server options
+    serverOptionsComputed.value = {
+      page: 1,
+      rowsPerPage: rowsPerPageReactive.value,
+      sortBy: newSortType !== null ? newSortBy : null,
+      sortType: newSortType,
+    };
+  } else if (newSortType === null) {
+    clientSortOptions.value = null;
   } else {
-    sortCondition.value = {
-      fieldName,
-      type: newSortingType,
+    clientSortOptions.value = {
+      sortBy: newSortBy,
+      sortDesc: newSortType === 'desc',
     };
   }
 };
 
 // items sorting
 const itemsSorting = computed((): Item[] => {
-  if (sortCondition.value === null) return itemsSearching.value;
-  const { fieldName, type } = sortCondition.value;
-  const itemsSearchingSorted = [...itemsSearching.value];
+  if (isServerSideMode.value) return props.items;
+  if (clientSortOptions.value === null) return itemsSearching.value;
+  const { sortBy, sortDesc } = clientSortOptions.value;
+  const itemsSearchingSorted = structuredClone(itemsSearching.value);
   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
   return itemsSearchingSorted.sort((a, b) => {
-    if (a[fieldName] < b[fieldName]) return type === 'asc' ? -1 : 1;
-    if (a[fieldName] > b[fieldName]) return type === 'asc' ? 1 : -1;
+    if (a[sortBy] < b[sortBy]) return sortDesc ? 1 : -1;
+    if (a[sortBy] > b[sortBy]) return sortDesc ? -1 : 1;
     return 0;
   });
 });
 
 // index info of items in current page.
-const currentPaginationNumber = ref(1);
-const numberOfItems = computed((): Number => itemsSearching.value.length);
-
-// rows rer page.
-const rowsPerPage = ref(rowsItems.value[0]);
-watch(rowsPerPage, () => {
-  currentPaginationNumber.value = 1;
-});
+const totalItemsLength = computed((): number => (isServerSideMode.value ? props.serverItemsLength : itemsSearching.value.length));
 
 const lastIndexOfItemsInCurrentPage = computed((): number => Math.min(
   itemsSearching.value.length,
-  currentPaginationNumber.value * rowsPerPage.value,
+  currentPaginationNumber.value * rowsPerPageReactive.value,
 ));
 
-const firstIndexOfItemsInCurrentPage = computed((): number => (currentPaginationNumber.value - 1) * rowsPerPage.value + 1);
+const firstIndexOfItemsInCurrentPage = computed((): number => (currentPaginationNumber.value - 1)
+  * rowsPerPageReactive.value + 1);
 
 // page up, page down
-const maxPaginationNumber = computed((): number => Math.ceil(itemsSearching.value.length / rowsPerPage.value));
+const maxPaginationNumber = computed((): number => Math.ceil(totalItemsLength.value / rowsPerPageReactive.value));
 const isLastPage = computed((): boolean => currentPaginationNumber.value === maxPaginationNumber.value);
 const isFirstPage = computed((): boolean => currentPaginationNumber.value === 1);
 
+const isLoadingNextPageFromServer = ref(false);
+
+const { loading } = toRefs(props);
+
 const nextPage = () => {
   if (isLastPage.value) return;
-  currentPaginationNumber.value += 1;
+  if (loading.value) return;
+  if (isServerSideMode.value && props.items.length < (currentPaginationNumber.value * rowsPerPageReactive.value + 1)) {
+    // in server-side mode, load more from server if data lacks.
+    const nextPaginationNumber = currentPaginationNumber.value + 1;
+    serverOptionsComputed.value = {
+      ...serverOptionsComputed.value,
+      page: nextPaginationNumber,
+    };
+    isLoadingNextPageFromServer.value = true;
+  } else {
+    currentPaginationNumber.value += 1;
+  }
 };
+
+watch(loading, (newVal, oldVal) => {
+  if (isLoadingNextPageFromServer.value) {
+    // in server-side mode, pape up when serve data loading finished.
+    if (newVal === false && oldVal === true) {
+      currentPaginationNumber.value += 1;
+      isLoadingNextPageFromServer.value = false;
+    }
+  }
+});
 
 const prevPage = () => {
   if (isFirstPage.value) return;
@@ -351,8 +461,8 @@ const itemsInPage = computed((): Item[] => {
   return res;
 });
 
-// items with checkbox
-const itemsWithCheckbox = computed((): Item[] => {
+// items for render (with checbox)
+const itemsForRender = computed((): Item[] => {
   if (!isMutipleSelectable.value) return itemsInPage.value;
   // multi select
   if (multipleSelectStatus.value === 'allSelected') {
@@ -368,7 +478,7 @@ const itemsWithCheckbox = computed((): Item[] => {
 });
 
 const toggleSelectAll = (isChecked: boolean): void => {
-  selectItemsComputed.value = isChecked ? items.value : [];
+  selectItemsComputed.value = isChecked ? itemsSearching.value : [];
 };
 
 const toggleSelectItem = (item: Item):void => {
@@ -400,6 +510,9 @@ const clickItem = (item: Item) => {
       overflow-x: auto;
       overflow-y: auto;
 
+      .loading-th {
+        padding: 0px;
+      }
       &.fixed-header {
         th {
           position: sticky;
@@ -425,7 +538,7 @@ const clickItem = (item: Item) => {
       background-color: #fff;
       border-spacing: 0;
       tr {
-        height: v-bind(trHeight);
+        height: v-bind(rowHeight);
         &.empty-wrapper {
           color: rgba(0,0,0,.38);
           width: 100%;
@@ -459,11 +572,11 @@ const clickItem = (item: Item) => {
             cursor: pointer;
             &.none {
                &:hover {
-                .sorting-icon {
+                .sortType-icon {
                   opacity: 1;
                 }
               }
-              .sorting-icon {
+              .sortType-icon {
                 opacity: 0;
                 transition: opacity 0.5s ease;
 
@@ -482,7 +595,7 @@ const clickItem = (item: Item) => {
             }
           }
 
-          .sorting-icon {
+          .sortType-icon {
             display: inline-block;
             width: v-bind(headerFontSizePx);
             height: v-bind(headerFontSizePx);

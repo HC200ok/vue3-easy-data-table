@@ -38,6 +38,9 @@ $line-color: #fff;
 
 .single-select__checkbox {
   position: relative;
+  width: $checkbox-size;
+  height: $checkbox-size;
+
   label {
     cursor: pointer;
     display: inline;
