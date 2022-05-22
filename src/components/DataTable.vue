@@ -122,7 +122,7 @@
 
 <script setup lang="ts">
 import {
-  useSlots, computed, toRefs, PropType, ref, watch,
+  useSlots, computed, toRefs, PropType, ref, watch, provide,
 } from 'vue';
 import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
@@ -229,7 +229,13 @@ const props = defineProps({
     type: String as PropType<SortType>,
     default: null,
   },
+  themeColor: {
+    type: String,
+    default: '#42b883',
+  },
 });
+
+provide('themeColor', computed(() => props.themeColor));
 
 // css bind value
 const {

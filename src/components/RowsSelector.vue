@@ -30,7 +30,7 @@
 
 <script lang="ts" setup>
 import {
-  ref, computed, PropType, onMounted, onBeforeUnmount,
+  ref, computed, PropType, onMounted, onBeforeUnmount, inject,
 } from 'vue';
 
 const props = defineProps({
@@ -80,6 +80,8 @@ onMounted(() => {
 onBeforeUnmount(() => {
   document.removeEventListener('click', closeRowsSelector);
 });
+
+const themeColor = inject('themeColor');
 </script>
 
 <style scoped lang="scss">
@@ -126,8 +128,8 @@ onBeforeUnmount(() => {
         background-color: #fff;
 
         &.selected {
-          color: #1867c0;
-          background-color: #dbe7f5;
+          color: #fff;
+          background-color: v-bind(themeColor);
         }
       }
     }

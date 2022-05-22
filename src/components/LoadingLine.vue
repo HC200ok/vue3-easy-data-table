@@ -3,9 +3,12 @@
 </template>
 
 <script lang="ts" setup>
+import { inject } from 'vue';
+
+const themeColor = inject('themeColor');
 </script>
 
-<style>
+<style lang="scss" scoped>
 .loader-line {
   width: 100%;
   height: 3px;
@@ -24,7 +27,7 @@
   left: -50%;
   height: 3px;
   width: 40%;
-  background-color: coral;
+  background-color: v-bind(themeColor);
   -webkit-animation: lineAnim 1s linear infinite;
   -moz-animation: lineAnim 1s linear infinite;
   animation: lineAnim 1s linear infinite;

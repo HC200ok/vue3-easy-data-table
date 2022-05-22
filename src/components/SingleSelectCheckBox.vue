@@ -12,30 +12,21 @@
 </template>
 
 <script setup lang="ts">
+import { inject } from 'vue';
+
 const emits = defineEmits(['change']);
 
 defineProps({
   checked: { type: Boolean, required: true },
 });
+
+const themeColor = inject('themeColor');
 </script>
 
 <style lang="scss" scoped>
-$checkbox-checked-color: rgb(51, 122, 183);
-$checkbox-border-color: rgba(0, 0, 0, 0.54);
+@import '../scss/checbox.scss';
 
-$checkbox-size: 1.25em;
-$checkbox-margin: 1em 0;
-$checkbox-padding: .25em;
-$checkbox-border-width: 1px;
-$checkbox-border-radius: 0.125em;
-$checkbox-label-padding: .75em;
-
-$checkmark-width: 0.125em;
-$checkmark-color: #fff;
-
-$line-width: 0.125em;
-$line-color: #fff;
-
+$checkbox-checked-color: v-bind(themeColor);
 .single-select__checkbox {
   position: relative;
   width: $checkbox-size;
