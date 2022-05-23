@@ -46,7 +46,6 @@ $checkbox-checked-color: v-bind(themeColor);
     line-height: $checkbox-size;
     vertical-align: top;
     clear: both;
-    padding-left: 1px;
 
     &:before, &:after {
       content: "";

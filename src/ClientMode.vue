@@ -6,6 +6,8 @@
     :items="items"
     :rows-per-page="25"
     :rows-items="[25, 50]"
+    :body-font-size="15"
+    :buttons-pagination="true"
     @click-item="showItem"
   >
     <template #address="{ address }">
@@ -64,7 +66,7 @@ const itemsSelected = ref([]);
 
 const createMockItems = (): Item[] => {
   const mockItems = [];
-  for (let i = 1; i < 101; i += 1) {
+  for (let i = 1; i < 2501; i += 1) {
     mockItems.push({
       name: `name-${i}`,
       address: `address-${i}`,

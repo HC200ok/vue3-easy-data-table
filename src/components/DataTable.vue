@@ -82,7 +82,6 @@
           </tbody>
         </template>
       </table>
-
       <div
         v-if="!items.length"
         class="data-table__message"
@@ -102,20 +101,24 @@
         {{ `${firstIndexOfItemsInCurrentPage}-${lastIndexOfItemsInCurrentPage}` }}
         of {{ totalItemsLength }}
       </div>
-      <div
-        class="footer__previous-page-click-button"
-        :class="{'first-page': isFirstPage}"
-        @click="prevPage"
+
+      <PaginationArrows
+        :is-first-page="isFirstPage"
+        :is-last-page="isLastPage"
+        @click-next-page="nextPage"
+        @click-prev-page="prevPage"
       >
-        <span class="arrow arrow-right"></span>
-      </div>
-      <div
-        class="footer__next-page-click-button"
-        :class="{'last-page': isLastPage}"
-        @click="nextPage"
-      >
-        <span class="arrow arrow-left"></span>
-      </div>
+        <template
+          v-if="buttonsPagination"
+          #buttonsPagination
+        >
+          <ButtonsPagination
+            :current-pagination-number="currentPaginationNumber"
+            :max-pagination-number="maxPaginationNumber"
+            @update-page="updatePaginationNumber"
+          />
+        </template>
+      </PaginationArrows>
     </div>
   </div>
 </template>
@@ -128,6 +131,8 @@ import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
 import RowsSelector from './RowsSelector.vue';
 import LoadingLine from './LoadingLine.vue';
+import ButtonsPagination from './ButtonsPagination.vue';
+import PaginationArrows from './PaginationArrows.vue';
 
 import type { Header, Item, ClientSortOptions, ServerOptions } from '@/types/table';
 import ArrowIcon from '@/assets/long-arrow-up.svg'
@@ -149,6 +154,14 @@ type ServerOptionsComputed = {
 }
 
 const props = defineProps({
+  buttonsPagination: {
+    type: Boolean,
+    default: false,
+  },
+  borderColor: {
+    type: String,
+    default: '#e0e0e0',
+  },
   bodyFontColor: {
     type: String,
     default: '#212121',
@@ -169,6 +182,10 @@ const props = defineProps({
     type: String,
     default: '#373737',
   },
+  headerBackgroundColor: {
+    type: String,
+    default: '#fff',
+  },
   headerFontSize: {
     type: Number,
     default: 12,
@@ -184,10 +201,6 @@ const props = defineProps({
   maxHeight: {
     type: Number,
     default: () => 400,
-  },
-  rowHeight: {
-    type: Number,
-    default: () => 48,
   },
   wrapLines: {
     type: Boolean,
@@ -233,20 +246,34 @@ const props = defineProps({
     type: String,
     default: '#42b883',
   },
+  dense: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 provide('themeColor', computed(() => props.themeColor));
 
 // css bind value
 const {
+  borderColor,
   headerFontColor,
   bodyFontColor,
 } = toRefs(props);
 
-const rowHeight = computed(() => `${props.rowHeight}px`);
 const headerFontSizePx = computed(() => `${props.headerFontSize}px`);
+const headerHeight = computed(() => props.headerFontSize * (props.dense ? 2 : 3));
+const headerHeightPx = computed(() => `${headerHeight.value}px`);
+
 const bodyFontSizePx = computed(() => `${props.bodyFontSize}px`);
-const tableMaxHeight = computed(() => `${props.maxHeight}px`);
+const rowHeight = computed(() => props.bodyFontSize * (props.dense ? 2 : 3));
+const rowHeightPx = computed(() => `${rowHeight.value}px`);
+
+// global css
+provide('rowHeight', computed(() => rowHeight.value));
+provide('borderColor', computed(() => borderColor.value));
+
+const maxHeightPx = computed(() => `${props.maxHeight}px`);
 
 // table body slot
 const slots = useSlots();
@@ -422,7 +449,8 @@ const maxPaginationNumber = computed((): number => Math.ceil(totalItemsLength.va
 const isLastPage = computed((): boolean => currentPaginationNumber.value === maxPaginationNumber.value);
 const isFirstPage = computed((): boolean => currentPaginationNumber.value === 1);
 
-const isLoadingNextPageFromServer = ref(false);
+const isLoadingFromServer = ref(false);
+const pageLoadingFromServer = ref(1);
 
 const { loading } = toRefs(props);
 
@@ -436,18 +464,32 @@ const nextPage = () => {
       ...serverOptionsComputed.value,
       page: nextPaginationNumber,
     };
-    isLoadingNextPageFromServer.value = true;
+    isLoadingFromServer.value = true;
+    pageLoadingFromServer.value = nextPaginationNumber;
   } else {
     currentPaginationNumber.value += 1;
   }
 };
 
+const updatePaginationNumber = (value: number) => {
+  if (isServerSideMode.value) {
+    serverOptionsComputed.value = {
+      ...serverOptionsComputed.value,
+      page: value,
+    };
+    isLoadingFromServer.value = true;
+    pageLoadingFromServer.value = value;
+  } else {
+    currentPaginationNumber.value = value;
+  }
+};
+
 watch(loading, (newVal, oldVal) => {
-  if (isLoadingNextPageFromServer.value) {
-    // in server-side mode, pape up when serve data loading finished.
+  if (isLoadingFromServer.value) {
+    // in server-side mode, change to next page when serve data loading finished.
     if (newVal === false && oldVal === true) {
-      currentPaginationNumber.value += 1;
-      isLoadingNextPageFromServer.value = false;
+      currentPaginationNumber.value = pageLoadingFromServer.value;
+      isLoadingFromServer.value = false;
     }
   }
 });
@@ -510,19 +552,19 @@ const clickItem = (item: Item) => {
 <style lang="scss" scoped>
   .data-table {
     box-sizing: border-box;
-    .data-table__body {
+    tr, td, th, tbody, thead, table, div {
       box-sizing: border-box;
-      width: 100%;
-      overflow-x: auto;
-      overflow-y: auto;
+    }
+    .data-table__body {
 
       .loading-th {
         padding: 0px;
       }
       &.fixed-header {
-        th {
+        thead {
           position: sticky;
           top: 0;
+          z-index: 1;
         }
       }
       &.wrap-lines {
@@ -534,17 +576,18 @@ const clickItem = (item: Item) => {
     }
   }
 
-  .data-table__body:deep() {
-    max-height: v-bind(tableMaxHeight);
-    border: thin solid rgba(0,0,0,.12);
-    overflow: scroll;
+  .data-table__body {
+    box-sizing: border-box;
+    width: 100%;
+    border: 1px solid v-bind(borderColor);
     position: relative;
+    max-height: v-bind(maxHeightPx);
+    overflow: auto;
     table {
       width: 100%;
       background-color: #fff;
       border-spacing: 0;
       tr {
-        height: v-bind(rowHeight);
         &.empty-wrapper {
           color: rgba(0,0,0,.38);
           width: 100%;
@@ -561,13 +604,15 @@ const clickItem = (item: Item) => {
         position: relative;
       }
       thead {
-        z-index: 1;
+        font-size: v-bind(headerFontSizePx);
+        tr {
+          height: v-bind(headerHeightPx);
+        }
         th {
-          border-bottom: thin solid rgba(0,0,0,.12);
-          font-size: v-bind(headerFontSizePx);
+          border-bottom: 1px solid v-bind(borderColor);;
           color: v-bind(headerFontColor);
           position: relative;
-          background-color: #f8f8f8;
+          background-color: v-bind(headerBackgroundColor);
           .header-text {
             display: flex;
             align-items: center;
@@ -616,7 +661,9 @@ const clickItem = (item: Item) => {
         }
       }
       tbody {
+        font-size: v-bind(bodyFontSizePx);
         tr {
+          height: v-bind(rowHeightPx);
           cursor: pointer;
           &:hover {
             background-color: #eee;
@@ -630,8 +677,7 @@ const clickItem = (item: Item) => {
         }
         td {
           color: v-bind(bodyFontColor);
-          font-size: v-bind(bodyFontSizePx);
-          border-bottom: thin solid rgba(0,0,0,.12);
+          border-bottom: 1px solid v-bind(borderColor);;
         }
       }
     }
@@ -651,13 +697,14 @@ const clickItem = (item: Item) => {
   .data-table__footer {
     width: 100%;
     display: flex;
-    border: thin solid rgba(0,0,0,.12);
+    border: 1px solid v-bind(borderColor);
     border-top: none;
-    font-size: 12px;
+    font-size: v-bind(bodyFontSizePx);
     align-items: center;
     justify-content: right;
-    padding: 10px 5px;
+    padding: 0px 5px;
     box-sizing: border-box;
+    height: v-bind(rowHeightPx);
 
     .footer__rows-per-page {
       display: flex;
@@ -665,29 +712,6 @@ const clickItem = (item: Item) => {
     }
     .footer__items-index {
       margin: 0px 20px 0px 10px;
-    }
-    .footer__previous-page-click-button, .footer__next-page-click-button {
-      margin-right: 5px;
-      cursor: pointer;
-      .arrow {
-        display: inline-block;
-        width: 8px;
-        height: 8px;
-        border-top: 2px solid #000;
-        border-left: 2px solid #000;
-        &.arrow-left {
-          transform: rotate(135deg);
-        }
-        &.arrow-right {
-          transform: rotate(-45deg);
-        }
-      }
-    }
-    .footer__previous-page-click-button.first-page, .footer__next-page-click-button.last-page {
-      cursor: not-allowed;
-      .arrow {
-        border-color: #e0e0e0;
-      }
     }
   }
 
