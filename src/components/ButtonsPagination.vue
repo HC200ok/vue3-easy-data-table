@@ -149,8 +149,8 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
   return paginationItems;
 });
 
-const rowHeight = inject('rowHeight');
-const buttonSizePx = computed(() => `${rowHeight.value * 0.6}px`);
+const rowHeight = inject('rowHeight') as number;
+const buttonSizePx = computed(() => `${rowHeight * 0.6}px`);
 const borderColor = inject('borderColor');
 const themeColor = inject('themeColor');
 </script>
@@ -170,6 +170,7 @@ const themeColor = inject('themeColor');
     border-top: 1px solid v-bind(borderColor);
     border-bottom: 1px solid v-bind(borderColor);
     border-right: 1px solid v-bind(borderColor);
+    text-align: center;
     &:first-of-type  {
       border-left: 1px solid v-bind(borderColor);
       border-top-left-radius: 4px;

@@ -1,4 +1,4 @@
-type SortType = 'asc' | 'desc'
+export type SortType = 'asc' | 'desc'
 
 export type Header = {
   text: string,
@@ -13,9 +13,4 @@ export type ServerOptions = {
   rowsPerPage?: number,
   sortBy?: string,
   sortType?: SortType,
-}
-
-export type ClientSortOptions = {
-  sortBy: string,
-  sortType: SortType,
 }

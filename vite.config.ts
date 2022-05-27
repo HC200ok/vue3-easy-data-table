@@ -8,9 +8,9 @@ import svgLoader from 'vite-svg-loader'
 export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve(__dirname, 'src/index.js'),
+      entry: path.resolve(__dirname, 'src/index.ts'),
       name: 'vue3-easy-data-table',
-      fileName: (format) => `${format}.js`,
+      fileName: (format) => `vue3-easy-data-table.${format}.js`,
     },
     rollupOptions: {
       external: ['vue'],
@@ -25,7 +25,7 @@ export default defineConfig({
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
-      '@': path.resolve(__dirname, './src'),
+      '@src': path.resolve(__dirname, 'src'),
     },
   },
 });

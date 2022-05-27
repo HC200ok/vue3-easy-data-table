@@ -1,7 +1,6 @@
 <template>
   <div
-    id="easy-data-table__rows-selector"
-    class="rows-selector"
+    class="easy-data-table__rows-selector"
   >
     <div
       class="rows-input__wrapper"
@@ -56,10 +55,10 @@ const changeSelectedRows = (value: number) => {
 
 // Click outside to close rows selector
 // @ts-ignore
-const isDescendant = (parent, child) => {
+const isDescendant = (child, className) => {
   let node = child.parentNode;
   while (node != null) {
-    if (node === parent) {
+    if (node.classList && node.classList.contains(className)) {
       return true;
     }
     node = node.parentNode;
@@ -69,8 +68,7 @@ const isDescendant = (parent, child) => {
 
 // @ts-ignore
 const closeRowsSelector = (e) => {
-  const $rowsSelector = document.getElementById('easy-data-table__rows-selector');
-  if (!isDescendant($rowsSelector, e.target)) showList.value = false;
+  if (!isDescendant(e.target, 'easy-data-table__rows-selector')) showList.value = false;
 };
 
 onMounted(() => {
@@ -85,7 +83,7 @@ const themeColor = inject('themeColor');
 </script>
 
 <style scoped lang="scss">
-.rows-selector{
+.easy-data-table__rows-selector {
   display: inline-block;
   min-width: 45px;
   position: relative;

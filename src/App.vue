@@ -1,21 +1,10 @@
 <template>
-  <ServerSideMode/>
+  <ServerSideMode />
   <br><br>
-  <ClientMode/>
+  <!-- <ClientMode /> -->
 </template>
 
 <script setup lang="ts">
-import ServerSideMode from './ServerSideMode.vue';
-import ClientMode from './ClientMode.vue';
+import ServerSideMode from './modes/ServerSide.vue';
+import ClientMode from './modes/Client.vue';
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

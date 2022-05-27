@@ -81,9 +81,9 @@ $checkbox-checked-color: v-bind(themeColor);
       }
       + label:after {
         $checkmark-size: $checkbox-size - 2 * $checkbox-padding;
-        transform: translate($checkbox-padding, ($checkbox-size / 2) - ($checkmark-size / 2.6)) rotate(-45deg);
+        transform: translate($checkbox-padding, calc($checkbox-size / 2) - calc($checkmark-size / 2.6)) rotate(-45deg);
         width: $checkmark-size;
-        height: $checkmark-size / 2;
+        height: calc($checkmark-size / 2);
         border: $checkmark-width solid $checkmark-color;
         border-top-style: none;
         border-right-style: none;
@@ -96,9 +96,9 @@ $checkbox-checked-color: v-bind(themeColor);
       }
       + label:after {
         $line-size: $checkbox-size - 2 * $checkbox-padding;
-        transform: translate($checkbox-padding, ($checkbox-size / 2) - ($line-width / 2));
+        transform: translate($checkbox-padding, calc($checkbox-size / 2) - calc($line-width / 2));
         width: $line-size;
-        height: $line-size / 2;
+        height: calc($line-size / 2);
         border: $line-width solid $line-color;
         border-bottom-style: none;
         border-right-style: none;

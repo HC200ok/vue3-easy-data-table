@@ -8,7 +8,6 @@
     :rows-items="[25, 50]"
     :body-font-size="15"
     :buttons-pagination="true"
-    @click-item="showItem"
   >
     <template #address="{ address }">
       <div style="color: red">
@@ -20,39 +19,17 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
+import type { Header, Item } from 'vue3-easy-data-table';
 
-import DataTable from './components/DataTable.vue';
-
-import type { Header, Item } from './types/table';
+import DataTable from '../components/DataTable.vue';
 
 const headers: Header[] = [
-  {
-    text: 'Name',
-    value: 'name',
-  },
-  {
-    text: 'Address',
-    value: 'address',
-  },
-  {
-    text: 'Height',
-    value: 'height',
-    sortable: true,
-  },
-  {
-    text: 'Weight',
-    value: 'weight',
-    sortable: true,
-  },
-  {
-    text: 'Age',
-    value: 'calories',
-    sortable: true,
-  },
-  {
-    text: 'Calories',
-    value: 'calories',
-  },
+  { text: 'Name', value: 'name' },
+  { text: 'Address', value: 'address' },
+  { text: 'Height', value: 'height', sortable: true },
+  { text: 'Weight', value: 'weight', sortable: true },
+  { text: 'Age', value: 'calories', sortable: true },
+  { text: 'Calories', value: 'calories' },
   { text: 'Fat (g)', value: 'fat' },
   { text: 'Carbs (g)', value: 'carbs' },
   { text: 'Protein (g)', value: 'protein' },

@@ -12,11 +12,11 @@
               :key="index"
               :class="{
                 sortable: header.sortable,
-                'none': header.sortable && header.sortType === null,
+                'none': header.sortable && header.sortType === 'none',
                 'desc': header.sortable && header.sortType === 'desc',
                 'asc': header.sortable && header.sortType === 'asc',
               }"
-              @click="header.sortable ? updateSortField(header.value) : null"
+              @click="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
             >
               <MutipleSelectCheckBox
                 v-if="header.text === 'checkbox'"
@@ -26,28 +26,27 @@
               />
               <span
                 v-else
-                class="header-text">
-                {{ header.text }}
-                <span
+                class="header-text__wrapper">
+                <span class="header-text">
+                  {{ header.text }}
+                </span>
+                <ArrowIcon
                   v-if="header.sortable"
                   :key="header.sortType ? header.sortType : 'none'"
                   class="sortType-icon"
-                  :class="{'desc': header.sortType === 'desc'}">
-                  <ArrowIcon
-                    class="sortType-icon__svg"
-                  />
-                </span>
+                  :class="{'desc': header.sortType === 'desc'}"
+                />
               </span>
             </th>
           </tr>
+          <th
+            v-if="loading"
+            class="loading-th"
+            :colspan="headerColumns.length"
+          >
+            <LoadingLine></LoadingLine>
+          </th>
         </thead>
-        <th
-          v-if="loading"
-          class="loading-th"
-          :colspan="headerColumns.length"
-        >
-          <LoadingLine></LoadingLine>
-        </th>
         <slot
           v-if="ifHasBodySlot"
           name="body"
@@ -57,7 +56,6 @@
             <tr
               v-for="(item) in itemsForRender"
               :key="JSON.stringify(item)"
-              @click="clickItem(item)"
             >
               <td
                 v-for="(column, i) in headerColumns"
@@ -83,10 +81,16 @@
         </template>
       </table>
       <div
-        v-if="!items.length"
+        v-if="!items.length && !loading"
         class="data-table__message"
       >
         {{ emptyMessage }}
+      </div>
+      <div
+        v-if="!items.length && loading"
+        class="data-table__message"
+      >
+        {{ loadingMessage }}
       </div>
     </div>
     <div class="data-table__footer">
@@ -115,7 +119,7 @@
           <ButtonsPagination
             :current-pagination-number="currentPaginationNumber"
             :max-pagination-number="maxPaginationNumber"
-            @update-page="updatePaginationNumber"
+            @update-page="updatePage"
           />
         </template>
       </PaginationArrows>
@@ -134,16 +138,22 @@ import LoadingLine from './LoadingLine.vue';
 import ButtonsPagination from './ButtonsPagination.vue';
 import PaginationArrows from './PaginationArrows.vue';
 
-import type { Header, Item, ClientSortOptions, ServerOptions } from '@/types/table';
-import ArrowIcon from '@/assets/long-arrow-up.svg'
+// @ts-ignore
+import type {
+  SortType, Header, Item, ServerOptions,
+} from '../types/main';
+import ArrowIcon from '../assets/long-arrow-up.svg';
 
-type SortType = 'asc' | 'desc'
+type ClientSortOptions = {
+  sortBy: string,
+  sortDesc: boolean,
+}
 
 type HeaderForRender = {
   text: string,
   value: string,
   sortable?: boolean,
-  sortType?: SortType | null,
+  sortType?: SortType | 'none',
 }
 
 type ServerOptionsComputed = {
@@ -166,10 +176,6 @@ const props = defineProps({
     type: String,
     default: '#212121',
   },
-  bodyFontSize: {
-    type: Number,
-    default: 12,
-  },
   emptyMessage: {
     type: String,
     default: 'No Available Data',
@@ -186,7 +192,7 @@ const props = defineProps({
     type: String,
     default: '#fff',
   },
-  headerFontSize: {
+  bodyFontSize: {
     type: Number,
     default: 12,
   },
@@ -210,7 +216,11 @@ const props = defineProps({
     type: Array as PropType<Item[]> | null,
     default: null,
   },
-  search: {
+  searchField: {
+    type: String,
+    default: '',
+  },
+  searchValue: {
     type: String,
     default: '',
   },
@@ -226,9 +236,14 @@ const props = defineProps({
     type: Boolean,
     deault: false,
   },
+  loadingMessage:
+  {
+    type: String,
+    default: 'Loading, please wait.',
+  },
   serverOptions: {
     type: Object as PropType<ServerOptions>,
-    default: () => {},
+    default: () => null,
   },
   serverItemsLength: {
     type: Number,
@@ -236,11 +251,11 @@ const props = defineProps({
   },
   sortBy: {
     type: String,
-    default: null,
+    default: '',
   },
   sortType: {
     type: String as PropType<SortType>,
-    default: null,
+    default: 'asc',
   },
   themeColor: {
     type: String,
@@ -252,28 +267,21 @@ const props = defineProps({
   },
 });
 
-provide('themeColor', computed(() => props.themeColor));
-
-// css bind value
 const {
   borderColor,
   headerFontColor,
   bodyFontColor,
 } = toRefs(props);
 
-const headerFontSizePx = computed(() => `${props.headerFontSize}px`);
-const headerHeight = computed(() => props.headerFontSize * (props.dense ? 2 : 3));
-const headerHeightPx = computed(() => `${headerHeight.value}px`);
-
-const bodyFontSizePx = computed(() => `${props.bodyFontSize}px`);
+const fontSizePx = computed(() => `${props.bodyFontSize}px`);
 const rowHeight = computed(() => props.bodyFontSize * (props.dense ? 2 : 3));
 const rowHeightPx = computed(() => `${rowHeight.value}px`);
-
-// global css
-provide('rowHeight', computed(() => rowHeight.value));
-provide('borderColor', computed(() => borderColor.value));
-
 const maxHeightPx = computed(() => `${props.maxHeight}px`);
+
+// global style variable
+provide('themeColor', props.themeColor);
+provide('rowHeight', rowHeight.value);
+provide('borderColor', borderColor.value);
 
 // table body slot
 const slots = useSlots();
@@ -281,19 +289,22 @@ const ifHasBodySlot = computed(() => slots.body);
 
 // define emits
 const emits = defineEmits([
-  'clickItem',
   'update:itemsSelected',
-  'update:isAllSelected',
   'update:serverOptions',
 ]);
 
 const serverOptionsComputed = computed({
-  get: (): ServerOptionsComputed => ({
-    page: 1,
-    rowsPerPage: props.serverOptions.rowsPerPage ?? props.rowsPerPage,
-    sortBy: props.serverOptions.sortBy ?? null,
-    sortType: props.serverOptions.sortType ?? null,
-  }),
+  get: (): ServerOptionsComputed => {
+    const {
+      page, rowsPerPage, sortBy, sortType,
+    } = props.serverOptions;
+    return {
+      page,
+      rowsPerPage,
+      sortBy: sortBy ?? null,
+      sortType: sortType ?? null,
+    };
+  },
   set: (value) => {
     emits('update:serverOptions', value);
   },
@@ -301,27 +312,36 @@ const serverOptionsComputed = computed({
 
 const isMutipleSelectable = computed((): boolean => props.itemsSelected !== null);
 
-const isServerSideMode = computed((): boolean => props.serverItemsLength > 0);
+const isServerSideMode = computed((): boolean => props.serverOptions !== null);
 
-// Table header related
+const initClientSortOptions = (): ClientSortOptions | null => {
+  if (props.sortBy !== '') {
+    return {
+      sortBy: props.sortBy,
+      sortDesc: props.sortType === 'desc',
+    };
+  }
+  return null;
+};
+
+const clientSortOptions = ref<ClientSortOptions | null>(initClientSortOptions());
+
 // headers for render (integrating sortType, checkbox...)
-const initHeadersForRender = (): HeaderForRender[] => {
-  const headersWithSortType = structuredClone(props.headers);
-  headersWithSortType.map((header: HeaderForRender) => {
-    const headerWithSortType = header;
-    if (header.sortable) headerWithSortType.sortType = null;
-    if (isServerSideMode.value && header.value === props.serverOptions.sortBy) {
-      headerWithSortType.sortType = props.serverOptions.sortType;
+const headersForRender = computed((): HeaderForRender[] => {
+  const headersSorting = props.headers.map((header: HeaderForRender) => {
+    const headerSorting = header;
+    if (header.sortable) headerSorting.sortType = 'none';
+    if (isServerSideMode.value && header.value === serverOptionsComputed.value.sortBy && serverOptionsComputed.value.sortType) {
+      headerSorting.sortType = serverOptionsComputed.value.sortType;
     }
-    if (!isServerSideMode.value && header.value === props.sortBy) {
-      headerWithSortType.sortType = props.sortType;
+    if (!isServerSideMode.value && clientSortOptions.value && header.value === clientSortOptions.value.sortBy) {
+      headerSorting.sortType = clientSortOptions.value.sortDesc ? 'desc' : 'asc';
     }
-    return headerWithSortType;
+    return headerSorting;
   });
   return isMutipleSelectable.value
-    ? [{ text: 'checkbox', value: 'checkbox' }, ...headersWithSortType] : headersWithSortType;
-};
-const headersForRender = ref(initHeadersForRender());
+    ? [{ text: 'checkbox', value: 'checkbox' }, ...headersSorting] : headersSorting;
+});
 
 const headerColumns = computed((): string[] => headersForRender.value.map((header) => header.value));
 
@@ -345,17 +365,18 @@ const multipleSelectStatus = computed((): 'allSelected' | 'noneSelected' | 'part
 // items searching
 const itemsSearching = computed((): Item[] => {
   // searching feature is not available in server-side mode
-  if (!isServerSideMode.value && props.search !== '') {
-    const regex = new RegExp(props.search, 'i');
-    return props.items.filter((item) => regex.test(Object.values(item).join('')));
+  if (!isServerSideMode.value && props.searchValue !== '') {
+    const regex = new RegExp(props.searchValue, 'i');
+    return props.items.filter((item) => regex.test(props.searchField !== '' ? item[props.searchField]
+      : Object.values(item).join(' ')));
   }
   return props.items;
 });
 
-const currentPaginationNumber = ref(1);
+const currentPaginationNumber = ref(isServerSideMode.value ? props.serverOptions.page : 1);
 
-// rows per page.
-const rowsPerPageReactive = ref(props.rowsPerPage);
+// rows per page
+const rowsPerPageReactive = ref(isServerSideMode.value ? props.serverOptions.rowsPerPage : props.rowsPerPage);
 watch(rowsPerPageReactive, (value) => {
   if (isServerSideMode.value) {
     serverOptionsComputed.value = {
@@ -367,45 +388,20 @@ watch(rowsPerPageReactive, (value) => {
   currentPaginationNumber.value = 1;
 });
 
-const initClientSortOptions = (): ClientSortOptions | null => {
-  if (props.sortBy && props.sortType) {
-    return {
-      sortBy: props.sortBy,
-      sortDesc: props.sortType === 'desc',
-    };
-  }
-  return null;
-};
-
-const clientSortOptions = ref<ClientSortOptions | null>(initClientSortOptions);
-
-const updateSortField = (newSortBy: string) => {
+const updateSortField = (newSortBy: string, oldSortType: SortType | 'none') => {
   let newSortType: SortType | null = null;
-  // update headers sortType
-  headersForRender.value.map((item) => {
-    const itemSortingUpdated = item;
-    if (item.sortable) {
-      if (item.value === newSortBy) {
-        if (item.sortType === null) {
-          newSortType = 'asc';
-        } else if (item.sortType === 'asc') {
-          newSortType = 'desc';
-        } else {
-          newSortType = null;
-        }
-        itemSortingUpdated.sortType = newSortType;
-      } else {
-        itemSortingUpdated.sortType = null;
-      }
-    }
-    return itemSortingUpdated;
-  });
+  if (oldSortType === 'none') {
+    newSortType = 'asc';
+  } else if (oldSortType === 'asc') {
+    newSortType = 'desc';
+  } else {
+    newSortType = null;
+  }
 
   if (isServerSideMode.value) {
     // update server options
     serverOptionsComputed.value = {
-      page: 1,
-      rowsPerPage: rowsPerPageReactive.value,
+      ...serverOptionsComputed.value,
       sortBy: newSortType !== null ? newSortBy : null,
       sortType: newSortType,
     };
@@ -436,10 +432,15 @@ const itemsSorting = computed((): Item[] => {
 // index info of items in current page.
 const totalItemsLength = computed((): number => (isServerSideMode.value ? props.serverItemsLength : itemsSearching.value.length));
 
-const lastIndexOfItemsInCurrentPage = computed((): number => Math.min(
-  itemsSearching.value.length,
-  currentPaginationNumber.value * rowsPerPageReactive.value,
-));
+const lastIndexOfItemsInCurrentPage = computed((): number => {
+  if (isServerSideMode.value) {
+    return currentPaginationNumber.value * rowsPerPageReactive.value;
+  }
+  return Math.min(
+    itemsSearching.value.length,
+    currentPaginationNumber.value * rowsPerPageReactive.value,
+  );
+});
 
 const firstIndexOfItemsInCurrentPage = computed((): number => (currentPaginationNumber.value - 1)
   * rowsPerPageReactive.value + 1);
@@ -449,64 +450,61 @@ const maxPaginationNumber = computed((): number => Math.ceil(totalItemsLength.va
 const isLastPage = computed((): boolean => currentPaginationNumber.value === maxPaginationNumber.value);
 const isFirstPage = computed((): boolean => currentPaginationNumber.value === 1);
 
-const isLoadingFromServer = ref(false);
-const pageLoadingFromServer = ref(1);
-
 const { loading } = toRefs(props);
 
 const nextPage = () => {
   if (isLastPage.value) return;
   if (loading.value) return;
-  if (isServerSideMode.value && props.items.length < (currentPaginationNumber.value * rowsPerPageReactive.value + 1)) {
-    // in server-side mode, load more from server if data lacks.
+  if (isServerSideMode.value) {
     const nextPaginationNumber = currentPaginationNumber.value + 1;
     serverOptionsComputed.value = {
       ...serverOptionsComputed.value,
       page: nextPaginationNumber,
     };
-    isLoadingFromServer.value = true;
-    pageLoadingFromServer.value = nextPaginationNumber;
   } else {
     currentPaginationNumber.value += 1;
   }
 };
 
-const updatePaginationNumber = (value: number) => {
+const prevPage = () => {
+  if (isFirstPage.value) return;
+  if (loading.value) return;
+  if (isServerSideMode.value) {
+    const prevPaginationNumber = currentPaginationNumber.value - 1;
+    serverOptionsComputed.value = {
+      ...serverOptionsComputed.value,
+      page: prevPaginationNumber,
+    };
+  } else {
+    currentPaginationNumber.value -= 1;
+  }
+};
+
+const updatePage = (value: number) => {
+  if (loading.value) return;
   if (isServerSideMode.value) {
     serverOptionsComputed.value = {
       ...serverOptionsComputed.value,
       page: value,
     };
-    isLoadingFromServer.value = true;
-    pageLoadingFromServer.value = value;
   } else {
     currentPaginationNumber.value = value;
   }
 };
 
 watch(loading, (newVal, oldVal) => {
-  if (isLoadingFromServer.value) {
-    // in server-side mode, change to next page when serve data loading finished.
+  if (isServerSideMode.value) {
+    // in server-side mode, turn to next page when api request finished.
     if (newVal === false && oldVal === true) {
-      currentPaginationNumber.value = pageLoadingFromServer.value;
-      isLoadingFromServer.value = false;
+      currentPaginationNumber.value = serverOptionsComputed.value.page;
     }
   }
 });
 
-const prevPage = () => {
-  if (isFirstPage.value) return;
-  currentPaginationNumber.value -= 1;
-};
-
 // items in current page
 const itemsInPage = computed((): Item[] => {
-  const res: Item[] = [];
-  for (let i = firstIndexOfItemsInCurrentPage.value - 1;
-    i < lastIndexOfItemsInCurrentPage.value; i += 1) {
-    res.push(itemsSorting.value[i]);
-  }
-  return res;
+  if (isServerSideMode.value) return props.items;
+  return itemsSorting.value.slice(firstIndexOfItemsInCurrentPage.value - 1, lastIndexOfItemsInCurrentPage.value);
 });
 
 // items for render (with checbox)
@@ -543,10 +541,6 @@ const toggleSelectItem = (item: Item):void => {
   }
 };
 
-// event of click item
-const clickItem = (item: Item) => {
-  emits('clickItem', item);
-};
 </script>
 
 <style lang="scss" scoped>
@@ -604,19 +598,19 @@ const clickItem = (item: Item) => {
         position: relative;
       }
       thead {
-        font-size: v-bind(headerFontSizePx);
+        font-size: v-bind(fontSizePx);
         tr {
-          height: v-bind(headerHeightPx);
+          height: v-bind(rowHeightPx);
         }
         th {
           border-bottom: 1px solid v-bind(borderColor);;
           color: v-bind(headerFontColor);
           position: relative;
           background-color: v-bind(headerBackgroundColor);
-          .header-text {
+          .header-text__wrapper {
             display: flex;
             align-items: center;
-            height: v-bind(headerFontSizePx);
+            height: v-bind(fontSizePx);
           }
 
           &.sortable {
@@ -648,11 +642,11 @@ const clickItem = (item: Item) => {
 
           .sortType-icon {
             display: inline-block;
-            width: v-bind(headerFontSizePx);
-            height: v-bind(headerFontSizePx);
+            width: v-bind(fontSizePx);
+            height: v-bind(fontSizePx);
             &__svg {
-              width: v-bind(headerFontSizePx);
-              height: v-bind(headerFontSizePx);
+              width: v-bind(fontSizePx);
+              height: v-bind(fontSizePx);
             }
             &.desc {
               transform: rotate(180deg);
@@ -661,10 +655,9 @@ const clickItem = (item: Item) => {
         }
       }
       tbody {
-        font-size: v-bind(bodyFontSizePx);
+        font-size: v-bind(fontSizePx);
         tr {
           height: v-bind(rowHeightPx);
-          cursor: pointer;
           &:hover {
             background-color: #eee;
           }
@@ -684,7 +677,7 @@ const clickItem = (item: Item) => {
     .data-table__message {
       text-align: center;
       color: v-bind(bodyFontColor);
-      font-size: v-bind(bodyFontSizePx);
+      font-size: v-bind(fontSizePx);
       padding: 20px;
     }
     .gms_base_dialog__loading {
@@ -699,7 +692,7 @@ const clickItem = (item: Item) => {
     display: flex;
     border: 1px solid v-bind(borderColor);
     border-top: none;
-    font-size: v-bind(bodyFontSizePx);
+    font-size: v-bind(fontSizePx);
     align-items: center;
     justify-content: right;
     padding: 0px 5px;
