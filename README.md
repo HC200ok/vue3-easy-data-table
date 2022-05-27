@@ -203,4 +203,4 @@ common props can be used both in client mode and server side mode.
 | server-items-length | true | number | undefined | Total amount of items available on server |
 
 ## Todo
-This component just satisfied my needs, if you find any bug or demand some other features, plese report a issue and making pull requests is very welcomed.
+This component just satisfied my needs, if you find any bug or demand some other features, plese report an issue and making pull requests is very welcomed.
