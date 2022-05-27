@@ -72,7 +72,7 @@ vue3-easy-data-table has two modes: `client` mode and `server side` mode. Client
 ## Buttons pagination
 Use `buttons-pagination` prop and seven visible page buttons will be generated automatically to help you navigate more easily.
 
-<img src="./images/buttons-pagination.gif"  width="60%"/>
+<img src="./images/buttons-pagination.gif"  />
 
 [Online preview](https://rfc8kw.csb.app/)
 
@@ -82,7 +82,7 @@ Use `buttons-pagination` prop and seven visible page buttons will be generated a
 ## Dense
 Use `dense` prop to provide an alternate dense style.
 
-<img src="./images/dense.png"  width="60%"/>
+<img src="./images/dense.png"  />
 
 [Online preview](https://7sjib3.csb.app/)
 
@@ -99,7 +99,7 @@ You can customize only certain columns like this:
 ```
 Notice that the `<name>` of `#<name>` should be a value of header item.
 
-<img src="./images/item-slot.png"  width="60%"/>
+<img src="./images/item-slot.png"  />
 
 [Online preview](https://65tc9v.csb.app/)
 
@@ -108,7 +108,7 @@ Notice that the `<name>` of `#<name>` should be a value of header item.
 ## Multiple selecting
 Using the `v-model:items-selected` will enable you to get data of specific items by toggling checkbox.
 
-<img src="./images/multiple-selecting.png"  width="60%"/>
+<img src="./images/multiple-selecting.png"  />
 
 [Online preview](https://bhe0r9.csb.app/)
 
@@ -124,7 +124,7 @@ Add `sortable` property into the header items to make the corresponding columns 
 ```
 Use `sort-by` and `sort-type` to define the initial sorting field and sorti g type ('asc' or 'desc').
 
-<img src="./images/single-sorting.gif"  width="60%"/>
+<img src="./images/single-sorting.gif"  />
 
 [Online preview](https://rjniui.csb.app/)
 
@@ -135,7 +135,7 @@ Use `search-field` and `search-value` props to search for information in a speci
 
 notice: Searching feature is only available in client mode.
 
-<img src="./images/searching.png"  width="60%"/>
+<img src="./images/searching.png"  />
 
 [![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/searching-8egujm?file=/src/App.vue)
 
@@ -144,7 +144,7 @@ Also called server-side mode, In this mode, you’re loading data already pagina
 
 `server-items-length` and `v-model:server-options` are required in this mode.
 
-<img src="./images/server-side-paginate-and-sort.png"  width="60%"/>
+<img src="./images/server-side-paginate-and-sort.png"  />
 
 [Online preview](https://mif1nr.csb.app/)
 
@@ -153,7 +153,7 @@ Also called server-side mode, In this mode, you’re loading data already pagina
 ## Theme color
 Use `theme-color` prop to customize color of checkbox, active option of rows selector, loading bar and  active button of buttons pagination.
 
-<img src="./images/theme-color.png"  width="60%"/>
+<img src="./images/theme-color.png"  />
 
 [![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/theme-color-89ps64?file=/src/App.vue)
 
