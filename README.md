@@ -122,7 +122,7 @@ Add `sortable` property into the header items to make the corresponding columns 
   ...
  ];
 ```
-Use `sort-by` and `sort-type` to define the initial sorting field and sorti g type ('asc' or 'desc').
+Use `sort-by` and `sort-type` to define the initial sorting field and sorting type ('asc' or 'desc').
 
 <img src="./images/single-sorting.gif"  />
 
