@@ -9,6 +9,8 @@ vue3-easy-data-table is a simple and easy-to-use data table component made with 
 ### Install
 ```js
 npm install vue3-easy-data-table
+// or
+yarn add vue3-easy-data-table
 ```
 
 ### Regist

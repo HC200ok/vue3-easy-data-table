@@ -35,7 +35,7 @@
   "dependencies": {
     "vue": "^3.2.25",
     "vue-manual-data-masking": "^0.1.8",
-    "vue3-easy-data-table": "^1.0.0"
+    "vue3-easy-data-table": "^1.0.9"
   },
   "devDependencies": {
     "@types/node": "^17.0.29",
