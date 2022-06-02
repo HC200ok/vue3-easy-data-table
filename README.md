@@ -3,7 +3,7 @@
 </p>
 
 ## Introduction
-vue3-easy-data-table is a simple and easy-to-use data table component made with Vue.js 3.x. The data table component in Vuetify 3 hasn't been released yet, so i made this component by referring to the API and UI of data table component in Vuetify 2.
+vue3-easy-data-table is a simple and easy-to-use data table component made with Vue.js 3.x. The data table component in Vuetify 3 hasn't been released yet, so I made this component by referring to the API and UI of the data table component in Vuetify 2.
 
 ## Getting started
 ### Install
@@ -59,7 +59,7 @@ export default defineComponent({
 ```
 
 ## Modes
-vue3-easy-data-table has two modes: `client` mode and `server side` mode. Client mode is for the case that all data has already been loaded, In other words, your initial call is asking for all the pages from a server. And In server side mode, you need to request limited data from a server everytime you navigate to a new page. Client mode is the default mode, you have to pass `server-options` and `server-items-length` props to switch to the server side mode.
+vue3-easy-data-table has two modes: `client` mode and `server-side` mode. Client mode is for the case that all data has already been loaded, In other words, your initial call is asking for all the pages from a server. And In server-side mode, you need to request limited data from a server everytime you navigate to a new page. Client mode is the default mode, you have to pass `server-options` and `server-items-length` props to switch to the server-side mode.
 
 ## Features
 1. [Buttons pagination](#buttons-pagination)
@@ -162,7 +162,7 @@ Use `theme-color` prop to customize color of checkbox, active option of rows sel
 
 # Props
 ## Common props
-common props can be used both in client mode and server side mode.
+common props can be used both in client mode and server-side mode.
 
 | Name | Required | Type | Default | Description |
 | -------- | ----------- | ---- | -------- | ------- |
@@ -198,7 +198,7 @@ common props can be used both in client mode and server side mode.
 
 
 ### Server side mode props 
-#### only available in server side mode
+#### only available in server-side mode
 | Name | Required | Type | Default | Description |
 | -------- | ----------- | ---- | -------- | ------- |
 | v-model:server-options | true | ServerOptions: <br>{<br> page?: number,<br> rowsPerPage?: number,<br> sortBy?: string,<br> sortType?: 'asc' \| 'desc',<br>} | {} | An object which can be used as values of parameters in a pagination REST API such as:<br>`http://localhost:8080/api?page=${ServerOptions.page}&limit=${ServerOptions.rowsPerPage}&sortBy=${ServerOptions.sortBy}&sortType=${ServerOptions.sortType}`|
