@@ -165,7 +165,7 @@ const themeColor = inject('themeColor');
   .item {
     cursor: pointer;
     height: v-bind(buttonSizePx);
-    width: v-bind(buttonSizePx);
+    min-width: v-bind(buttonSizePx);
     line-height: v-bind(buttonSizePx);
     border-top: 1px solid v-bind(borderColor);
     border-bottom: 1px solid v-bind(borderColor);
