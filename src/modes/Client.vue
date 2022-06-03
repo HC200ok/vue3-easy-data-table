@@ -8,6 +8,7 @@
     :rows-items="[25, 50]"
     :body-font-size="15"
     :buttons-pagination="true"
+    show-index
   >
     <template #address="{ address }">
       <div style="color: red">

@@ -52,7 +52,10 @@
           name="body"
         />
         <template v-else>
-          <tbody v-if="items.length && headerColumns.length">
+          <tbody
+            v-if="items.length && headerColumns.length"
+            :class="{'row-alternation': alternating}"
+          >
             <tr
               v-for="(item) in itemsForRender"
               :key="JSON.stringify(item)"
@@ -164,6 +167,10 @@ type ServerOptionsComputed = {
 }
 
 const props = defineProps({
+  alternating: {
+    type: Boolean,
+    default: false,
+  },
   buttonsPagination: {
     type: Boolean,
     default: false,
@@ -232,6 +239,10 @@ const props = defineProps({
     type: Array as PropType<number[]>,
     default: () => [25, 50, 100],
   },
+  rowHoverColor: {
+    type: String,
+    default: '#eee',
+  },
   loading: {
     type: Boolean,
     deault: false,
@@ -265,12 +276,17 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showIndex: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const {
   borderColor,
   headerFontColor,
   bodyFontColor,
+  rowHoverColor,
 } = toRefs(props);
 
 const fontSizePx = computed(() => `${props.bodyFontSize}px`);
@@ -339,8 +355,10 @@ const headersForRender = computed((): HeaderForRender[] => {
     }
     return headerSorting;
   });
-  return isMutipleSelectable.value
-    ? [{ text: 'checkbox', value: 'checkbox' }, ...headersSorting] : headersSorting;
+  const headersWithIndex = props.showIndex ? [{ text: '#', value: 'index' }, ...headersSorting] : headersSorting;
+  const headersWithCheckbox = isMutipleSelectable.value
+    ? [{ text: 'checkbox', value: 'checkbox' }, ...headersWithIndex] : headersWithIndex;
+  return headersWithCheckbox;
 });
 
 const headerColumns = computed((): string[] => headersForRender.value.map((header) => header.value));
@@ -507,16 +525,25 @@ const itemsInPage = computed((): Item[] => {
   return itemsSorting.value.slice(firstIndexOfItemsInCurrentPage.value - 1, lastIndexOfItemsInCurrentPage.value);
 });
 
+// items with index
+const itemsWithIndex = computed((): Item[] => {
+  if (props.showIndex) {
+    const currentPageStartIndex = rowsPerPageReactive.value * (currentPaginationNumber.value - 1);
+    return itemsInPage.value.map((item, index) => ({ index: currentPageStartIndex + index + 1, ...item }));
+  }
+  return itemsInPage.value;
+});
+
 // items for render (with checbox)
 const itemsForRender = computed((): Item[] => {
-  if (!isMutipleSelectable.value) return itemsInPage.value;
+  if (!isMutipleSelectable.value) return itemsWithIndex.value;
   // multi select
   if (multipleSelectStatus.value === 'allSelected') {
-    return itemsInPage.value.map((item) => ({ checkbox: true, ...item }));
+    return itemsWithIndex.value.map((item) => ({ checkbox: true, ...item }));
   } if (multipleSelectStatus.value === 'noneSelected') {
-    return itemsInPage.value.map((item) => ({ checkbox: false, ...item }));
+    return itemsWithIndex.value.map((item) => ({ checkbox: false, ...item }));
   }
-  return itemsInPage.value.map((item) => {
+  return itemsWithIndex.value.map((item) => {
     const isSelected = selectItemsComputed.value.findIndex((selectItem) => JSON.stringify(selectItem)
       === JSON.stringify(item)) !== -1;
     return { checkbox: isSelected, ...item };
@@ -659,7 +686,7 @@ const toggleSelectItem = (item: Item):void => {
         tr {
           height: v-bind(rowHeightPx);
           &:hover {
-            background-color: #eee;
+            background-color: v-bind(rowHoverColor);
           }
           &:last-child {
             border-bottom: none;
@@ -671,6 +698,11 @@ const toggleSelectItem = (item: Item):void => {
         td {
           color: v-bind(bodyFontColor);
           border-bottom: 1px solid v-bind(borderColor);;
+        }
+        &.row-alternation {
+          tr:nth-child(2n + 1) td {
+            background-color: #fafafa;
+          }
         }
       }
     }
