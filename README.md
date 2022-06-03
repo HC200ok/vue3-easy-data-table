@@ -218,5 +218,5 @@ common props can be used both in client mode and server-side mode.
   <img src="./images/show-index.png"  />
 
 ## Todo
-This component just satisfied my needs, if you find any bug or demand any other features, plese report an issue and making pull requests is very welcomed!
+If you find any bug or demand any other features, plese report an issue and making pull requests is very welcomed!
   
