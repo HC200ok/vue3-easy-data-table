@@ -1,7 +1,7 @@
 <template>
   <ServerSideMode />
   <br><br>
-  <!-- <ClientMode /> -->
+  <ClientMode />
 </template>
 
 <script setup lang="ts">

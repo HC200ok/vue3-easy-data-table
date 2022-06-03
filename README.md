@@ -170,6 +170,7 @@ common props can be used both in client mode and server-side mode.
 | Name | Required | Type | Default | Description |
 | -------- | ----------- | ---- | -------- | ------- |
 | v-model: itemsSelected | false | Item[]<br>(Item:  Record<string, any>) | undefined | Items selected|
+| alternating | false | boolean | false | Set `true` to color alternating (even and odd) rows.|
 | body-font-color | false | string | '#212121' | Font color of table body|
 | body-font-size | false | number | 12 | Font size of table body, including foot pagination |
 | border-color | false | string | '#e0e0e0' | Border color |
@@ -186,6 +187,7 @@ common props can be used both in client mode and server-side mode.
 | max-height | false | number | 400 | Max height of table (table header and table body, not including footer pagination) |
 | rows-items | false | number[] | [25, 50, 100] | A number array of rows-per-page, working as the options of `rows per page` selector |
 | rows-per-page | false | number | 25 | Rows of items to display in per page |
+| show-index | false | boolean | false | Set `true` to show index of item.|
 | theme-color | false | string | '#42b883' | Fill color of checkbox, background color of active option of rows selector, color of loading bar and  background color of active button of buttons pagination |
 
 
@@ -199,7 +201,6 @@ common props can be used both in client mode and server-side mode.
 | sort-type | false | 'asc' \| 'desc'| 'asc' | Order by 'asc' or 'desc' when sorting|
 
 
-
 ### Server side mode props 
 #### only available in server-side mode
 | Name | Required | Type | Default | Description |
@@ -209,3 +210,12 @@ common props can be used both in client mode and server-side mode.
 
 ## Todo
 This component just satisfied my needs, if you find any bug or demand any other features, plese report an issue and making pull requests is very welcomed!
+
+## Version update
+### v1.0.11
+1. Add  `alternating` prop to color alternating (even and odd) rows.
+  <img src="./images/alternating.png"  />
+
+2. Add `show-index` prop to show index of item.
+  <img src="./images/show-index.png"  />
+  
