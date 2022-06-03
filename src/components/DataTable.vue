@@ -213,7 +213,7 @@ const props = defineProps({
   },
   maxHeight: {
     type: Number,
-    default: () => 400,
+    default: () => null,
   },
   wrapLines: {
     type: Boolean,
@@ -292,7 +292,7 @@ const {
 const fontSizePx = computed(() => `${props.bodyFontSize}px`);
 const rowHeight = computed(() => props.bodyFontSize * (props.dense ? 2 : 3));
 const rowHeightPx = computed(() => `${rowHeight.value}px`);
-const maxHeightPx = computed(() => `${props.maxHeight}px`);
+const maxHeightPx = computed(() => (props.maxHeight ? `${props.maxHeight}px` : null));
 
 // global style variable
 provide('themeColor', props.themeColor);
