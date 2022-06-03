@@ -185,6 +185,7 @@ common props can be used both in client mode and server-side mode.
 | loading | false | boolean | false | If true and no items are provided, then a loading bar and loading message will be shown |
 | loading-message | false | string | 'Loading, please wait.' | Message shown when loading is true and no items are provided |
 | max-height | false | number | 400 | Max height of table (table header and table body, not including footer pagination) |
+| rows-hover-color | false | string | '#eee' | Background color of row when mouse hover |
 | rows-items | false | number[] | [25, 50, 100] | A number array of rows-per-page, working as the options of `rows per page` selector |
 | rows-per-page | false | number | 25 | Rows of items to display in per page |
 | show-index | false | boolean | false | Set `true` to show index of item.|
