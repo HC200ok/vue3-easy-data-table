@@ -209,9 +209,6 @@ common props can be used both in client mode and server-side mode.
 | v-model:server-options | true | ServerOptions: <br>{<br> page?: number,<br> rowsPerPage?: number,<br> sortBy?: string,<br> sortType?: 'asc' \| 'desc',<br>} | {} | An object which can be used as values of parameters in a pagination REST API such as:<br>`http://localhost:8080/api?page=${ServerOptions.page}&limit=${ServerOptions.rowsPerPage}&sortBy=${ServerOptions.sortBy}&sortType=${ServerOptions.sortType}`|
 | server-items-length | true | number | undefined | Total amount of items available on server |
 
-## Todo
-This component just satisfied my needs, if you find any bug or demand any other features, plese report an issue and making pull requests is very welcomed!
-
 ## Version update
 ### v1.0.11
 1. Add  `alternating` prop to color alternating (even and odd) rows.
@@ -219,4 +216,7 @@ This component just satisfied my needs, if you find any bug or demand any other 
 
 2. Add `show-index` prop to show index of item.
   <img src="./images/show-index.png"  />
+
+## Todo
+This component just satisfied my needs, if you find any bug or demand any other features, plese report an issue and making pull requests is very welcomed!
   
