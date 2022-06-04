@@ -65,14 +65,31 @@ export default defineComponent({
 vue3-easy-data-table has two modes: `client` mode and `server-side` mode. Client mode is for the case that all data has already been loaded, In other words, your initial call is asking for all the pages from a server. And In server-side mode, you need to request limited data from a server everytime you navigate to a new page. Client mode is the default mode, you have to pass `server-options` and `server-items-length` props to switch to the server-side mode.
 
 ## Features
-1. [Buttons pagination](#buttons-pagination)
-2. [Dense](#dense)
-3. [Item slot](#item-slot)
+1. [Item slot](#item-slot)
+2. [Buttons pagination](#buttons-pagination)
+3. [Dense](#dense)
 4. [Multiple selecting](#multiple-selecting)
 5. [Single field sorting](#single-field-sorting)
 6. [Searching](#searching)
 7. [Server side paginate and sort](#server-side-paginate-and-sort)
 8. [Theme color](#theme-color)
+
+## Item slot
+You can customize only certain columns like this:
+```js
+  <EasyDataTable :headers="headers" :items="items">
+    <template #email="{ email }">
+      <a :href="email">{{ email }}</a>
+    </template>
+  </EasyDataTable>
+```
+Notice that the `<name>` of `#<name>` should be a value of header item.
+
+<img src="./images/item-slot.png"  />
+
+[Online preview](https://65tc9v.csb.app/)
+
+[![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/item-slot-65tc9v?file=/src/App.vue)
 
 ## Buttons pagination
 Use `buttons-pagination` prop and seven visible page buttons will be generated automatically to help you navigate much easier.
@@ -92,23 +109,6 @@ Use `dense` prop to provide an alternate dense style.
 [Online preview](https://7sjib3.csb.app/)
 
 [![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/dense-7sjib3?file=/src/App.vue)
-
-## Item slot
-You can customize only certain columns like this:
-```js
-  <EasyDataTable :headers="headers" :items="items">
-    <template #address="{ address }">
-      <EasyButton :address="address" />
-    </template>
-  </EasyDataTable>
-```
-Notice that the `<name>` of `#<name>` should be a value of header item.
-
-<img src="./images/item-slot.png"  />
-
-[Online preview](https://65tc9v.csb.app/)
-
-[![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/item-slot-65tc9v?file=/src/App.vue)
 
 ## Multiple selecting
 Using the `v-model:items-selected` will enable you to get data of specific items by toggling checkbox.
