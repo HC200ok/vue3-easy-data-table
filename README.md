@@ -169,7 +169,7 @@ common props can be used both in client mode and server-side mode.
 
 | Name | Required | Type | Default | Description |
 | -------- | ----------- | ---- | -------- | ------- |
-| v-model: itemsSelected | false | Item[]<br>(Item:  Record<string, any>) | undefined | Items selected|
+| v-model: itemsSelected | false | Item[]<br>(Record<string, any>[]) | null | Items selected|
 | alternating | false | boolean | false | Set `true` to color alternating (even and odd) rows.|
 | body-font-color | false | string | '#212121' | Font color of table body|
 | body-font-size | false | number | 12 | Font size of table body, including foot pagination |

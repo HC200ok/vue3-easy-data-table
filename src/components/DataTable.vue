@@ -141,7 +141,6 @@ import LoadingLine from './LoadingLine.vue';
 import ButtonsPagination from './ButtonsPagination.vue';
 import PaginationArrows from './PaginationArrows.vue';
 
-// @ts-ignore
 import type {
   SortType, Header, Item, ServerOptions,
 } from '../types/main';
