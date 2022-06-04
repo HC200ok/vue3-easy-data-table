@@ -1,4 +1,17 @@
-import { Item, ServerOptions } from './types/main';
+import { Item, ServerOptions, Header } from './types/main';
+
+export const headersMocked: Header[] = [
+  { text: 'Name', value: 'name' },
+  { text: 'Address', value: 'address' },
+  { text: 'Height', value: 'height', sortable: true },
+  { text: 'Weight', value: 'weight', sortable: true },
+  { text: 'Age', value: 'calories', sortable: true },
+  { text: 'Calories', value: 'calories' },
+  { text: 'Fat (g)', value: 'fat' },
+  { text: 'Carbs (g)', value: 'carbs' },
+  { text: 'Protein (g)', value: 'protein' },
+  { text: 'Iron (%)', value: 'iron' },
+];
 
 export const mockClientItems = (itemsNumber = 100): Item[] => {
   const mockItems: Item[] = [];

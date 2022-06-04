@@ -7,6 +7,8 @@
     :rows-per-page="25"
     :rows-items="[25, 50]"
     :body-font-size="15"
+    sort-by="height"
+    sort-type="desc"
     :buttons-pagination="true"
     show-index
   >
