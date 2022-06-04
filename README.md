@@ -85,7 +85,7 @@ You can customize only certain columns like this:
 ```
 Notice that the `<name>` of `#<name>` should be a value of header item.
 
-<img src="./images/item-slot.png"  />
+<img src="./images/item-slot.png" width="90%"/>
 
 [Online preview](https://65tc9v.csb.app/)
 
@@ -94,7 +94,7 @@ Notice that the `<name>` of `#<name>` should be a value of header item.
 ## Buttons pagination
 Use `buttons-pagination` prop and seven visible page buttons will be generated automatically to help you navigate much easier.
 
-<img src="./images/buttons-pagination.gif"  />
+<img src="./images/buttons-pagination.gif" width="90%"/>
 
 [Online preview](https://rfc8kw.csb.app/)
 
@@ -104,7 +104,7 @@ Use `buttons-pagination` prop and seven visible page buttons will be generated a
 ## Dense
 Use `dense` prop to provide an alternate dense style.
 
-<img src="./images/dense.png"  />
+<img src="./images/dense.png" width="90%"/>
 
 [Online preview](https://7sjib3.csb.app/)
 
@@ -113,7 +113,7 @@ Use `dense` prop to provide an alternate dense style.
 ## Multiple selecting
 Using the `v-model:items-selected` will enable you to get data of specific items by toggling checkbox.
 
-<img src="./images/multiple-selecting.png"  />
+<img src="./images/multiple-selecting.png" width="90%"/>
 
 [Online preview](https://bhe0r9.csb.app/)
 
@@ -129,7 +129,7 @@ Add `sortable` property into the header items to make the corresponding columns 
 ```
 Use `sort-by` and `sort-type` to define the initial sorting field and sorting type ('asc' or 'desc').
 
-<img src="./images/single-sorting.gif"  />
+<img src="./images/single-sorting.gif" width="90%"/>
 
 [Online preview](https://rjniui.csb.app/)
 
@@ -140,7 +140,7 @@ Use `search-field` and `search-value` props to search for information in a speci
 
 notice: Searching feature is only available in client mode.
 
-<img src="./images/searching.png"  />
+<img src="./images/searching.png" width="90%"/>
 
 [![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/searching-8egujm?file=/src/App.vue)
 
@@ -149,7 +149,7 @@ Also called server-side mode, In this mode, you’re loading data already pagina
 
 `server-items-length` and `v-model:server-options` are required in this mode.
 
-<img src="./images/server-side-paginate-and-sort.png"  />
+<img src="./images/server-side-paginate-and-sort.png" width="90%"/>
 
 [Online preview](https://mif1nr.csb.app/)
 
@@ -158,7 +158,7 @@ Also called server-side mode, In this mode, you’re loading data already pagina
 ## Theme color
 Use `theme-color` prop to customize color of checkbox, active option of rows selector, loading bar and  active button of buttons pagination.
 
-<img src="./images/theme-color.png"  />
+<img src="./images/theme-color.png" width="90%"/>
 
 [![Edit on CodeSandbox](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/theme-color-89ps64?file=/src/App.vue)
 
@@ -212,10 +212,10 @@ common props can be used both in client mode and server-side mode.
 ## Version update
 ### v1.0.11
 1. Add  `alternating` prop to color alternating (even and odd) rows.
-  <img src="./images/alternating.png"  />
+  <img src="./images/alternating.png" width="90%"/>
 
 2. Add `show-index` prop to show index of item.
-  <img src="./images/show-index.png"  />
+  <img src="./images/show-index.png" width="90%"/>
 
 ## Todo
 If you find any bug or demand any other features, plese report an issue and making pull requests is very welcomed!
