@@ -311,14 +311,22 @@ const emits = defineEmits([
 
 const serverOptionsComputed = computed({
   get: (): ServerOptionsComputed => {
-    const {
-      page, rowsPerPage, sortBy, sortType,
-    } = props.serverOptions;
+    if (props.serverOptions) {
+      const {
+        page, rowsPerPage, sortBy, sortType,
+      } = props.serverOptions;
+      return {
+        page,
+        rowsPerPage,
+        sortBy: sortBy ?? null,
+        sortType: sortType ?? null,
+      };
+    }
     return {
-      page,
-      rowsPerPage,
-      sortBy: sortBy ?? null,
-      sortType: sortType ?? null,
+      page: 1,
+      rowsPerPage: 25,
+      sortBy: null,
+      sortType: null,
     };
   },
   set: (value) => {
@@ -365,7 +373,7 @@ const headerColumns = computed((): string[] => headersForRender.value.map((heade
 
 // multiple select
 const selectItemsComputed = computed({
-  get: () => props.itemsSelected,
+  get: () => props.itemsSelected ?? [],
   set: (value) => {
     emits('update:itemsSelected', value);
   },
@@ -438,7 +446,7 @@ const itemsSorting = computed((): Item[] => {
   if (isServerSideMode.value) return props.items;
   if (clientSortOptions.value === null) return itemsSearching.value;
   const { sortBy, sortDesc } = clientSortOptions.value;
-  const itemsSearchingSorted = structuredClone(itemsSearching.value);
+  const itemsSearchingSorted = [...itemsSearching.value];
   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
   return itemsSearchingSorted.sort((a, b) => {
     if (a[sortBy] < b[sortBy]) return sortDesc ? 1 : -1;
