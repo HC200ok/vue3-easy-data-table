@@ -62,7 +62,7 @@ export default defineComponent({
 ```
 
 ## Modes
-vue3-easy-data-table has two modes: `client` mode and `server-side` mode. Client mode is for the case that all data has already been loaded, In other words, your initial call is asking for all the pages from a server. And In server-side mode, you need to request limited data from a server everytime you navigate to a new page. Client mode is the default mode, you have to pass `server-options` and `server-items-length` props to switch to the server-side mode.
+vue3-easy-data-table has two modes: `client-side` mode and `server-side` mode. Client-side mode is for the case that all data has already been loaded, In other words, your initial call is asking for all the pages from a server. And In server-side mode, you need to request limited data from a server everytime you navigate to a new page. Client-side mode is the default mode, you have to pass `server-options` and `server-items-length` props to switch to the server-side mode.
 
 ## Features
 1. [Item slot](#item-slot)
@@ -138,7 +138,7 @@ Use `sort-by` and `sort-type` to define the initial sorting field and sorting ty
 ## Searching
 Use `search-field` and `search-value` props to search for information in a specific field. If you don't pass the `search-field` prop, the component will search in all fields.
 
-notice: Searching feature is only available in client mode.
+notice: Searching feature is only available in client-side mode.
 
 <img src="./images/searching.png" width="100%"/>
 
@@ -165,7 +165,7 @@ Use `theme-color` prop to customize color of checkbox, active option of rows sel
 
 # Props
 ## Common props
-common props can be used both in client mode and server-side mode.
+common props can be used both in client-side mode and server-side mode.
 
 | Name | Required | Type | Default | Description |
 | -------- | ----------- | ---- | -------- | ------- |
@@ -193,7 +193,7 @@ common props can be used both in client mode and server-side mode.
 
 
 ### Client mode Props 
-#### only available in client mode
+#### only available in client-side mode
 | Name | Required | Type | Default | Description |
 | -------- | ----------- | ---- | -------- | ------- |
 | search-field | false | string | '' | A specific field in which you search for information. (**the value of search field should be a value of header item, not text of header item**). If you don't pass a specific field, the component will search in all fields.|
