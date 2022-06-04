@@ -178,7 +178,7 @@ common props can be used both in client mode and server-side mode.
 | dense | false | boolean | false | Set true to decrease the height of rows|
 | empty-message | false | string | 'No Available Data' | Message to display when there is no data in table|
 | fixed-header | false | boolean | true | Fixed header to top of table. NOTE: Does not work in IE11 |
-| headers | true | Header[]<br>Header: <br>{<br>  text: string,<br>  value: string,<br>  sortable?: boolean,<br>}<br>  | [] | Table header items |
+| headers | true | Header[]<br>Header: <br>{<br>  &nbsp;&nbsp;text: string,<br>  &nbsp;&nbsp;value: string,<br>  &nbsp;&nbsp;sortable?: boolean,<br>}<br>  | [] | Table header items |
 | header-background-color | false | string | '#fff' | Background color of table head |
 | header-font-color | false | string | '#373737' | Font color of table head |
 | items | true | Item[] <br>(Item:  Record<string, any>) | [] | Table body items |
