@@ -30,9 +30,12 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "lint": "eslint --fix 'src/**/*.{vue,html,css,js,ts}'"
+    "lint": "eslint --fix 'src/**/*.{vue,html,css,js,ts}'",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "happy-dom": "^5.0.0",
     "vue": "^3.2.25",
     "vue-manual-data-masking": "^0.1.8",
     "vue3-easy-data-table": "^1.0.9"
@@ -42,6 +45,7 @@
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
     "@vitejs/plugin-vue": "^2.3.3",
+    "@vue/test-utils": "^2.0.0-rc.18",
     "eslint": "^8.15.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
@@ -50,6 +54,7 @@
     "typescript": "^4.5.4",
     "vite": "^2.9.9",
     "vite-svg-loader": "^3.3.0",
+    "vitest": "^0.13.1",
     "vue-eslint-parser": "^9.0.1",
     "vue-tsc": "^0.34.7"
   }
