@@ -218,5 +218,9 @@ common props can be used both in client-side mode and server-side mode.
   <img src="./images/show-index.png" width="100%"/>
 
 ## Todo
-If you find any bug or demand any other features, plese report an issue and making pull requests is very welcomed!
+Building document (vuepress)
+
+Unit testing (vitest)
+
+If you find any bug or demand any other features, plese let me know by reporting issues and making pull requests is also very welcomed!
   

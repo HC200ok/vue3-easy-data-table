@@ -84,7 +84,7 @@
         </template>
       </table>
       <div
-        v-if="!items.length && !loading"
+        v-if="!itemsForRender.length && !loading"
         class="data-table__message"
       >
         {{ emptyMessage }}
@@ -619,6 +619,7 @@ const toggleSelectItem = (item: Item):void => {
       background-color: #fff;
       border-spacing: 0;
       tr {
+        border: none;
         &.empty-wrapper {
           color: rgba(0,0,0,.38);
           width: 100%;
@@ -637,9 +638,11 @@ const toggleSelectItem = (item: Item):void => {
       thead {
         font-size: v-bind(fontSizePx);
         tr {
+          border: none;
           height: v-bind(rowHeightPx);
         }
         th {
+          border: none;
           border-bottom: 1px solid v-bind(borderColor);;
           color: v-bind(headerFontColor);
           position: relative;
@@ -707,6 +710,7 @@ const toggleSelectItem = (item: Item):void => {
         }
         td {
           color: v-bind(bodyFontColor);
+          border: none;
           border-bottom: 1px solid v-bind(borderColor);;
         }
         &.row-alternation {
