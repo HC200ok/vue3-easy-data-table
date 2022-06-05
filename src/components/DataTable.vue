@@ -579,6 +579,7 @@ const toggleSelectItem = (item: Item):void => {
 
 <style lang="scss" scoped>
   .data-table {
+    border: 1px solid v-bind(borderColor);
     box-sizing: border-box;
     tr, td, th, tbody, thead, table, div {
       box-sizing: border-box;
@@ -605,13 +606,15 @@ const toggleSelectItem = (item: Item):void => {
   }
 
   .data-table__body {
+    border: none;
     box-sizing: border-box;
     width: 100%;
-    border: 1px solid v-bind(borderColor);
     position: relative;
     max-height: v-bind(maxHeightPx);
     overflow: auto;
     table {
+      display: table;
+      margin: 0px;
       width: 100%;
       background-color: #fff;
       border-spacing: 0;
@@ -729,8 +732,7 @@ const toggleSelectItem = (item: Item):void => {
   .data-table__footer {
     width: 100%;
     display: flex;
-    border: 1px solid v-bind(borderColor);
-    border-top: none;
+    border-top: 1px solid v-bind(borderColor);
     font-size: v-bind(fontSizePx);
     align-items: center;
     justify-content: right;
