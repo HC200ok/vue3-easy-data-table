@@ -132,7 +132,7 @@
 
 <script setup lang="ts">
 import {
-  useSlots, computed, toRefs, PropType, ref, watch, provide,
+  useSlots, computed, toRefs, PropType, ref, watch, provide, defineExpose,
 } from 'vue';
 import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
@@ -504,6 +504,11 @@ const prevPage = () => {
     currentPaginationNumber.value -= 1;
   }
 };
+
+defineExpose({
+  prevPage,
+  nextPage,
+});
 
 const updatePage = (value: number) => {
   if (loading.value) return;
