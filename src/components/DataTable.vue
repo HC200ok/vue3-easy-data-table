@@ -758,6 +758,8 @@ const toggleSelectItem = (item: Item):void => {
   }
 
   .data-table__footer {
+    background-color: #fff;
+    color: v-bind(bodyFontColor);
     width: 100%;
     display: flex;
     border-top: 1px solid v-bind(borderColor);
