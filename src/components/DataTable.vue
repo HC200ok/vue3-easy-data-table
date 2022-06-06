@@ -26,7 +26,8 @@
               />
               <span
                 v-else
-                class="header-text__wrapper">
+                class="header-text__wrapper"
+              >
                 <span class="header-text">
                   {{ header.text }}
                 </span>

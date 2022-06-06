@@ -3,7 +3,7 @@
   "author": "HC200ok",
   "description": "A data table component made with vue.js 3.x",
   "private": false,
-  "version": "1.0.21",
+  "version": "1.0.22",
   "types": "./types/main.d.ts",
   "files": [
     "dist",
