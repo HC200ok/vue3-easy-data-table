@@ -519,6 +519,15 @@ const prevPage = () => {
   }
 };
 
+defineExpose({
+  maxPaginationNumber,
+  currentPaginationNumber,
+  isLastPage,
+  isFirstPage,
+  nextPage,
+  prevPage,
+});
+
 const updatePage = (value: number) => {
   if (loading.value) return;
   if (isServerSideMode.value) {
