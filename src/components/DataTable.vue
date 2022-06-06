@@ -644,13 +644,6 @@ const toggleSelectItem = (item: Item):void => {
       border-spacing: 0;
       tr {
         border: none;
-        &.empty-wrapper {
-          color: rgba(0,0,0,.38);
-          width: 100%;
-          td {
-            text-align: center;
-          }
-        }
       }
       th, td {
         text-align: left;
@@ -745,6 +738,7 @@ const toggleSelectItem = (item: Item):void => {
       }
     }
     .data-table__message {
+      background-color: #fff;
       text-align: center;
       color: v-bind(bodyFontColor);
       font-size: v-bind(fontSizePx);
