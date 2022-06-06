@@ -759,7 +759,7 @@ const toggleSelectItem = (item: Item):void => {
     border-top: 1px solid v-bind(borderColor);
     font-size: v-bind(fontSizePx);
     align-items: center;
-    justify-content: right;
+    justify-content: flex-end;
     padding: 0px 5px;
     box-sizing: border-box;
     height: v-bind(rowHeightPx);
