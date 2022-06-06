@@ -114,7 +114,7 @@
         name="pagination"
         v-bind="{
           isFirstPage,
-          nextPage,
+          isLastPage,
           currentPaginationNumber,
           maxPaginationNumber,
           nextPage,
