@@ -80,6 +80,8 @@ onBeforeUnmount(() => {
 });
 
 const themeColor = inject('themeColor');
+const footerBackgroundColor = inject('footerBackgroundColor');
+
 </script>
 
 <style scoped lang="scss">
@@ -123,7 +125,7 @@ const themeColor = inject('themeColor');
     li {
       cursor: pointer;
       padding: 5px;
-      background-color: #fff;
+      background-color: v-bind(footerBackgroundColor);
 
       &.selected {
         color: #fff;

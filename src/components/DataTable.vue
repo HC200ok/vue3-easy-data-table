@@ -55,7 +55,7 @@
         <template v-else>
           <tbody
             v-if="items.length && headerColumns.length"
-            :class="{'row-alternation': alternating}"
+            :class="{'row-alternation': alternating, 'hover-to-change-color': hoverToChangeColor}"
           >
             <tr
               v-for="(item) in itemsForRender"
@@ -192,7 +192,19 @@ const props = defineProps({
     type: String,
     default: '#e0e0e0',
   },
-  bodyFontColor: {
+  rowBackgroundColor: {
+    type: String,
+    default: '#fff',
+  },
+  footerBackgroundColor: {
+    type: String,
+    default: '#fff',
+  },
+  rowFontColor: {
+    type: String,
+    default: '#212121',
+  },
+  footerFontColor: {
     type: String,
     default: '#212121',
   },
@@ -216,9 +228,21 @@ const props = defineProps({
     type: Number,
     default: 12,
   },
+  evenRowBackgroundColor: {
+    type: String,
+    default: '#fafafa',
+  },
+  evenRowFontColor: {
+    type: String,
+    default: '#212121',
+  },
   headers: {
     type: Array as PropType<Header[]>,
     required: true,
+  },
+  hoverToChangeColor: {
+    type: Boolean,
+    default: true,
   },
   items: {
     type: Array as PropType<Item[]>,
@@ -252,9 +276,13 @@ const props = defineProps({
     type: Array as PropType<number[]>,
     default: () => [25, 50, 100],
   },
-  rowHoverColor: {
+  rowHoverBackgroundColor: {
     type: String,
     default: '#eee',
+  },
+  rowHoverFontColor: {
+    type: String,
+    default: '#212121',
   },
   loading: {
     type: Boolean,
@@ -298,8 +326,14 @@ const props = defineProps({
 const {
   borderColor,
   headerFontColor,
-  bodyFontColor,
-  rowHoverColor,
+  rowFontColor,
+  rowHoverBackgroundColor,
+  rowHoverFontColor,
+  footerBackgroundColor,
+  rowBackgroundColor,
+  evenRowBackgroundColor,
+  evenRowFontColor,
+  footerFontColor
 } = toRefs(props);
 
 const fontSizePx = computed(() => `${props.bodyFontSize}px`);
@@ -311,6 +345,7 @@ const maxHeightPx = computed(() => (props.maxHeight ? `${props.maxHeight}px` : n
 provide('themeColor', props.themeColor);
 provide('rowHeight', rowHeight.value);
 provide('borderColor', borderColor.value);
+provide('footerBackgroundColor', footerBackgroundColor.value);
 
 // table body slot
 const slots = useSlots();
@@ -640,7 +675,7 @@ const toggleSelectItem = (item: Item):void => {
       display: table;
       margin: 0px;
       width: 100%;
-      background-color: #fff;
+      background-color: v-bind(rowBackgroundColor);
       border-spacing: 0;
       tr {
         border: none;
@@ -713,11 +748,15 @@ const toggleSelectItem = (item: Item):void => {
       }
       tbody {
         font-size: v-bind(fontSizePx);
+        &.hover-to-change-color {
+          tr:hover {
+            background-color: v-bind(rowHoverBackgroundColor);
+            color: v-bind(rowHoverFontColor);
+          }
+        }
         tr {
           height: v-bind(rowHeightPx);
-          &:hover {
-            background-color: v-bind(rowHoverColor);
-          }
+          color: v-bind(rowFontColor);
           &:last-child {
             border-bottom: none;
             td {
@@ -726,21 +765,27 @@ const toggleSelectItem = (item: Item):void => {
           }
         }
         td {
-          color: v-bind(bodyFontColor);
           border: none;
-          border-bottom: 1px solid v-bind(borderColor);;
+          border-bottom: 1px solid v-bind(borderColor);
         }
         &.row-alternation {
-          tr:nth-child(2n + 1) td {
-            background-color: #fafafa;
+          &.hover-to-change-color {
+            tr:hover {
+              background-color: v-bind(rowHoverBackgroundColor);
+              color: v-bind(rowHoverFontColor);
+            }
+          }
+          tr:nth-child(2n) {
+            color: v-bind(evenRowFontColor);
+            background-color: v-bind(evenRowBackgroundColor);
           }
         }
       }
     }
     .data-table__message {
-      background-color: #fff;
+      background-color: v-bind(rowBackgroundColor);
       text-align: center;
-      color: v-bind(bodyFontColor);
+      color: v-bind(rowFontColor);
       font-size: v-bind(fontSizePx);
       padding: 20px;
     }
@@ -752,8 +797,8 @@ const toggleSelectItem = (item: Item):void => {
   }
 
   .data-table__footer {
-    background-color: #fff;
-    color: v-bind(bodyFontColor);
+    background-color: v-bind(footerBackgroundColor);;
+    color: v-bind(footerFontColor);
     width: 100%;
     display: flex;
     border-top: 1px solid v-bind(borderColor);
