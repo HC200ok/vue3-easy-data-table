@@ -158,9 +158,7 @@ const themeColor = inject('themeColor');
 .buttons-pagination {
   box-sizing: border-box;
   display: flex;
-  // border: 1px solid v-bind(borderColor);
   padding: 0px;
-  background-color: #fff;
   border-radius: 4px;
   .item {
     cursor: pointer;
