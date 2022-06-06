@@ -112,6 +112,14 @@
       <slot
         v-if="ifHasPaginationSlot"
         name="pagination"
+        v-bind="{
+          isFirstPage,
+          nextPage,
+          currentPaginationNumber,
+          maxPaginationNumber,
+          nextPage,
+          prevPage,
+        }"
       />
       <PaginationArrows
         v-else
@@ -510,15 +518,6 @@ const prevPage = () => {
     currentPaginationNumber.value -= 1;
   }
 };
-
-defineExpose({
-  maxPaginationNumber,
-  currentPaginationNumber,
-  isFirstPage,
-  isLastPage,
-  prevPage,
-  nextPage,
-});
 
 const updatePage = (value: number) => {
   if (loading.value) return;
