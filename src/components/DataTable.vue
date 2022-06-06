@@ -109,7 +109,12 @@
         of {{ totalItemsLength }}
       </div>
 
+      <slot
+        v-if="ifHasPaginationSlot"
+        name="pagination"
+      />
       <PaginationArrows
+        v-else
         :is-first-page="isFirstPage"
         :is-last-page="isLastPage"
         @click-next-page="nextPage"
@@ -301,6 +306,7 @@ provide('borderColor', borderColor.value);
 // table body slot
 const slots = useSlots();
 const ifHasBodySlot = computed(() => slots.body);
+const ifHasPaginationSlot = computed(() => slots.pagination);
 
 // define emits
 const emits = defineEmits([
@@ -506,6 +512,10 @@ const prevPage = () => {
 };
 
 defineExpose({
+  maxPaginationNumber,
+  currentPaginationNumber,
+  isFirstPage,
+  isLastPage,
   prevPage,
   nextPage,
 });
