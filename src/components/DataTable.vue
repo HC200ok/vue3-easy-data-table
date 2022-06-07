@@ -1,5 +1,8 @@
 <template>
-  <div class="vue3-easy-data-table">
+  <div
+    ref="dataTable"
+    class="vue3-easy-data-table"
+  >
     <div
       class="data-table__body"
       :class="{'fixed-header': fixedHeader, 'wrap-lines': wrapLines }"
@@ -356,6 +359,10 @@ provide('footerFontColor', footerFontColor.value);
 const slots = useSlots();
 const ifHasBodySlot = computed(() => slots.body);
 const ifHasPaginationSlot = computed(() => slots.pagination);
+
+// global dataTable $ref
+const dataTable = ref();
+provide('dataTable', dataTable);
 
 // define emits
 const emits = defineEmits([
