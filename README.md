@@ -3,7 +3,7 @@
 </p>
 
 ## Introduction
-vue3-easy-data-table is a simple and easy-to-use data table component made with Vue.js 3.x.
+vue3-easy-data-table is a customizable and easy-to-use data table component made with Vue.js 3.x.
 
 ## Website
 https://hc200ok.github.io/vue3-easy-data-table-doc/
