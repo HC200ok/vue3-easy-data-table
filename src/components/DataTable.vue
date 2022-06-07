@@ -1,5 +1,5 @@
 <template>
-  <div class="data-table">
+  <div class="vue3-easy-data-table">
     <div
       class="data-table__body"
       :class="{'fixed-header': fixedHeader, 'wrap-lines': wrapLines }"
@@ -585,6 +585,8 @@ watch(loading, (newVal, oldVal) => {
   }
 });
 
+// items searching => sorting => current page => with index => with checkbox => render
+
 // items in current page
 const itemsInPage = computed((): Item[] => {
   if (isServerSideMode.value) return props.items;
@@ -610,20 +612,25 @@ const itemsForRender = computed((): Item[] => {
     return itemsWithIndex.value.map((item) => ({ checkbox: false, ...item }));
   }
   return itemsWithIndex.value.map((item) => {
-    const isSelected = selectItemsComputed.value.findIndex((selectItem) => JSON.stringify(selectItem)
-      === JSON.stringify(item)) !== -1;
+    const isSelected = selectItemsComputed.value.findIndex((selectItem) => {
+      const itemDeepCloned = { ...item };
+      delete itemDeepCloned.index;
+      return JSON.stringify(selectItem) === JSON.stringify(itemDeepCloned);
+    }) !== -1;
     return { checkbox: isSelected, ...item };
   });
 });
 
 const toggleSelectAll = (isChecked: boolean): void => {
-  selectItemsComputed.value = isChecked ? itemsSearching.value : [];
+  selectItemsComputed.value = isChecked ? itemsSorting.value : [];
 };
 
 const toggleSelectItem = (item: Item):void => {
   const isAlreadyChecked = item.checkbox;
   // eslint-disable-next-line no-param-reassign
   delete item.checkbox;
+  // eslint-disable-next-line no-param-reassign
+  delete item.index;
   if (!isAlreadyChecked) {
     const selectItemsArr: Item[] = selectItemsComputed.value;
     selectItemsArr.unshift(item);
@@ -637,7 +644,7 @@ const toggleSelectItem = (item: Item):void => {
 </script>
 
 <style lang="scss" scoped>
-  .data-table {
+  .vue3-easy-data-table {
     border: 1px solid v-bind(borderColor);
     box-sizing: border-box;
     tr, td, th, tbody, thead, table, div {
