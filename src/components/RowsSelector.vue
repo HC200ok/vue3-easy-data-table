@@ -13,7 +13,7 @@
     </div>
     <ul
       class="select-items"
-      :class="{show: showList}"
+      :class="{show: showList, inside: showInsideOfTable}"
     >
       <li
         v-for="item in rowsItems"
@@ -29,7 +29,7 @@
 
 <script lang="ts" setup>
 import {
-  ref, computed, PropType, onMounted, onBeforeUnmount, inject,
+  ref, computed, PropType, onMounted, onBeforeUnmount, inject, watch, Ref,
 } from 'vue';
 
 const props = defineProps({
@@ -40,6 +40,21 @@ const props = defineProps({
 const emits = defineEmits(['update:modelValue']);
 
 const showList = ref(false);
+
+const showInsideOfTable = ref(false);
+const dataTable = inject('dataTable') as Ref<HTMLDivElement>;
+watch(showList, (val) => {
+  if (val && dataTable) {
+    const windowHeight = window.innerHeight;
+    const dataTableHeight = dataTable.value.getBoundingClientRect().height;
+    const dataTableTop = dataTable.value.getBoundingClientRect().top;
+    if ((windowHeight - (dataTableHeight + dataTableTop)) <= 100) {
+      showInsideOfTable.value = true;
+    } else {
+      showInsideOfTable.value = false;
+    }
+  }
+});
 
 const rowsComputed = computed({
   get: (): number => props.modelValue,
@@ -112,6 +127,10 @@ const footerFontColor = inject('footerFontColor');
   ul.select-items {
     &.show {
       display: block;
+    }
+    &.inside {
+      bottom: 0px;
+      top: auto;
     }
     position: absolute;
     top: 20px;
