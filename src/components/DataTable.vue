@@ -31,12 +31,13 @@
                 <span class="header-text">
                   {{ header.text }}
                 </span>
-                <ArrowIcon
+                <i
                   v-if="header.sortable"
                   :key="header.sortType ? header.sortType : 'none'"
                   class="sortType-icon"
                   :class="{'desc': header.sortType === 'desc'}"
-                />
+                ></i>
+
               </span>
             </th>
           </tr>
@@ -158,7 +159,6 @@ import PaginationArrows from './PaginationArrows.vue';
 import type {
   SortType, Header, Item, ServerOptions,
 } from '../types/main';
-import ArrowIcon from '../assets/long-arrow-up.svg';
 
 type ClientSortOptions = {
   sortBy: string,
@@ -224,7 +224,7 @@ const props = defineProps({
     type: String,
     default: '#fff',
   },
-  bodyFontSize: {
+  tableFontSize: {
     type: Number,
     default: 12,
   },
@@ -333,19 +333,24 @@ const {
   rowBackgroundColor,
   evenRowBackgroundColor,
   evenRowFontColor,
-  footerFontColor
+  footerFontColor,
 } = toRefs(props);
 
-const fontSizePx = computed(() => `${props.bodyFontSize}px`);
-const rowHeight = computed(() => props.bodyFontSize * (props.dense ? 2 : 3));
+const fontSizePx = computed(() => `${props.tableFontSize}px`);
+const rowHeight = computed(() => props.tableFontSize * (props.dense ? 2 : 3));
 const rowHeightPx = computed(() => `${rowHeight.value}px`);
 const maxHeightPx = computed(() => (props.maxHeight ? `${props.maxHeight}px` : null));
-
+const sortTypeIconSize = computed(() => Math.round(props.tableFontSize / 2.5));
+const sortTypeIconSizePx = computed(() => `${sortTypeIconSize.value}px`);
+const sortTypeIconMargin = computed(() => Math.round(sortTypeIconSize.value));
+const sortTypeAscIconMarginTopPx = computed(() => `-${sortTypeIconMargin.value}px`);
+const sortTypeDescIconMarginTopPx = computed(() => `${sortTypeIconMargin.value}px`);
 // global style variable
 provide('themeColor', props.themeColor);
 provide('rowHeight', rowHeight.value);
 provide('borderColor', borderColor.value);
 provide('footerBackgroundColor', footerBackgroundColor.value);
+provide('footerFontColor', footerFontColor.value);
 
 // table body slot
 const slots = useSlots();
@@ -714,6 +719,17 @@ const toggleSelectItem = (item: Item):void => {
 
           &.sortable {
             cursor: pointer;
+
+            .sortType-icon {
+              border: v-bind(sortTypeIconSizePx) solid transparent;
+              margin-top: v-bind(sortTypeAscIconMarginTopPx);
+              margin-left: 4px;
+              display: inline-block;
+              height: 0;
+              width: 0;
+              border-bottom-color: v-bind(headerFontColor);
+            }
+
             &.none {
                &:hover {
                 .sortType-icon {
@@ -722,19 +738,13 @@ const toggleSelectItem = (item: Item):void => {
               }
               .sortType-icon {
                 opacity: 0;
-                transition: opacity 0.5s ease;
-
-                &__svg {
-                  path {
-                    fill: rgb(158 158 158);
-                  }
-                }
+                transition: 0.5s ease;
               }
             }
-
             &.desc {
-              path {
-                fill: v-bind(headerFontColor);
+              .sortType-icon {
+                margin-top: v-bind(sortTypeDescIconMarginTopPx);
+                transform: rotate(180deg);
               }
             }
           }
@@ -743,10 +753,6 @@ const toggleSelectItem = (item: Item):void => {
             display: inline-block;
             width: v-bind(fontSizePx);
             height: v-bind(fontSizePx);
-            &__svg {
-              width: v-bind(fontSizePx);
-              height: v-bind(fontSizePx);
-            }
             &.desc {
               transform: rotate(180deg);
             }

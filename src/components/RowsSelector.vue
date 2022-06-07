@@ -81,6 +81,7 @@ onBeforeUnmount(() => {
 
 const themeColor = inject('themeColor');
 const footerBackgroundColor = inject('footerBackgroundColor');
+const footerFontColor = inject('footerFontColor');
 
 </script>
 
@@ -92,7 +93,7 @@ const footerBackgroundColor = inject('footerBackgroundColor');
   margin: 0px 10px;
   .rows-input__wrapper {
     height: 20px;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid v-bind(footerFontColor);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -103,7 +104,7 @@ const footerBackgroundColor = inject('footerBackgroundColor');
       vertical-align: middle;
       width: 0px;
       height: 0px;
-      border-top: solid 6px black;
+      border-top: solid 6px v-bind(footerFontColor);
       border-left: solid 6px transparent;
       border-right: solid 6px transparent;
     }
