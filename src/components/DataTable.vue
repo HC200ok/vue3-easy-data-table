@@ -44,13 +44,6 @@
               </span>
             </th>
           </tr>
-          <th
-            v-if="loading"
-            class="loading-th"
-            :colspan="headerColumns.length"
-          >
-            <LoadingLine></LoadingLine>
-          </th>
         </thead>
         <slot
           v-if="ifHasBodySlot"
@@ -89,16 +82,25 @@
         </template>
       </table>
       <div
+        v-if="loading"
+        class="loading-wrapper"
+        :class="{'initial-loading': (!items.length && loading) }"
+      >
+        <div class="loading-entity">
+          <slot
+            v-if="ifHasLoadingSlot"
+            name="loading"
+          />
+          <Loading v-else></Loading>
+        </div>
+        <div class="loading-wrapper__mask"></div>
+      </div>
+
+      <div
         v-if="!itemsForRender.length && !loading"
         class="data-table__message"
       >
         {{ emptyMessage }}
-      </div>
-      <div
-        v-if="!items.length && loading"
-        class="data-table__message"
-      >
-        {{ loadingMessage }}
       </div>
     </div>
     <div class="data-table__footer">
@@ -155,7 +157,8 @@ import {
 import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
 import RowsSelector from './RowsSelector.vue';
-import LoadingLine from './LoadingLine.vue';
+// import LoadingLine from './LoadingLine.vue';
+import Loading from './Loading.vue';
 import ButtonsPagination from './ButtonsPagination.vue';
 import PaginationArrows from './PaginationArrows.vue';
 
@@ -291,11 +294,6 @@ const props = defineProps({
     type: Boolean,
     deault: false,
   },
-  loadingMessage:
-  {
-    type: String,
-    default: 'Loading, please wait.',
-  },
   serverOptions: {
     type: Object as PropType<ServerOptions>,
     default: () => null,
@@ -348,8 +346,11 @@ const sortTypeIconSizePx = computed(() => `${sortTypeIconSize.value}px`);
 const sortTypeIconMargin = computed(() => Math.round(sortTypeIconSize.value));
 const sortTypeAscIconMarginTopPx = computed(() => `-${sortTypeIconMargin.value}px`);
 const sortTypeDescIconMarginTopPx = computed(() => `${sortTypeIconMargin.value}px`);
+const loadingEntitySizePx = computed(() => `${props.tableFontSize * 5}px`);
+const loadingWrapperSizePx = computed(() => `${props.tableFontSize * 5 * 2}px`);
 // global style variable
 provide('themeColor', props.themeColor);
+provide('loadingEntitySizePx', loadingEntitySizePx.value);
 provide('rowHeight', rowHeight.value);
 provide('borderColor', borderColor.value);
 provide('footerBackgroundColor', footerBackgroundColor.value);
@@ -359,6 +360,7 @@ provide('footerFontColor', footerFontColor.value);
 const slots = useSlots();
 const ifHasBodySlot = computed(() => slots.body);
 const ifHasPaginationSlot = computed(() => slots.pagination);
+const ifHasLoadingSlot = computed(() => slots.loading);
 
 // global dataTable $ref
 const dataTable = ref();
@@ -664,8 +666,38 @@ const toggleSelectItem = (item: Item):void => {
     }
     .data-table__body {
 
-      .loading-th {
-        padding: 0px;
+      .loading-wrapper {
+        padding-top: v-bind(rowHeightPx);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        left:0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        font-size: v-bind(fontSizePx);
+        color: v-bind(rowFontColor);
+        .loading-entity {
+          z-index: 1;
+        }
+        &__mask {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+          top: 0px;
+          left:0px;
+          background-color: v-bind(rowBackgroundColor);
+          opacity: 0.5;
+        }
+        &.initial-loading {
+          position: relative;
+          padding-bottom: v-bind(rowHeightPx);
+          .loading-wrapper__mask {
+            opacity: 1;
+          }
+        }
       }
       &.fixed-header {
         thead {
@@ -808,6 +840,9 @@ const toggleSelectItem = (item: Item):void => {
       color: v-bind(rowFontColor);
       font-size: v-bind(fontSizePx);
       padding: 20px;
+      &.loading {
+        height: v-bind(loadingWrapperSizePx);
+      }
     }
     .gms_base_dialog__loading {
       display: block;

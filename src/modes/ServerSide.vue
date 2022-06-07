@@ -5,9 +5,16 @@
     :headers="headers"
     :items="items"
     :server-items-length="serverItemsLength"
-    :loading="loading"
     :buttons-pagination="true"
+    :loading="loading"
+    border-color="#445269"
   >
+    <template #loading>
+      <img
+        src="https://i.pinimg.com/originals/94/fd/2b/94fd2bf50097ade743220761f41693d5.gif"
+        style="width: 100px;height: 80px;"
+      >
+    </template>
   </DataTable>
   {{ restApiUrl }}
 </template>
@@ -33,7 +40,7 @@ const items = ref<Item[]>([]);
 const serverItemsLength = ref(0);
 const serverOptions = ref<ServerOptions>({
   page: 5,
-  rowsPerPage: 100,
+  rowsPerPage: 10,
   sortBy: 'height',
   sortType: 'desc',
 });
