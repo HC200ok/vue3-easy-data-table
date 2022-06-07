@@ -4,14 +4,21 @@
     v-model:itemsSelected="itemsSelected"
     :headers="headers"
     :items="items"
-    :rows-per-page="25"
-    :rows-items="[25, 50]"
+    :rows-per-page="10"
+    :rows-items="[10, 25, 50]"
     :body-font-size="15"
     sort-by="height"
     sort-type="desc"
     :buttons-pagination="true"
     show-index
+    loading
   >
+    <template #loading>
+      <img
+        src="https://i.pinimg.com/originals/94/fd/2b/94fd2bf50097ade743220761f41693d5.gif"
+        style="width: 100px;height: 80px;"
+      >
+    </template>
     <template #address="{ address }">
       <div style="color: red">
         {{ address }}
