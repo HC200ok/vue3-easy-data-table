@@ -3,19 +3,22 @@
   <DataTable
     v-model:server-options="serverOptions"
     :headers="headers"
-    :items="items"
+    :items="[]"
     :server-items-length="serverItemsLength"
     :buttons-pagination="true"
-    :loading="loading"
+    :loading="true"
     border-color="#445269"
+    :max-height="250"
   >
-    <template #loading>
+    
+  </DataTable>
+
+<!-- <template #loading>
       <img
         src="https://i.pinimg.com/originals/94/fd/2b/94fd2bf50097ade743220761f41693d5.gif"
         style="width: 100px;height: 80px;"
       >
-    </template>
-  </DataTable>
+    </template> -->
   {{ restApiUrl }}
 </template>
 
