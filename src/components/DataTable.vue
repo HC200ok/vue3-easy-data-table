@@ -107,7 +107,10 @@
         {{ emptyMessage }}
       </div>
     </div>
-    <div class="data-table__footer">
+    <div
+      v-if="showFooter"
+      class="data-table__footer"
+    >
       <div class="footer__rows-per-page">
         rows per page:
         <RowsSelector
@@ -329,6 +332,10 @@ const props = defineProps({
   showIndex: {
     type: Boolean,
     default: false,
+  },
+  showFooter: {
+    type: Boolean,
+    default: true,
   },
 });
 
