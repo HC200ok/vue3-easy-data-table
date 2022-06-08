@@ -10,8 +10,17 @@ https://hc200ok.github.io/vue3-easy-data-table-doc/
 
 <img src="./images/demo.png"  />
 
-## Why
-I am doing the Vue2 to Vue3 migration for the project of my company  recently, In the Vue2 version, we were using the data table component of Vuetify2. But for the new Vue3 version, Vuetify3 Beta seems not ready for the production environment yet, and the data table component in Vuetify3 is still in development, so I made vue3-easy-data-table by referring to the API and UI of the data table component in Vuetify2. If you are also waiting for the release of the data table component of Vuetify3, what about trying this component first?
+## Features
+1. [Item slot](https://hc200ok.github.io/vue3-easy-data-table-doc/features/item-slot.html)
+2. [Buttons pagination](https://hc200ok.github.io/vue3-easy-data-table-doc/features/buttons-pagination.html)
+3. [Multiple selecting](https://hc200ok.github.io/vue3-easy-data-table-doc/features/multiple-selecting.html)
+4. [Pagination slot](https://hc200ok.github.io/vue3-easy-data-table-doc/features/pagination-slot.html)
+5. [Single field sorting](https://hc200ok.github.io/vue3-easy-data-table-doc/features/single-field-sorting.html)
+6. [Searching](https://hc200ok.github.io/vue3-easy-data-table-doc/features/searching.html)
+7. [Server side paginate and sort](https://hc200ok.github.io/vue3-easy-data-table-doc/features/server-side-paginate-and-sort.html)
+8. [Color customization](https://hc200ok.github.io/vue3-easy-data-table-doc/features/color-customization.html)
+9. [Loading slot](https://hc200ok.github.io/vue3-easy-data-table-doc/features/loading-slot.html)
+
 
 ## Getting started
 ### Install
@@ -65,3 +74,6 @@ export default defineComponent({
 });
 </script>
 ```
+
+## ⭐ Stargazers
+[![Stargazers repo roster for @HC200ok/vue3-easy-data-table](https://reporoster.com/stars/dark/notext/HC200ok/vue3-easy-data-table)](https://github.com/HC200ok/vue3-easy-data-table/stargazers)
