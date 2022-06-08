@@ -453,10 +453,10 @@ const selectItemsComputed = computed({
 });
 
 const multipleSelectStatus = computed((): 'allSelected' | 'noneSelected' | 'partSelected' => {
-  if (selectItemsComputed.value.length === props.items.length) {
-    return 'allSelected';
-  } if (selectItemsComputed.value.length === 0) {
+  if (selectItemsComputed.value.length === 0) {
     return 'noneSelected';
+  } if (selectItemsComputed.value.length === props.items.length) {
+    return 'allSelected';
   }
   return 'partSelected';
 });
