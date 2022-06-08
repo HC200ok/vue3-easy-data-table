@@ -579,15 +579,6 @@ const prevPage = () => {
   }
 };
 
-defineExpose({
-  maxPaginationNumber,
-  currentPaginationNumber,
-  isLastPage,
-  isFirstPage,
-  nextPage,
-  prevPage,
-});
-
 const updatePage = (value: number) => {
   if (loading.value) return;
   if (isServerSideMode.value) {
@@ -617,11 +608,25 @@ const itemsInPage = computed((): Item[] => {
   return itemsSorting.value.slice(firstIndexOfItemsInCurrentPage.value - 1, lastIndexOfItemsInCurrentPage.value);
 });
 
+const currentPageFirstIndex = computed(():number => rowsPerPageReactive.value * (currentPaginationNumber.value - 1));
+const currentPageLastIndex = computed(():number => rowsPerPageReactive.value * currentPaginationNumber.value);
+
+defineExpose({
+  totalItemsLength,
+  currentPageFirstIndex,
+  currentPageLastIndex,
+  maxPaginationNumber,
+  currentPaginationNumber,
+  isLastPage,
+  isFirstPage,
+  nextPage,
+  prevPage,
+});
+
 // items with index
 const itemsWithIndex = computed((): Item[] => {
   if (props.showIndex) {
-    const currentPageStartIndex = rowsPerPageReactive.value * (currentPaginationNumber.value - 1);
-    return itemsInPage.value.map((item, index) => ({ index: currentPageStartIndex + index + 1, ...item }));
+    return itemsInPage.value.map((item, index) => ({ index: currentPageFirstIndex.value + index + 1, ...item }));
   }
   return itemsInPage.value;
 });
