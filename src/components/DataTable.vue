@@ -608,7 +608,7 @@ const itemsInPage = computed((): Item[] => {
   return itemsSorting.value.slice(firstIndexOfItemsInCurrentPage.value - 1, lastIndexOfItemsInCurrentPage.value);
 });
 
-const currentPageFirstIndex = computed(():number => rowsPerPageReactive.value * (currentPaginationNumber.value - 1));
+const currentPageFirstIndex = computed(():number => rowsPerPageReactive.value * (currentPaginationNumber.value - 1) + 1);
 const currentPageLastIndex = computed(():number => rowsPerPageReactive.value * currentPaginationNumber.value);
 
 defineExpose({
@@ -627,7 +627,7 @@ defineExpose({
 // items with index
 const itemsWithIndex = computed((): Item[] => {
   if (props.showIndex) {
-    return itemsInPage.value.map((item, index) => ({ index: currentPageFirstIndex.value + index + 1, ...item }));
+    return itemsInPage.value.map((item, index) => ({ index: currentPageFirstIndex.value + index, ...item }));
   }
   return itemsInPage.value;
 });
