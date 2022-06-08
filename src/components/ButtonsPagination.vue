@@ -151,7 +151,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
 
 const rowHeight = inject('rowHeight') as number;
 const buttonSizePx = computed(() => `${rowHeight * 0.6}px`);
-const borderColor = inject('borderColor');
+const rowBorderColor = inject('rowBorderColor');
 const themeColor = inject('themeColor');
 </script>
 <style lang="scss" scoped>
@@ -165,12 +165,12 @@ const themeColor = inject('themeColor');
     height: v-bind(buttonSizePx);
     min-width: v-bind(buttonSizePx);
     line-height: v-bind(buttonSizePx);
-    border-top: 1px solid v-bind(borderColor);
-    border-bottom: 1px solid v-bind(borderColor);
-    border-right: 1px solid v-bind(borderColor);
+    border-top: 1px solid v-bind(rowBorderColor);
+    border-bottom: 1px solid v-bind(rowBorderColor);
+    border-right: 1px solid v-bind(rowBorderColor);
     text-align: center;
     &:first-of-type  {
-      border-left: 1px solid v-bind(borderColor);
+      border-left: 1px solid v-bind(rowBorderColor);
       border-top-left-radius: 4px;
       border-bottom-left-radius: 4px;
     }

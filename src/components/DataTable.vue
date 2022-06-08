@@ -5,7 +5,11 @@
   >
     <div
       class="data-table__body"
-      :class="{'fixed-header': fixedHeader, 'wrap-lines': wrapLines }"
+      :class="{
+        'fixed-header': fixedHeader,
+        'wrap-lines': wrapLines,
+        'max-height': maxHeight,
+      }"
     >
       <table>
         <thead v-if="headersForRender.length">
@@ -194,7 +198,11 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  borderColor: {
+  rowBorderColor: {
+    type: String,
+    default: '#e0e0e0',
+  },
+  tableBorderColor: {
     type: String,
     default: '#e0e0e0',
   },
@@ -325,7 +333,8 @@ const props = defineProps({
 });
 
 const {
-  borderColor,
+  rowBorderColor,
+  tableBorderColor,
   headerFontColor,
   rowFontColor,
   rowHoverBackgroundColor,
@@ -347,12 +356,13 @@ const sortTypeIconMargin = computed(() => Math.round(sortTypeIconSize.value));
 const sortTypeAscIconMarginTopPx = computed(() => `-${sortTypeIconMargin.value}px`);
 const sortTypeDescIconMarginTopPx = computed(() => `${sortTypeIconMargin.value}px`);
 const loadingEntitySizePx = computed(() => `${props.tableFontSize * 5}px`);
-const loadingWrapperSizePx = computed(() => `${props.tableFontSize * 5 * 2}px`);
+const loadingWrapperSizePx = computed(() => (props.maxHeight ? `${props.maxHeight - rowHeight.value}px`
+  : `${props.tableFontSize * 5 * 2}px`));
 // global style variable
 provide('themeColor', props.themeColor);
 provide('loadingEntitySizePx', loadingEntitySizePx.value);
 provide('rowHeight', rowHeight.value);
-provide('borderColor', borderColor.value);
+provide('rowBorderColor', rowBorderColor.value);
 provide('footerBackgroundColor', footerBackgroundColor.value);
 provide('footerFontColor', footerFontColor.value);
 
@@ -659,7 +669,8 @@ const toggleSelectItem = (item: Item):void => {
 
 <style lang="scss" scoped>
   .vue3-easy-data-table {
-    border: 1px solid v-bind(borderColor);
+    position: relative;
+    border: 1px solid v-bind(tableBorderColor);
     box-sizing: border-box;
     tr, td, th, tbody, thead, table, div {
       box-sizing: border-box;
@@ -668,11 +679,12 @@ const toggleSelectItem = (item: Item):void => {
 
       .loading-wrapper {
         padding-top: v-bind(rowHeightPx);
+        padding-bottom: v-bind(rowHeightPx);
         position: absolute;
         width: 100%;
-        height: 100%;
         top: 0px;
         left:0px;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -719,8 +731,17 @@ const toggleSelectItem = (item: Item):void => {
     border: none;
     box-sizing: border-box;
     width: 100%;
-    position: relative;
-    max-height: v-bind(maxHeightPx);
+    &.max-height {
+      max-height: v-bind(maxHeightPx);
+      .loading-wrapper {
+        height: v-bind(loadingWrapperSizePx);
+        top: v-bind(rowHeightPx);
+        padding: 0px!important;
+        &.initial-loading {
+          top: 0px;
+        }
+      }
+    }
     overflow: auto;
     table {
       display: table;
@@ -746,7 +767,7 @@ const toggleSelectItem = (item: Item):void => {
         }
         th {
           border: none;
-          border-bottom: 1px solid v-bind(borderColor);;
+          border-bottom: 1px solid v-bind(rowBorderColor);;
           color: v-bind(headerFontColor);
           position: relative;
           background-color: v-bind(headerBackgroundColor);
@@ -818,7 +839,7 @@ const toggleSelectItem = (item: Item):void => {
         }
         td {
           border: none;
-          border-bottom: 1px solid v-bind(borderColor);
+          border-bottom: 1px solid v-bind(rowBorderColor);
         }
         &.row-alternation {
           &.hover-to-change-color {
@@ -840,9 +861,6 @@ const toggleSelectItem = (item: Item):void => {
       color: v-bind(rowFontColor);
       font-size: v-bind(fontSizePx);
       padding: 20px;
-      &.loading {
-        height: v-bind(loadingWrapperSizePx);
-      }
     }
     .gms_base_dialog__loading {
       display: block;
@@ -856,7 +874,7 @@ const toggleSelectItem = (item: Item):void => {
     color: v-bind(footerFontColor);
     width: 100%;
     display: flex;
-    border-top: 1px solid v-bind(borderColor);
+    border-top: 1px solid v-bind(rowBorderColor);
     font-size: v-bind(fontSizePx);
     align-items: center;
     justify-content: flex-end;
