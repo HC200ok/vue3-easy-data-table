@@ -621,6 +621,7 @@ defineExpose({
   isFirstPage,
   nextPage,
   prevPage,
+  updatePage,
 });
 
 // items with index
