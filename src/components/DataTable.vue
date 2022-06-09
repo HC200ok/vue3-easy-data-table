@@ -306,8 +306,8 @@ const props = defineProps({
     deault: false,
   },
   serverOptions: {
-    type: Object as PropType<ServerOptions>,
-    default: () => null,
+    type: Object as PropType<ServerOptions> | null,
+    default: null,
   },
   serverItemsLength: {
     type: Number,
@@ -619,7 +619,7 @@ const currentPageFirstIndex = computed(():number => rowsPerPageReactive.value * 
 const currentPageLastIndex = computed(():number => rowsPerPageReactive.value * currentPaginationNumber.value);
 
 defineExpose({
-  totalItemsLength,
+  clientItemsLength: totalItemsLength,
   currentPageFirstIndex,
   currentPageLastIndex,
   maxPaginationNumber,
