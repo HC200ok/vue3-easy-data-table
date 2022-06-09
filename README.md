@@ -20,7 +20,7 @@ https://hc200ok.github.io/vue3-easy-data-table-doc/
 7. [Server side paginate and sort](https://hc200ok.github.io/vue3-easy-data-table-doc/features/server-side-paginate-and-sort.html)
 8. [Color customization](https://hc200ok.github.io/vue3-easy-data-table-doc/features/color-customization.html)
 9. [Loading slot](https://hc200ok.github.io/vue3-easy-data-table-doc/features/loading-slot.html)
-
+10. [Footer customization](https://hc200ok.github.io/vue3-easy-data-table-doc/features/footer-customization.html)
 
 ## Getting started
 ### Install
