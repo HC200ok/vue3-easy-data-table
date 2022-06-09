@@ -82,11 +82,6 @@
                 </template>
               </td>
             </tr>
-            <div
-              v-if="loading"
-              class="loading-mask"
-            >
-            </div>
           </tbody>
         </template>
       </table>
@@ -95,6 +90,7 @@
         class="loading-wrapper"
         :class="{'initial-loading': (!items.length && loading) }"
       >
+        <div class="loading-mask"></div>
         <div class="loading-entity">
           <slot
             v-if="ifHasLoadingSlot"
