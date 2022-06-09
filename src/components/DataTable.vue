@@ -7,7 +7,6 @@
       class="data-table__body"
       :class="{
         'fixed-header': fixedHeader,
-        'wrap-lines': wrapLines,
         'max-height': maxHeight,
       }"
     >
@@ -167,7 +166,6 @@ import {
 import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
 import RowsSelector from './RowsSelector.vue';
-// import LoadingLine from './LoadingLine.vue';
 import Loading from './Loading.vue';
 import ButtonsPagination from './ButtonsPagination.vue';
 import PaginationArrows from './PaginationArrows.vue';
@@ -272,10 +270,6 @@ const props = defineProps({
     type: Number,
     default: () => null,
   },
-  wrapLines: {
-    type: Boolean,
-    default: false,
-  },
   itemsSelected: {
     type: Array as PropType<Item[]> | null,
     default: null,
@@ -356,6 +350,7 @@ const {
   footerFontColor,
 } = toRefs(props);
 
+// style related computed variables
 const fontSizePx = computed(() => `${props.tableFontSize}px`);
 const rowHeight = computed(() => props.tableFontSize * (props.dense ? 2 : 3));
 const rowHeightPx = computed(() => `${rowHeight.value}px`);
@@ -368,7 +363,8 @@ const sortTypeDescIconMarginTopPx = computed(() => `${sortTypeIconMargin.value}p
 const loadingEntitySizePx = computed(() => `${props.tableFontSize * 5}px`);
 const loadingWrapperSizePx = computed(() => (props.maxHeight ? `${props.maxHeight - rowHeight.value}px`
   : `${props.tableFontSize * 5 * 2}px`));
-// global style variable
+
+// global style related variable
 provide('themeColor', props.themeColor);
 provide('loadingEntitySizePx', loadingEntitySizePx.value);
 provide('rowHeight', rowHeight.value);
@@ -376,7 +372,7 @@ provide('rowBorderColor', rowBorderColor.value);
 provide('footerBackgroundColor', footerBackgroundColor.value);
 provide('footerFontColor', footerFontColor.value);
 
-// table body slot
+// slot
 const slots = useSlots();
 const ifHasBodySlot = computed(() => slots.body);
 const ifHasPaginationSlot = computed(() => slots.pagination);
@@ -454,7 +450,7 @@ const headersForRender = computed((): HeaderForRender[] => {
 
 const headerColumns = computed((): string[] => headersForRender.value.map((header) => header.value));
 
-// multiple select
+// multiple selecting
 const selectItemsComputed = computed({
   get: () => props.itemsSelected ?? [],
   set: (value) => {
@@ -610,8 +606,6 @@ watch(loading, (newVal, oldVal) => {
   }
 });
 
-// items searching => sorting => current page => with index => with checkbox => render
-
 // items in current page
 const itemsInPage = computed((): Item[] => {
   if (isServerSideMode.value) return props.items;
@@ -621,19 +615,6 @@ const itemsInPage = computed((): Item[] => {
 const currentPageFirstIndex = computed(():number => rowsPerPageReactive.value * (currentPaginationNumber.value - 1) + 1);
 const currentPageLastIndex = computed(():number => rowsPerPageReactive.value * currentPaginationNumber.value);
 
-defineExpose({
-  clientItemsLength: totalItemsLength,
-  currentPageFirstIndex,
-  currentPageLastIndex,
-  maxPaginationNumber,
-  currentPaginationNumber,
-  isLastPage,
-  isFirstPage,
-  nextPage,
-  prevPage,
-  updatePage,
-});
-
 // items with index
 const itemsWithIndex = computed((): Item[] => {
   if (props.showIndex) {
@@ -641,6 +622,11 @@ const itemsWithIndex = computed((): Item[] => {
   }
   return itemsInPage.value;
 });
+
+/**
+ * items coputed flow:
+ * items searching => sorting => current page => with index => with checkbox => render
+*/
 
 // items for render (with checbox)
 const itemsForRender = computed((): Item[] => {
@@ -681,6 +667,19 @@ const toggleSelectItem = (item: Item):void => {
   }
 };
 
+defineExpose({
+  clientItemsLength: totalItemsLength,
+  currentPageFirstIndex,
+  currentPageLastIndex,
+  maxPaginationNumber,
+  currentPaginationNumber,
+  isLastPage,
+  isFirstPage,
+  nextPage,
+  prevPage,
+  updatePage,
+});
+
 </script>
 
 <style lang="scss" scoped>
@@ -692,7 +691,35 @@ const toggleSelectItem = (item: Item):void => {
       box-sizing: border-box;
     }
     .data-table__body {
+      border: none;
+      width: 100%;
+      overflow: auto;
+      &.fixed-header {
+        thead {
+          position: sticky;
+          top: 0;
+          z-index: 1;
+        }
+      }
+      &.max-height {
+        max-height: v-bind(maxHeightPx);
+        .loading-wrapper {
+          height: v-bind(loadingWrapperSizePx);
+          top: v-bind(rowHeightPx);
+          padding: 0px!important;
+          .loading-mask {
+            height: 100%;
+            top: 0px;
+          }
+          &.initial-loading {
+            top: 0px;
+          }
+        }
+      }
       .loading-wrapper {
+        &.initial-loading {
+          position: relative;
+        }
         padding-top: v-bind(rowHeightPx);
         padding-bottom: v-bind(rowHeightPx);
         position: absolute;
@@ -723,192 +750,148 @@ const toggleSelectItem = (item: Item):void => {
         .loading-entity {
           z-index: 1;
         }
-        &.initial-loading {
-          position: relative;
-        }
       }
-      &.fixed-header {
-        thead {
-          position: sticky;
-          top: 0;
-          z-index: 1;
-        }
-      }
-      &.wrap-lines {
-        table {
-          table-layout: fixed;
-          word-break: break-all;
-        }
-      }
-    }
-  }
 
-  .data-table__body {
-    border: none;
-    box-sizing: border-box;
-    width: 100%;
-    &.max-height {
-      max-height: v-bind(maxHeightPx);
-      .loading-wrapper {
-        height: v-bind(loadingWrapperSizePx);
-        top: v-bind(rowHeightPx);
-        padding: 0px!important;
-        .loading-mask {
-          height: 100%;
-          top: 0px;
-        }
-        &.initial-loading {
-          top: 0px;
-        }
-      }
-    }
-    overflow: auto;
-    table {
-      display: table;
-      margin: 0px;
-      width: 100%;
-      background-color: v-bind(rowBackgroundColor);
-      border-spacing: 0;
-      tr {
-        border: none;
-      }
-      th, td {
-        text-align: left;
-        padding: 0px 10px;
-      }
-      thead, tbody {
-        position: relative;
-      }
-      thead {
-        font-size: v-bind(fontSizePx);
+      table {
+        display: table;
+        margin: 0px;
+        width: 100%;
+        background-color: v-bind(rowBackgroundColor);
+        border-spacing: 0;
         tr {
           border: none;
-          height: v-bind(rowHeightPx);
         }
-        th {
-          border: none;
-          border-bottom: 1px solid v-bind(rowBorderColor);;
-          color: v-bind(headerFontColor);
+        th, td {
+          text-align: left;
+          padding: 0px 10px;
+        }
+        thead, tbody {
           position: relative;
-          background-color: v-bind(headerBackgroundColor);
-          .header-text__wrapper {
-            display: flex;
-            align-items: center;
-            height: v-bind(fontSizePx);
+        }
+        thead {
+          font-size: v-bind(fontSizePx);
+          tr {
+            border: none;
+            height: v-bind(rowHeightPx);
           }
-
-          &.sortable {
-            cursor: pointer;
-
-            .sortType-icon {
-              border: v-bind(sortTypeIconSizePx) solid transparent;
-              margin-top: v-bind(sortTypeAscIconMarginTopPx);
-              margin-left: 4px;
-              display: inline-block;
-              height: 0;
-              width: 0;
-              border-bottom-color: v-bind(headerFontColor);
+          th {
+            border: none;
+            border-bottom: 1px solid v-bind(rowBorderColor);;
+            color: v-bind(headerFontColor);
+            position: relative;
+            background-color: v-bind(headerBackgroundColor);
+            .header-text__wrapper {
+              display: flex;
+              align-items: center;
+              height: v-bind(fontSizePx);
             }
 
-            &.none {
-               &:hover {
+            &.sortable {
+              cursor: pointer;
+
+              .sortType-icon {
+                border: v-bind(sortTypeIconSizePx) solid transparent;
+                margin-top: v-bind(sortTypeAscIconMarginTopPx);
+                margin-left: 4px;
+                display: inline-block;
+                height: 0;
+                width: 0;
+                border-bottom-color: v-bind(headerFontColor);
+              }
+
+              &.none {
+                &:hover {
+                  .sortType-icon {
+                    opacity: 1;
+                  }
+                }
                 .sortType-icon {
-                  opacity: 1;
+                  opacity: 0;
+                  transition: 0.5s ease;
                 }
               }
-              .sortType-icon {
-                opacity: 0;
-                transition: 0.5s ease;
+              &.desc {
+                .sortType-icon {
+                  margin-top: v-bind(sortTypeDescIconMarginTopPx);
+                  transform: rotate(180deg);
+                }
               }
             }
-            &.desc {
-              .sortType-icon {
-                margin-top: v-bind(sortTypeDescIconMarginTopPx);
+
+            .sortType-icon {
+              display: inline-block;
+              width: v-bind(fontSizePx);
+              height: v-bind(fontSizePx);
+              &.desc {
                 transform: rotate(180deg);
               }
             }
           }
-
-          .sortType-icon {
-            display: inline-block;
-            width: v-bind(fontSizePx);
-            height: v-bind(fontSizePx);
-            &.desc {
-              transform: rotate(180deg);
-            }
-          }
         }
-      }
-      tbody {
-        font-size: v-bind(fontSizePx);
-        &.hover-to-change-color {
-          tr:hover {
-            background-color: v-bind(rowHoverBackgroundColor);
-            color: v-bind(rowHoverFontColor);
-          }
-        }
-        tr {
-          height: v-bind(rowHeightPx);
-          color: v-bind(rowFontColor);
-          &:last-child {
-            border-bottom: none;
-            td {
-              border-bottom: none;
-            }
-          }
-        }
-        td {
-          border: none;
-          border-bottom: 1px solid v-bind(rowBorderColor);
-        }
-        &.row-alternation {
+        tbody {
+          font-size: v-bind(fontSizePx);
           &.hover-to-change-color {
             tr:hover {
               background-color: v-bind(rowHoverBackgroundColor);
               color: v-bind(rowHoverFontColor);
             }
           }
-          tr:nth-child(2n) {
-            color: v-bind(evenRowFontColor);
-            background-color: v-bind(evenRowBackgroundColor);
+          tr {
+            height: v-bind(rowHeightPx);
+            color: v-bind(rowFontColor);
+            &:last-child {
+              border-bottom: none;
+              td {
+                border-bottom: none;
+              }
+            }
+          }
+          td {
+            border: none;
+            border-bottom: 1px solid v-bind(rowBorderColor);
+          }
+          &.row-alternation {
+            &.hover-to-change-color {
+              tr:hover {
+                background-color: v-bind(rowHoverBackgroundColor);
+                color: v-bind(rowHoverFontColor);
+              }
+            }
+            tr:nth-child(2n) {
+              color: v-bind(evenRowFontColor);
+              background-color: v-bind(evenRowBackgroundColor);
+            }
           }
         }
       }
-    }
-    .data-table__message {
-      background-color: v-bind(rowBackgroundColor);
-      text-align: center;
-      color: v-bind(rowFontColor);
-      font-size: v-bind(fontSizePx);
-      padding: 20px;
-    }
-    .gms_base_dialog__loading {
-      display: block;
-      width: 50px;
-      margin: 0 auto;
-    }
-  }
 
-  .data-table__footer {
-    background-color: v-bind(footerBackgroundColor);;
-    color: v-bind(footerFontColor);
-    width: 100%;
-    display: flex;
-    border-top: 1px solid v-bind(rowBorderColor);
-    font-size: v-bind(fontSizePx);
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0px 5px;
-    box-sizing: border-box;
-    height: v-bind(rowHeightPx);
-
-    .footer__rows-per-page {
+      .data-table__message {
+        background-color: v-bind(rowBackgroundColor);
+        text-align: center;
+        color: v-bind(rowFontColor);
+        font-size: v-bind(fontSizePx);
+        padding: 20px;
+      }
+    }
+    .data-table__footer {
+      background-color: v-bind(footerBackgroundColor);;
+      color: v-bind(footerFontColor);
+      width: 100%;
       display: flex;
+      border-top: 1px solid v-bind(rowBorderColor);
+      font-size: v-bind(fontSizePx);
       align-items: center;
-    }
-    .footer__items-index {
-      margin: 0px 20px 0px 10px;
+      justify-content: flex-end;
+      padding: 0px 5px;
+      height: v-bind(rowHeightPx);
+
+      .footer__rows-per-page {
+        display: flex;
+        align-items: center;
+      }
+      .footer__items-index {
+        margin: 0px 20px 0px 10px;
+      }
     }
   }
-
 </style>
