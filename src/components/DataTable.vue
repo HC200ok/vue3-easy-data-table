@@ -720,6 +720,7 @@ defineExpose({
         &.initial-loading {
           position: relative;
         }
+        overflow: hidden;
         padding-top: v-bind(rowHeightPx);
         padding-bottom: v-bind(rowHeightPx);
         position: absolute;
