@@ -90,7 +90,10 @@
         class="loading-wrapper"
         :class="{'initial-loading': (!items.length && loading) }"
       >
-        <div class="loading-mask"></div>
+        <div
+          class="loading-mask"
+          :class="{'no-footer': !showFooter}"
+        ></div>
         <div class="loading-entity">
           <slot
             v-if="ifHasLoadingSlot"
@@ -689,16 +692,6 @@ const toggleSelectItem = (item: Item):void => {
       box-sizing: border-box;
     }
     .data-table__body {
-      .loading-mask {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        top: 0px;
-        left:0px;
-        background-color: v-bind(rowBackgroundColor);
-        opacity: 0.5;
-        z-index: 1;
-      }
       .loading-wrapper {
         padding-top: v-bind(rowHeightPx);
         padding-bottom: v-bind(rowHeightPx);
@@ -713,6 +706,20 @@ const toggleSelectItem = (item: Item):void => {
         flex-direction: column;
         font-size: v-bind(fontSizePx);
         color: v-bind(rowFontColor);
+
+        .loading-mask {
+          position: absolute;
+          width: 100%;
+          height: calc(100% - v-bind(rowHeightPx) - v-bind(rowHeightPx));
+          top: v-bind(rowHeightPx);
+          left:0px;
+          background-color: v-bind(rowBackgroundColor);
+          opacity: 0.5;
+          z-index: 1;
+          &.no-footer {
+            height: calc(100%);
+          }
+        }
         .loading-entity {
           z-index: 1;
         }
@@ -746,6 +753,10 @@ const toggleSelectItem = (item: Item):void => {
         height: v-bind(loadingWrapperSizePx);
         top: v-bind(rowHeightPx);
         padding: 0px!important;
+        .loading-mask {
+          height: 100%;
+          top: 0px;
+        }
         &.initial-loading {
           top: 0px;
         }
