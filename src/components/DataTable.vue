@@ -708,11 +708,9 @@ const toggleSelectItem = (item: Item):void => {
           z-index: 1;
         }
         &__mask {
-          padding-top: v-bind(rowHeightPx);
-          padding-bottom: v-bind(rowHeightPx);
           position: absolute;
           width: 100%;
-          height: 100%;
+          height: calc(100% - v-bind(rowHeightPx));
           top: 0px;
           left:0px;
           background-color: v-bind(rowBackgroundColor);
