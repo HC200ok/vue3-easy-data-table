@@ -82,6 +82,11 @@
                 </template>
               </td>
             </tr>
+            <div
+              v-if="loading"
+              class="loading-mask"
+            >
+            </div>
           </tbody>
         </template>
       </table>
@@ -97,7 +102,6 @@
           />
           <Loading v-else></Loading>
         </div>
-        <div class="loading-wrapper__mask"></div>
       </div>
 
       <div
@@ -689,7 +693,16 @@ const toggleSelectItem = (item: Item):void => {
       box-sizing: border-box;
     }
     .data-table__body {
-
+      .loading-mask {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0px;
+        left:0px;
+        background-color: v-bind(rowBackgroundColor);
+        opacity: 0.5;
+        z-index: 1;
+      }
       .loading-wrapper {
         padding-top: v-bind(rowHeightPx);
         padding-bottom: v-bind(rowHeightPx);
@@ -707,21 +720,8 @@ const toggleSelectItem = (item: Item):void => {
         .loading-entity {
           z-index: 1;
         }
-        &__mask {
-          position: absolute;
-          width: 100%;
-          height: calc(100% - v-bind(rowHeightPx));
-          top: 0px;
-          left:0px;
-          background-color: v-bind(rowBackgroundColor);
-          opacity: 0.5;
-        }
         &.initial-loading {
           position: relative;
-          padding-bottom: v-bind(rowHeightPx);
-          .loading-wrapper__mask {
-            opacity: 1;
-          }
         }
       }
       &.fixed-header {
