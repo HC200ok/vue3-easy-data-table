@@ -7,7 +7,7 @@
       class="data-table__body"
       :class="{
         'fixed-header': fixedHeader,
-        'max-height': maxHeight,
+        'fixed-height': tableHeight,
       }"
     >
       <table>
@@ -266,7 +266,7 @@ const props = defineProps({
     type: Array as PropType<Item[]>,
     required: true,
   },
-  maxHeight: {
+  tableHeight: {
     type: Number,
     default: () => null,
   },
@@ -354,14 +354,15 @@ const {
 const fontSizePx = computed(() => `${props.tableFontSize}px`);
 const rowHeight = computed(() => props.tableFontSize * (props.dense ? 2 : 3));
 const rowHeightPx = computed(() => `${rowHeight.value}px`);
-const maxHeightPx = computed(() => (props.maxHeight ? `${props.maxHeight}px` : null));
+const tableHeightPx = computed(() => (props.tableHeight ? `${props.tableHeight}px` : null));
+const minHeightPx = computed(() => `${rowHeight.value * 5}px`);
 const sortTypeIconSize = computed(() => Math.round(props.tableFontSize / 2.5));
 const sortTypeIconSizePx = computed(() => `${sortTypeIconSize.value}px`);
 const sortTypeIconMargin = computed(() => Math.round(sortTypeIconSize.value));
 const sortTypeAscIconMarginTopPx = computed(() => `-${sortTypeIconMargin.value}px`);
 const sortTypeDescIconMarginTopPx = computed(() => `${sortTypeIconMargin.value}px`);
 const loadingEntitySizePx = computed(() => `${props.tableFontSize * 5}px`);
-const loadingWrapperSizePx = computed(() => (props.maxHeight ? `${props.maxHeight - rowHeight.value}px`
+const loadingWrapperSizePx = computed(() => (props.tableHeight ? `${props.tableHeight - rowHeight.value}px`
   : `${props.tableFontSize * 5 * 2}px`));
 
 // global style related variable
@@ -694,6 +695,8 @@ defineExpose({
       border: none;
       width: 100%;
       overflow: auto;
+      min-height: v-bind(minHeightPx);
+
       &.fixed-header {
         thead {
           position: sticky;
@@ -701,8 +704,8 @@ defineExpose({
           z-index: 1;
         }
       }
-      &.max-height {
-        max-height: v-bind(maxHeightPx);
+      &.fixed-height {
+        height: v-bind(tableHeightPx);
         .loading-wrapper {
           height: v-bind(loadingWrapperSizePx);
           top: v-bind(rowHeightPx);
@@ -844,6 +847,11 @@ defineExpose({
               border-bottom: none;
               td {
                 border-bottom: none;
+              }
+            }
+            &:first-child {
+              td {
+                border-bottom: 1px solid v-bind(rowBorderColor);
               }
             }
           }

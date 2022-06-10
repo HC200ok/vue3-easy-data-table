@@ -1,7 +1,7 @@
 {
   "name": "vue3-easy-data-table",
   "author": "HC200ok",
-  "description": "A data table component made with vue.js 3.x",
+  "description": "A customizable and easy-to-use data table component made with Vue.js 3.x.",
   "private": false,
   "version": "1.1.22",
   "types": "./types/main.d.ts",

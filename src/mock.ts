@@ -34,6 +34,7 @@ export const mockClientItems = (itemsNumber = 100): Item[] => {
 
 export const mockServerItems = async (
   serverOptions: ServerOptions,
+  serverItemsLength = 500,
 ): Promise<{
   serverCurrentPageItems: Item[];
   serverTotalItemsLength: number;
@@ -41,7 +42,6 @@ export const mockServerItems = async (
   const {
     page, rowsPerPage, sortBy, sortType,
   } = serverOptions;
-  const serverItemsLength = 500;
   const serverTotalItems = mockClientItems(serverItemsLength);
   if (sortBy && sortType) {
     serverTotalItems.sort((a, b) => {
