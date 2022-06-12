@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="filter-wrapper">
-      <div class="filter-wrapper">
-        <span class="field">
-          filtering by age:
-        </span>
-        <Slider v-model="ageCriteria" />
-      </div>
+      <span class="field">
+        filtering by age:
+      </span>
+      <Slider v-model="ageCriteria" class="slider"/>
+    </div>
+    <div class="filter-wrapper">
       <span class="field">
         filtering by sport:
       </span>
@@ -31,28 +31,24 @@
         </option>
       </select>
     </div>
-    <span>search field:</span>
+    <!-- <span>search field:</span>
     <select v-model="searchField">
       <option>name</option>
       <option>address</option>
     </select><br />
     <span>search value: </span>
-    <input type="text" v-model="searchValue" />
+    <input type="text" v-model="searchValue" /> -->
     <DataTable
       ref="dataTable"
       v-model:items-selected="itemsSelected"
       :headers="headers"
       :items="items"
       :rows-per-page="10"
-      :show-footer="false"
-      :filtering="[]"
       show-index
       buttons-pagination
       alternating
       :max-height="200"
       :filter-options="filterOptions"
-      :search-field="searchField"
-      :search-value="searchValue"
       sort-by="age"
       sort-type="desc"
     >
@@ -90,7 +86,7 @@ import { mockClientItems } from "../mock";
 const searchField = ref("name");
 const searchValue = ref("name-1");
 
-const items = ref<Item[]>(mockClientItems(200));
+const items = ref<Item[]>(mockClientItems(100));
 const headers: Header[] = [
   { text: "Name", value: "name" },
   { text: "Address", value: "address" },
@@ -185,5 +181,8 @@ const updatePage = (paginationNumber: number) => {
 .filter-wrapper {
   display: flex;
   align-items: center;
+}
+.slider {
+  flex-grow: 1;
 }
 </style>
