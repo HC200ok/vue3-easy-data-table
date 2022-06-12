@@ -591,7 +591,7 @@ const lastIndexOfItemsInCurrentPage = computed((): number => {
     return currentPaginationNumber.value * rowsPerPageReactive.value;
   }
   return Math.min(
-    itemsSearching.value.length,
+    itemsFiltering.value.length,
     currentPaginationNumber.value * rowsPerPageReactive.value,
   );
 });

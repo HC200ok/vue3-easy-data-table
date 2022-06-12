@@ -3,7 +3,7 @@
   "author": "HC200ok",
   "description": "A customizable and easy-to-use data table component made with Vue.js 3.x.",
   "private": false,
-  "version": "1.2.1",
+  "version": "1.2.2",
   "types": "./types/main.d.ts",
   "license": "MIT",
   "files": [
@@ -36,6 +36,7 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "@vueform/slider": "^2.0.10",
     "vue": "^3.2.25"
   },
   "devDependencies": {
