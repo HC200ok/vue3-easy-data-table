@@ -76,7 +76,8 @@ export default defineComponent({
 ```
 
 ## Roadmap
-To make table header highly customizable 🎛️.
+1. add filtering feature ⏳.
+2. make table header highly customizable 🎛️.
 
 ## ⭐ Stargazers
 [![Stargazers repo roster for @HC200ok/vue3-easy-data-table](https://reporoster.com/stars/dark/notext/HC200ok/vue3-easy-data-table)](https://github.com/HC200ok/vue3-easy-data-table/stargazers)
