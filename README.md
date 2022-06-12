@@ -21,6 +21,7 @@ https://hc200ok.github.io/vue3-easy-data-table-doc/
 8. [Color customization](https://hc200ok.github.io/vue3-easy-data-table-doc/features/color-customization.html)
 9. [Loading slot](https://hc200ok.github.io/vue3-easy-data-table-doc/features/loading-slot.html)
 10. [Footer customization](https://hc200ok.github.io/vue3-easy-data-table-doc/features/footer-customization.html)
+11. [Filtering](https://hc200ok.github.io/vue3-easy-data-table-doc/features/filtering.html) (new feature since version `1.2.1`)
 
 ## Getting started
 ### Install
@@ -75,9 +76,8 @@ export default defineComponent({
 </script>
 ```
 
-## Roadmap
-1. add filtering feature ⏳.
-2. make table header highly customizable 🎛️.
+## Todo
+1. make table header customizable 🎛️.
 
 ## ⭐ Stargazers
 [![Stargazers repo roster for @HC200ok/vue3-easy-data-table](https://reporoster.com/stars/dark/notext/HC200ok/vue3-easy-data-table)](https://github.com/HC200ok/vue3-easy-data-table/stargazers)
