@@ -171,7 +171,7 @@ import ButtonsPagination from './ButtonsPagination.vue';
 import PaginationArrows from './PaginationArrows.vue';
 
 import type {
-  SortType, Header, Item, ServerOptions,
+  SortType, Header, Item, ServerOptions, FilterOption,
 } from '../types/main';
 
 type ClientSortOptions = {
@@ -334,6 +334,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  filterOptions: {
+    type: Array as PropType<FilterOption[]>,
+    default: null,
+  },
 });
 
 const {
@@ -390,7 +394,7 @@ const emits = defineEmits([
 ]);
 
 const serverOptionsComputed = computed({
-  get: (): ServerOptionsComputed => {
+  get: (): ServerOptionsComputed | null => {
     if (props.serverOptions) {
       const {
         page, rowsPerPage, sortBy, sortType,
@@ -402,12 +406,7 @@ const serverOptionsComputed = computed({
         sortType: sortType ?? null,
       };
     }
-    return {
-      page: 1,
-      rowsPerPage: 25,
-      sortBy: null,
-      sortType: null,
-    };
+    return null;
   },
   set: (value) => {
     emits('update:serverOptions', value);
@@ -416,7 +415,7 @@ const serverOptionsComputed = computed({
 
 const isMutipleSelectable = computed((): boolean => props.itemsSelected !== null);
 
-const isServerSideMode = computed((): boolean => props.serverOptions !== null);
+const isServerSideMode = computed((): boolean => serverOptionsComputed.value !== null);
 
 const initClientSortOptions = (): ClientSortOptions | null => {
   if (props.sortBy !== '') {
@@ -435,7 +434,8 @@ const headersForRender = computed((): HeaderForRender[] => {
   const headersSorting = props.headers.map((header: HeaderForRender) => {
     const headerSorting = header;
     if (header.sortable) headerSorting.sortType = 'none';
-    if (isServerSideMode.value && header.value === serverOptionsComputed.value.sortBy && serverOptionsComputed.value.sortType) {
+    if (serverOptionsComputed.value
+      && header.value === serverOptionsComputed.value.sortBy && serverOptionsComputed.value.sortType) {
       headerSorting.sortType = serverOptionsComputed.value.sortType;
     }
     if (!isServerSideMode.value && clientSortOptions.value && header.value === clientSortOptions.value.sortBy) {
@@ -459,15 +459,6 @@ const selectItemsComputed = computed({
   },
 });
 
-const multipleSelectStatus = computed((): 'allSelected' | 'noneSelected' | 'partSelected' => {
-  if (selectItemsComputed.value.length === 0) {
-    return 'noneSelected';
-  } if (selectItemsComputed.value.length === props.items.length) {
-    return 'allSelected';
-  }
-  return 'partSelected';
-});
-
 // items searching
 const itemsSearching = computed((): Item[] => {
   // searching feature is not available in server-side mode
@@ -479,12 +470,69 @@ const itemsSearching = computed((): Item[] => {
   return props.items;
 });
 
+// items filtering
+const itemsFiltering = computed((): Item[] => {
+  let itemsFiltered = [...itemsSearching.value];
+  if (props.filterOptions) {
+    props.filterOptions.forEach((option: FilterOption) => {
+      itemsFiltered = itemsFiltered.filter((item) => {
+        const { field, comparison, criteria } = option;
+        switch (comparison) {
+          case '=':
+            return item[field] === criteria;
+          case '!=':
+            return item[field] !== criteria;
+          case '>':
+            return item[field] > criteria;
+          case '<':
+            return item[field] < criteria;
+          case '<=':
+            return item[field] <= criteria;
+          case '>=':
+            return item[field] >= criteria;
+          case 'between':
+            return item[field] >= Math.min(...criteria) && item[field] <= Math.max(...criteria);
+          default:
+            return item[field] === criteria;
+        }
+      });
+    });
+    return itemsFiltered;
+  }
+  return itemsSearching.value;
+});
+
+const multipleSelectStatus = computed((): 'allSelected' | 'noneSelected' | 'partSelected' => {
+  if (selectItemsComputed.value.length === 0) {
+    return 'noneSelected';
+  }
+  const isNoneSelected = selectItemsComputed.value.every((itemSelected) => {
+    if (itemsFiltering.value.findIndex((item) => JSON.stringify(itemSelected) === JSON.stringify(item)) !== -1) {
+      return false;
+    }
+    return true;
+  });
+  if (isNoneSelected) return 'noneSelected';
+
+  if (selectItemsComputed.value.length === itemsFiltering.value.length) {
+    const isAllSelected = selectItemsComputed.value.every((itemSelected) => {
+      if (itemsFiltering.value.findIndex((item) => JSON.stringify(itemSelected) === JSON.stringify(item)) === -1) {
+        return false;
+      }
+      return true;
+    });
+    return isAllSelected ? 'allSelected' : 'partSelected';
+  }
+
+  return 'partSelected';
+});
+
 const currentPaginationNumber = ref(isServerSideMode.value ? props.serverOptions.page : 1);
 
 // rows per page
 const rowsPerPageReactive = ref(isServerSideMode.value ? props.serverOptions.rowsPerPage : props.rowsPerPage);
 watch(rowsPerPageReactive, (value) => {
-  if (isServerSideMode.value) {
+  if (serverOptionsComputed.value) {
     serverOptionsComputed.value = {
       ...serverOptionsComputed.value,
       page: 1,
@@ -504,7 +552,7 @@ const updateSortField = (newSortBy: string, oldSortType: SortType | 'none') => {
     newSortType = null;
   }
 
-  if (isServerSideMode.value) {
+  if (serverOptionsComputed.value) {
     // update server options
     serverOptionsComputed.value = {
       ...serverOptionsComputed.value,
@@ -524,11 +572,11 @@ const updateSortField = (newSortBy: string, oldSortType: SortType | 'none') => {
 // items sorting
 const itemsSorting = computed((): Item[] => {
   if (isServerSideMode.value) return props.items;
-  if (clientSortOptions.value === null) return itemsSearching.value;
+  if (clientSortOptions.value === null) return itemsFiltering.value;
   const { sortBy, sortDesc } = clientSortOptions.value;
-  const itemsSearchingSorted = [...itemsSearching.value];
+  const itemsFilteringSorted = [...itemsFiltering.value];
   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-  return itemsSearchingSorted.sort((a, b) => {
+  return itemsFilteringSorted.sort((a, b) => {
     if (a[sortBy] < b[sortBy]) return sortDesc ? 1 : -1;
     if (a[sortBy] > b[sortBy]) return sortDesc ? -1 : 1;
     return 0;
@@ -536,7 +584,7 @@ const itemsSorting = computed((): Item[] => {
 });
 
 // index info of items in current page.
-const totalItemsLength = computed((): number => (isServerSideMode.value ? props.serverItemsLength : itemsSearching.value.length));
+const totalItemsLength = computed((): number => (isServerSideMode.value ? props.serverItemsLength : itemsFiltering.value.length));
 
 const lastIndexOfItemsInCurrentPage = computed((): number => {
   if (isServerSideMode.value) {
@@ -561,7 +609,7 @@ const { loading } = toRefs(props);
 const nextPage = () => {
   if (isLastPage.value) return;
   if (loading.value) return;
-  if (isServerSideMode.value) {
+  if (serverOptionsComputed.value) {
     const nextPaginationNumber = currentPaginationNumber.value + 1;
     serverOptionsComputed.value = {
       ...serverOptionsComputed.value,
@@ -575,7 +623,7 @@ const nextPage = () => {
 const prevPage = () => {
   if (isFirstPage.value) return;
   if (loading.value) return;
-  if (isServerSideMode.value) {
+  if (serverOptionsComputed.value) {
     const prevPaginationNumber = currentPaginationNumber.value - 1;
     serverOptionsComputed.value = {
       ...serverOptionsComputed.value,
@@ -588,7 +636,7 @@ const prevPage = () => {
 
 const updatePage = (value: number) => {
   if (loading.value) return;
-  if (isServerSideMode.value) {
+  if (serverOptionsComputed.value) {
     serverOptionsComputed.value = {
       ...serverOptionsComputed.value,
       page: value,
@@ -599,7 +647,7 @@ const updatePage = (value: number) => {
 };
 
 watch(loading, (newVal, oldVal) => {
-  if (isServerSideMode.value) {
+  if (serverOptionsComputed.value) {
     // in server-side mode, turn to next page when api request finished.
     if (newVal === false && oldVal === true) {
       currentPaginationNumber.value = serverOptionsComputed.value.page;
@@ -625,8 +673,8 @@ const itemsWithIndex = computed((): Item[] => {
 });
 
 /**
- * items coputed flow:
- * items searching => sorting => current page => with index => with checkbox => render
+ * items computed flow:
+ * items searching => filtering => sorting => current page => with index => with checkbox => render
 */
 
 // items for render (with checbox)
@@ -843,6 +891,11 @@ defineExpose({
           tr {
             height: v-bind(rowHeightPx);
             color: v-bind(rowFontColor);
+            &:nth-child(-n+3) {
+              td {
+                border-bottom: 1px solid v-bind(rowBorderColor)!important;
+              }
+            }
             &:last-child {
               border-bottom: none;
               td {

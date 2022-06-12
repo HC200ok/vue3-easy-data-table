@@ -1,5 +1,21 @@
 export type SortType = 'asc' | 'desc'
 
+export type FilterComparison = '=' | '!=' | '>' | '>=' | '<' | '<=' | 'between';
+
+export type FilterOption = {
+  field: string,
+  comparison: 'between',
+  criteria: [number, number],
+} | {
+  field: string,
+  comparison: '=' | '!=',
+  criteria: number | string,
+} | {
+  field: string,
+  comparison: '>' | '>=' | '<' | '<=',
+  criteria: number,
+}
+
 export type Header = {
   text: string,
   value: string,
@@ -9,8 +25,8 @@ export type Header = {
 export type Item = Record<string, any>
 
 export type ServerOptions = {
-  page?: number,
-  rowsPerPage?: number,
+  page: number,
+  rowsPerPage: number,
   sortBy?: string,
   sortType?: SortType,
 }
