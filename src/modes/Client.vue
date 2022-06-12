@@ -1,116 +1,189 @@
 <template>
-  client mode:
-  <DataTable
-    ref="dataTable"
-    v-model:itemsSelected="itemsSelected"
-    :headers="headers"
-    :items="items"
-    :rows-per-page="10"
-    :rows-items="[10, 25, 50]"
-    :body-font-size="15"
-    sort-by="height"
-    sort-type="desc"
-    :buttons-pagination="true"
-    show-index
-  >
-    <template #loading>
-      <img
-        src="https://i.pinimg.com/originals/94/fd/2b/94fd2bf50097ade743220761f41693d5.gif"
-        style="width: 100px;height: 80px;"
-      >
-    </template>
-    <template #address="{ address }">
-      <div style="color: red">
-        {{ address }}
+  <div>
+    <div class="filter-wrapper">
+      <div class="filter-wrapper">
+        <span class="field">
+          filtering by age:
+        </span>
+        <Slider v-model="ageCriteria" />
       </div>
-    </template>
-  </DataTable>
+      <span class="field">
+        filtering by sport:
+      </span>
+      <select
+        v-model="favouriteSportCriteria"
+        name="favouriteSport"
+      >
+        <option value="basketball">
+          basketball
+        </option>
+        <option value="running">
+          running
+        </option>
+        <option value="football">
+          football
+        </option>
+        <option value="swimming">
+          swimming
+        </option>
+        <option value="all">
+          all
+        </option>
+      </select>
+    </div>
+    <span>search field:</span>
+    <select v-model="searchField">
+      <option>name</option>
+      <option>address</option>
+    </select><br />
+    <span>search value: </span>
+    <input type="text" v-model="searchValue" />
+    <DataTable
+      ref="dataTable"
+      v-model:items-selected="itemsSelected"
+      :headers="headers"
+      :items="items"
+      :rows-per-page="10"
+      :show-footer="false"
+      :filtering="[]"
+      show-index
+      buttons-pagination
+      alternating
+      :max-height="200"
+      :filter-options="filterOptions"
+      :search-field="searchField"
+      :search-value="searchValue"
+      sort-by="age"
+      sort-type="desc"
+    >
+    </DataTable>
 
-  <button
-    :disabled="isFirstPage"
-    @click="pagePrev"
->
-    prev page
-</button>
-<button
-    :disabled="isLastPage"
-    @click="pageNext"
->
-    next page
-</button>
+    <div class="customize-footer">
+      <div class="customize-index">
+        Now displaying: {{currentPageFirstIndex}} ~ {{currentPageLastIndex}} of {{totalItemsLength}}
+      </div>
+      <div class="customize-buttons">
+        <span
+          v-for="paginationNumber in maxPaginationNumber"
+          class="customize-button"
+          :class="{'active': paginationNumber === currentPaginationNumber}"
+          @click="updatePage(paginationNumber)"
+        >
+          {{paginationNumber}}
+        </span>
+      </div>
+      <div class="customize-pagination">
+        <button class="prev-page" @click="prevPage" :disabled="isFirstPage">prev page</button>
+        <button class="next-page" @click="nextPage" :disabled="isLastPage">next page</button>
+      </div>
+    </div>
+  </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import type { Header, Item } from 'vue3-easy-data-table';
-
+<script lang="ts" setup>
+import Slider from '@vueform/slider';
+import { computed, ref, reactive, toRefs } from 'vue';
+import { Header, Item, FilterOption } from "../types/main";
 import DataTable from '../components/DataTable.vue';
+import { mockClientItems } from "../mock";
 
+const searchField = ref("name");
+const searchValue = ref("name-1");
+
+const items = ref<Item[]>(mockClientItems(200));
 const headers: Header[] = [
-  { text: 'Name', value: 'name' },
-  { text: 'Address', value: 'address' },
-  { text: 'Height', value: 'height', sortable: true },
-  { text: 'Weight', value: 'weight', sortable: true },
-  { text: 'Age', value: 'calories', sortable: true },
-  { text: 'Calories', value: 'calories' },
-  { text: 'Fat (g)', value: 'fat' },
-  { text: 'Carbs (g)', value: 'carbs' },
-  { text: 'Protein (g)', value: 'protein' },
-  { text: 'Iron (%)', value: 'iron' },
+  { text: "Name", value: "name" },
+  { text: "Address", value: "address" },
+  { text: "Height", value: "height", sortable: true },
+  { text: "Weight", value: "weight", sortable: true },
+  { text: "Age", value: "age", sortable: true },
+  { text: "Favourite sport", value: "favouriteSport" },
+  { text: "Favourite fruits", value: "favouriteFruits" },
 ];
 
+const itemsSelected = ref<Item[]>([items.value[14]]);
+
+// filtering
+
+const ageCriteria = ref<[number, number]>([1, 15]);
+
+const favouriteSportCriteria = ref('basketball');
+
+const filterOptions = computed((): FilterOption[] => {
+  const filterOptionsArray: FilterOption[] = [];
+  if (favouriteSportCriteria.value !== 'all') {
+    filterOptionsArray.push({
+      field: 'favouriteSport',
+      comparison: '=',
+      criteria: favouriteSportCriteria.value,
+    });
+  }
+  filterOptionsArray.push({
+    field: 'age',
+    comparison: 'between',
+    criteria: ageCriteria.value,
+  });
+  return filterOptionsArray;
+});
+
+// $ref dataTable
 const dataTable = ref();
 
+// index related
 const currentPageFirstIndex = computed(() => dataTable.value?.currentPageFirstIndex);
 const currentPageLastIndex = computed(() => dataTable.value?.currentPageLastIndex);
 const totalItemsLength = computed(() => dataTable.value?.totalItemsLength);
 
-onMounted(() => {
-  console.log(currentPageFirstIndex.value);
-  console.log(currentPageLastIndex.value);
-  console.log(totalItemsLength.value);
-})
+// paginations related
+const maxPaginationNumber = computed(() => dataTable.value?.maxPaginationNumber);
+const currentPaginationNumber = computed(() => dataTable.value?.currentPaginationNumber);
 
 const isFirstPage = computed(() => dataTable.value?.isFirstPage);
 const isLastPage = computed(() => dataTable.value?.isLastPage);
 
-const pageNext = () => {
+const nextPage = () => {
   dataTable.value.nextPage();
-  console.log(currentPageFirstIndex.value);
-  console.log(currentPageLastIndex.value);
-  console.log(totalItemsLength.value);
-  console.log(isFirstPage.value);
-  console.log(isLastPage.value);
 };
-
-const pagePrev = () => {
+const prevPage = () => {
   dataTable.value.prevPage();
 };
-
-const showItem = (item: Item): void => {
-  console.log(item);
+const updatePage = (paginationNumber: number) => {
+  dataTable.value.updatePage(paginationNumber);
 };
-const itemsSelected = ref([]);
-
-const createMockItems = (): Item[] => {
-  const mockItems = [];
-  for (let i = 1; i < 2501; i += 1) {
-    mockItems.push({
-      name: `name-${i}`,
-      address: `address-${i}`,
-      height: i,
-      weight: i,
-      age: i,
-      calories: i,
-      fat: i,
-      carbs: i,
-      protein: i,
-      iron: i,
-    });
-  }
-  return mockItems;
-};
-
-const items = createMockItems();
-
 </script>
+
+<style src="@vueform/slider/themes/default.css"></style>
+
+<style scoped>
+.customize-footer {
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.customize-footer div {
+  margin: 5px;
+}
+.customize-button {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  border-radius: 100%;
+  cursor: pointer;
+  padding: 3px;
+  line-height: 20px;
+}
+.customize-button.active {
+  color: #fff;
+  background-color: #3db07f;
+}
+.customize-pagination button {
+  margin: 0 5px;
+  cursor: pointer;
+}
+.filter-wrapper {
+  display: flex;
+  align-items: center;
+}
+</style>
