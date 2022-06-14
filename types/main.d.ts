@@ -30,3 +30,8 @@ export type ServerOptions = {
   sortBy?: string,
   sortType?: SortType,
 }
+
+export type clickRowArgument = Item & {
+  isSelected?: boolean,
+  indexInCurrentPage?: number,
+}

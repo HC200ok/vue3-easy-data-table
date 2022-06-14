@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="filter-wrapper">
+    <!-- <div class="filter-wrapper">
       <span class="field">
         filtering by age:
       </span>
       <Slider v-model="ageCriteria" class="slider"/>
-    </div>
+    </div> -->
     <div class="filter-wrapper">
       <span class="field">
         filtering by sport:
@@ -51,6 +51,7 @@
       :filter-options="filterOptions"
       sort-by="age"
       sort-type="desc"
+      @click-row="showItem"
     >
     </DataTable>
 
@@ -77,9 +78,9 @@
 </template>
 
 <script lang="ts" setup>
-import Slider from '@vueform/slider';
+// import Slider from '@vueform/slider';
 import { computed, ref, reactive, toRefs } from 'vue';
-import { Header, Item, FilterOption } from "../types/main";
+import { Header, Item, FilterOption, clickRowArgument } from "../types/main";
 import DataTable from '../components/DataTable.vue';
 import { mockClientItems } from "../mock";
 
@@ -99,6 +100,10 @@ const headers: Header[] = [
 
 const itemsSelected = ref<Item[]>([items.value[14]]);
 
+const showItem = (item: clickRowArgument) => {
+  console.log('item');
+  console.log(item);
+};
 // filtering
 
 const ageCriteria = ref<[number, number]>([1, 15]);

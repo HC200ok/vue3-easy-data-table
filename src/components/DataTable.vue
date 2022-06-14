@@ -60,6 +60,7 @@
             <tr
               v-for="(item) in itemsForRender"
               :key="JSON.stringify(item)"
+              @click="clickRow(item)"
             >
               <td
                 v-for="(column, i) in headerColumns"
@@ -161,7 +162,7 @@
 
 <script setup lang="ts">
 import {
-  useSlots, computed, toRefs, PropType, ref, watch, provide, defineExpose,
+  useSlots, computed, toRefs, PropType, ref, watch, provide,
 } from 'vue';
 import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
@@ -391,6 +392,7 @@ provide('dataTable', dataTable);
 const emits = defineEmits([
   'update:itemsSelected',
   'update:serverOptions',
+  'clickRow',
 ]);
 
 const serverOptionsComputed = computed({
@@ -714,6 +716,21 @@ const toggleSelectItem = (item: Item):void => {
     selectItemsComputed.value = selectItemsComputed.value.filter((selectedItem) => JSON.stringify(selectedItem)
       !== JSON.stringify(item));
   }
+};
+
+const clickRow = (item: Item) => {
+  const clickRowArgument = { ...item };
+  if (isMutipleSelectable.value) {
+    const { checkbox } = item;
+    delete clickRowArgument.checkbox;
+    clickRowArgument.isSelected = checkbox;
+  }
+  if (props.showIndex) {
+    const { index } = item;
+    delete clickRowArgument.index;
+    clickRowArgument.indexInCurrentPage = index;
+  }
+  emits('clickRow', clickRowArgument);
 };
 
 defineExpose({
