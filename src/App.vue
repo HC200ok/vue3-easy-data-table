@@ -1,5 +1,5 @@
 <template>
-  <!-- <ServerSideMode /> -->
+  <ServerSideMode />
   <br><br>
   <ClientMode />
 </template>
