@@ -78,8 +78,10 @@ export default defineComponent({
 ```
 
 ## Todo
-1. Fixed specific columns
-1. Make table header customizable 🎛️.
+1. Fixed specific columns.
+2. Migrate from color properties to to css variables.
+3. Make table header customizable 🎛️.
+4. Vitual table rows.
 
 ## ⭐ Stargazers
 [![Stargazers repo roster for @HC200ok/vue3-easy-data-table](https://reporoster.com/stars/dark/notext/HC200ok/vue3-easy-data-table)](https://github.com/HC200ok/vue3-easy-data-table/stargazers)
