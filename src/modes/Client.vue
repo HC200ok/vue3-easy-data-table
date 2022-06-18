@@ -6,6 +6,8 @@
       </span>
       <Slider v-model="ageCriteria" class="slider"/>
     </div> -->
+    <button @click="switchToNested300">use nested 300</button>
+    <button @click="switchToNested">use nested</button>
     <div class="filter-wrapper">
       <span class="field">
         filtering by sport:
@@ -48,7 +50,6 @@
       buttons-pagination
       alternating
       :max-height="200"
-      :filter-options="filterOptions"
       sort-by="age"
       sort-type="desc"
       @click-row="showItem"
@@ -57,7 +58,7 @@
 
     <div class="customize-footer">
       <div class="customize-index">
-        Now displaying: {{currentPageFirstIndex}} ~ {{currentPageLastIndex}} of {{totalItemsLength}}
+        Now displaying: {{ currentPageFirstIndex }} ~ {{ currentPageLastIndex }} of {{ totalItemsLength }}
       </div>
       <div class="customize-buttons">
         <span
@@ -66,12 +67,24 @@
           :class="{'active': paginationNumber === currentPaginationNumber}"
           @click="updatePage(paginationNumber)"
         >
-          {{paginationNumber}}
+          {{ paginationNumber }}
         </span>
       </div>
       <div class="customize-pagination">
-        <button class="prev-page" @click="prevPage" :disabled="isFirstPage">prev page</button>
-        <button class="next-page" @click="nextPage" :disabled="isLastPage">next page</button>
+        <button
+          class="prev-page"
+          :disabled="isFirstPage"
+          @click="prevPage"
+        >
+          prev page
+        </button>
+        <button
+          class="next-page"
+          :disabled="isLastPage"
+          @click="nextPage"
+        >
+          next page
+        </button>
       </div>
     </div>
   </div>
@@ -79,23 +92,36 @@
 
 <script lang="ts" setup>
 // import Slider from '@vueform/slider';
-import { computed, ref, reactive, toRefs } from 'vue';
-import { Header, Item, FilterOption, clickRowArgument } from "../types/main";
+import {
+  computed, ref, reactive, toRefs,
+} from 'vue';
+import {
+  Header, Item, FilterOption, clickRowArgument,
+} from '../types/main';
 import DataTable from '../components/DataTable.vue';
-import { mockClientItems } from "../mock";
+import { mockClientNestedItems, mockClientItems } from '../mock';
 
-const searchField = ref("name");
-const searchValue = ref("name-1");
+const searchField = ref('name');
+const searchValue = ref('name-1');
 
-const items = ref<Item[]>(mockClientItems(100));
+const items = ref<Item[]>(mockClientNestedItems(100));
+
+const switchToNested300 = () => {
+  items.value = mockClientNestedItems(300);
+};
+
+const switchToNested = () => {
+  items.value = mockClientNestedItems(100);
+};
+
 const headers: Header[] = [
-  { text: "Name", value: "name" },
-  { text: "Address", value: "address" },
-  { text: "Height", value: "height", sortable: true },
-  { text: "Weight", value: "weight", sortable: true },
-  { text: "Age", value: "age", sortable: true },
-  { text: "Favourite sport", value: "favouriteSport" },
-  { text: "Favourite fruits", value: "favouriteFruits" },
+  { text: 'Name', value: 'name' },
+  { text: 'Address', value: 'address' },
+  { text: 'Height', value: 'info.out.height', sortable: true },
+  { text: 'Weight', value: 'info.out.weight', sortable: true },
+  { text: 'Age', value: 'age', sortable: true },
+  { text: 'Favourite sport', value: 'favouriteSport' },
+  { text: 'Favourite fruits', value: 'favouriteFruits' },
 ];
 
 const itemsSelected = ref<Item[]>([items.value[14]]);
@@ -108,24 +134,24 @@ const showItem = (item: clickRowArgument) => {
 
 const ageCriteria = ref<[number, number]>([1, 15]);
 
-const favouriteSportCriteria = ref('basketball');
+const favouriteSportCriteria = ref('all');
 
-const filterOptions = computed((): FilterOption[] => {
-  const filterOptionsArray: FilterOption[] = [];
-  if (favouriteSportCriteria.value !== 'all') {
-    filterOptionsArray.push({
-      field: 'favouriteSport',
-      comparison: '=',
-      criteria: favouriteSportCriteria.value,
-    });
-  }
-  filterOptionsArray.push({
-    field: 'age',
-    comparison: 'between',
-    criteria: ageCriteria.value,
-  });
-  return filterOptionsArray;
-});
+// const filterOptions = computed((): FilterOption[] => {
+//   const filterOptionsArray: FilterOption[] = [];
+//   if (favouriteSportCriteria.value !== 'all') {
+//     filterOptionsArray.push({
+//       field: 'favouriteSport',
+//       comparison: '=',
+//       criteria: favouriteSportCriteria.value,
+//     });
+//   }
+//   filterOptionsArray.push({
+//     field: 'age',
+//     comparison: 'between',
+//     criteria: ageCriteria.value,
+//   });
+//   return filterOptionsArray;
+// });
 
 // $ref dataTable
 const dataTable = ref();
