@@ -530,10 +530,6 @@ const multipleSelectStatus = computed((): 'allSelected' | 'noneSelected' | 'part
 });
 
 const currentPaginationNumber = ref(isServerSideMode.value ? props.serverOptions.page : 1);
-const items = toRefs(props);
-watch(items, () => {
-  currentPaginationNumber.value = 1;
-}, { deep: true });
 
 // rows per page
 const rowsPerPageReactive = ref(isServerSideMode.value ? props.serverOptions.rowsPerPage : props.rowsPerPage);
