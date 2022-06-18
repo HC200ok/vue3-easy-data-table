@@ -79,7 +79,7 @@ export default defineComponent({
 
 ## Todo
 1. Fixed specific columns.
-2. Migrate from color properties to to css variables.
+2. Migrate from color properties to css variables.
 3. Make table header customizable 🎛️.
 4. Vitual table rows.
 
