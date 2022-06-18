@@ -78,7 +78,7 @@
                   />
                 </template>
                 <template v-else>
-                  {{ Array.isArray(item[column]) ? item[column].join(',') : item[column] }}
+                  {{ generateColumnContent(column, item) }}
                 </template>
               </td>
             </tr>
@@ -453,6 +453,19 @@ const headersForRender = computed((): HeaderForRender[] => {
 
 const headerColumns = computed((): string[] => headersForRender.value.map((header) => header.value));
 
+const generateColumnContent = (column: string, item: Item) => {
+  let content: any = '';
+  if (column.includes('.')) {
+    const propertyArr = column.split('.');
+    propertyArr.forEach((property, index) => {
+      content = (index === 0 ? item[property] : content[property]);
+    });
+  } else {
+    content = item[column];
+  }
+  return Array.isArray(content) ? content.join(',') : content;
+};
+
 // multiple selecting
 const selectItemsComputed = computed({
   get: () => props.itemsSelected ?? [],
@@ -530,6 +543,11 @@ const multipleSelectStatus = computed((): 'allSelected' | 'noneSelected' | 'part
 });
 
 const currentPaginationNumber = ref(isServerSideMode.value ? props.serverOptions.page : 1);
+
+const { items } = toRefs(props);
+watch(items, () => {
+  currentPaginationNumber.value = 1;
+}, { deep: true });
 
 // rows per page
 const rowsPerPageReactive = ref(isServerSideMode.value ? props.serverOptions.rowsPerPage : props.rowsPerPage);

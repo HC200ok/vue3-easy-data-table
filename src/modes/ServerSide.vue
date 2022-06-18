@@ -20,10 +20,16 @@
         <a :href="address">{{ address }}</a>
       </template>
       <template #pagination="{ prevPage, nextPage, isFirstPage, isLastPage }">
-        <button :disabled="isFirstPage" @click="prevPage">
+        <button
+          :disabled="isFirstPage"
+          @click="prevPage"
+        >
           prev page
         </button>
-        <button :disabled="isLastPage" @click="nextPage">
+        <button
+          :disabled="isLastPage"
+          @click="nextPage"
+        >
           next page
         </button>
       </template>
@@ -45,10 +51,18 @@
         </span>
       </div>
       <div class="customize-pagination">
-        <button class="prev-page" @click="prevPage" :disabled="isFirstPage">
+        <button
+          class="prev-page"
+          :disabled="isFirstPage"
+          @click="prevPage"
+        >
           prev page
         </button>
-        <button class="next-page" @click="nextPage" :disabled="isLastPage">
+        <button
+          class="next-page"
+          :disabled="isLastPage"
+          @click="nextPage"
+        >
           next page
         </button>
       </div>
@@ -57,22 +71,24 @@
 </template>
 
 <script lang="ts">
-import { Header, Item, ServerOptions } from "../types/main";
+import {
+  defineComponent, ref, computed, watch, onMounted, Ref,
+} from 'vue';
+import { Header, Item, ServerOptions } from '../types/main';
 import DataTable from '../components/DataTable.vue';
-import { mockClientItems, mockServerItems } from "../mock";
-import { defineComponent, ref, computed, watch, onMounted, Ref, } from "vue";
+import { mockClientItems, mockServerItems } from '../mock';
 
 export default defineComponent({
-  components: {DataTable},
+  components: { DataTable },
   setup() {
     const headers: Header[] = [
-      { text: "Name", value: "name" },
-      { text: "Address", value: "address" },
-      { text: "Height", value: "height", sortable: true },
-      { text: "Weight", value: "weight", sortable: true },
-      { text: "Age", value: "age", sortable: true },
-      { text: "Favourite sport", value: "favouriteSport" },
-      { text: "Favourite fruits", value: "favouriteFruits" },
+      { text: 'Name', value: 'name' },
+      { text: 'Address', value: 'address' },
+      { text: 'Height', value: 'height', sortable: true },
+      { text: 'Weight', value: 'weight', sortable: true },
+      { text: 'Age', value: 'age', sortable: true },
+      { text: 'Favourite sport', value: 'favouriteSport' },
+      { text: 'Favourite fruits', value: 'favouriteFruits' },
     ];
     const items = ref<Item[]>([]);
     const itemsSelected = ref<Item[]>([items.value[0]]);
@@ -103,7 +119,7 @@ export default defineComponent({
       () => {
         loadFromServer();
       },
-      { deep: true }
+      { deep: true },
     );
     // $ref dataTable
     const dataTable = ref();
