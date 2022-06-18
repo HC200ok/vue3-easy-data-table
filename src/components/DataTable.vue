@@ -453,16 +453,20 @@ const headersForRender = computed((): HeaderForRender[] => {
 
 const headerColumns = computed((): string[] => headersForRender.value.map((header) => header.value));
 
-const generateColumnContent = (column: string, item: Item) => {
-  let content: any = '';
+const getItemValue = (column: string, item: Item) => {
   if (column.includes('.')) {
-    const propertyArr = column.split('.');
-    propertyArr.forEach((property, index) => {
-      content = (index === 0 ? item[property] : content[property]);
+    let content: any = '';
+    const keysArr = column.split('.');
+    keysArr.forEach((key, index) => {
+      content = (index === 0 ? item[key] : content[key]);
     });
-  } else {
-    content = item[column];
+    return content;
   }
+  return item[column];
+};
+
+const generateColumnContent = (column: string, item: Item) => {
+  const content = getItemValue(column, item);
   return Array.isArray(content) ? content.join(',') : content;
 };
 
@@ -597,8 +601,8 @@ const itemsSorting = computed((): Item[] => {
   const itemsFilteringSorted = [...itemsFiltering.value];
   // eslint-disable-next-line vue/no-side-effects-in-computed-properties
   return itemsFilteringSorted.sort((a, b) => {
-    if (a[sortBy] < b[sortBy]) return sortDesc ? 1 : -1;
-    if (a[sortBy] > b[sortBy]) return sortDesc ? -1 : 1;
+    if (getItemValue(sortBy, a) < getItemValue(sortBy, b)) return sortDesc ? 1 : -1;
+    if (getItemValue(sortBy, a) > getItemValue(sortBy, b)) return sortDesc ? -1 : 1;
     return 0;
   });
 });
