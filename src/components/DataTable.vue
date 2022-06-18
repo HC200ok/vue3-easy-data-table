@@ -550,7 +550,7 @@ const currentPaginationNumber = ref(isServerSideMode.value ? props.serverOptions
 
 const { items } = toRefs(props);
 watch(items, () => {
-  currentPaginationNumber.value = 1;
+  if (!isServerSideMode.value) currentPaginationNumber.value = 1;
 }, { deep: true });
 
 // rows per page
