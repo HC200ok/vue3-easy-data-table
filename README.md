@@ -23,6 +23,8 @@ https://hc200ok.github.io/vue3-easy-data-table-doc/
 10. [Footer customization](https://hc200ok.github.io/vue3-easy-data-table-doc/features/footer-customization.html)
 11. [Filtering](https://hc200ok.github.io/vue3-easy-data-table-doc/features/filtering.html) (new feature since version `1.2.3`)
 12. [Click row](https://hc200ok.github.io/vue3-easy-data-table-doc/features/click-row.html) (new feature since version `1.2.4`)
+13. [Column width](https://hc200ok.github.io/vue3-easy-data-table-doc/features/column-width.html) (new feature since version `1.2.10`)
+14. [Fixed columns](https://hc200ok.github.io/vue3-easy-data-table-doc/features/fixed-column.html) (new feature since version `1.2.10`)
 
 ## Getting started
 ### Install
@@ -78,7 +80,7 @@ export default defineComponent({
 ```
 
 ## Todo
-1. Fixed specific columns.
+1. refactory (use render function instead of slot)
 2. Migrate from color properties to css variables.
 3. Make table header customizable 🎛️.
 4. Vitual table rows.
