@@ -20,6 +20,8 @@ export type Header = {
   text: string,
   value: string,
   sortable?: boolean,
+  fixed?: boolean,
+  width?: number,
 }
 
 export type Item = Record<string, any>
