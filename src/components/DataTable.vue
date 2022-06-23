@@ -12,7 +12,7 @@
         'show-shadow': showShadow,
       }"
     >
-      <table>
+      <table :class="{'fixed': fixedHeaders.length}">
         <colgroup>
           <col
             v-for="(header, index) in headersForRender"
@@ -25,8 +25,6 @@
             <th
               v-for="(header, index) in headersForRender"
               :key="index"
-              colspan="1"
-              rowspan="1"
               :class="{
                 sortable: header.sortable,
                 'none': header.sortable && header.sortType === 'none',
@@ -78,8 +76,6 @@
               <td
                 v-for="(column, i) in headerColumns"
                 :key="i"
-                colspan="1"
-                rowspan="1"
                 :style="getFixedDistance(column, 'td')"
                 :class="{'hasShadow': column === lastFixedColumn}"
               >
@@ -497,12 +493,6 @@ type FixedColumnsInfo = {
   width: number,
 };
 
-const getColStyle = (header: HeaderForRender): string | undefined => {
-  const width = header.width ?? (header.fixed ? 100 : null);
-  if (width) return `width: ${width}px; min-width: ${width}px;`;
-  return undefined;
-};
-
 const hasFixedColumnsFromUser = computed(() => props.headers.findIndex((header) => header.fixed) !== -1);
 const fixedHeadersFromUser = computed(() => {
   if (hasFixedColumnsFromUser.value) return props.headers.filter((header) => header.fixed);
@@ -556,6 +546,12 @@ const lastFixedColumn = computed((): string => {
   if (!fixedHeaders.value.length) return '';
   return fixedHeaders.value[fixedHeaders.value.length - 1].value;
 });
+
+const getColStyle = (header: HeaderForRender): string | undefined => {
+  const width = header.width ?? (fixedHeaders.value.length ? 100 : null);
+  if (width) return `width: ${width}px; min-width: ${width}px;`;
+  return undefined;
+};
 
 const fixedColumnsInfos = computed((): FixedColumnsInfo[] => {
   if (!fixedHeaders.value.length) return [];
@@ -1001,6 +997,9 @@ defineExpose({
       }
 
       table {
+        &.fixed {
+          table-layout: fixed;
+        }
         display: table;
         margin: 0px;
         width: 100%;
