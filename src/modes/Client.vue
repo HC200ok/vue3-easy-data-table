@@ -42,14 +42,11 @@
     <input type="text" v-model="searchValue" /> -->
     <DataTable
       ref="dataTable"
-      v-model:items-selected="itemsSelected"
       :headers="headers"
       :items="items"
       :rows-per-page="10"
-      show-index
       buttons-pagination
       alternating
-      :max-height="200"
       sort-by="age"
       sort-type="desc"
       @click-row="showItem"
@@ -115,14 +112,24 @@ const switchToNested = () => {
 };
 
 const headers: Header[] = [
-  { text: 'Name', value: 'name' },
-  { text: 'Address', value: 'address' },
-  { text: 'Height', value: 'info.out.height', sortable: true },
-  { text: 'Weight', value: 'info.out.weight', sortable: true },
-  { text: 'Age', value: 'age', sortable: true },
-  { text: 'Favourite sport', value: 'favouriteSport' },
-  { text: 'Favourite fruits', value: 'favouriteFruits' },
+  { text: 'Name', value: 'name', fixed: true, width: 200 },
+  { text: 'Address', value: 'address', width: 200 },
+  { text: 'Height', value: 'info.out.height', sortable: true, width: 200 },
+  { text: 'Weight', value: 'info.out.weight', sortable: true, width: 200 },
+  { text: 'Age', value: 'age', sortable: true, fixed: true, width: 200 },
+  { text: 'Favourite sport', value: 'favouriteSport', width: 200 },
+  { text: 'Favourite fruits', value: 'favouriteFruits', width: 200 },
 ];
+
+// const headers: Header[] = [
+//   { text: 'Name', value: 'name'},
+//   { text: 'Address', value: 'address'},
+//   { text: 'Height', value: 'info.out.height', sortable: true},
+//   { text: 'Weight', value: 'info.out.weight', sortable: true },
+//   { text: 'Age', value: 'age', sortable: true },
+//   { text: 'Favourite sport', value: 'favouriteSport'},
+//   { text: 'Favourite fruits', value: 'favouriteFruits'},
+// ];
 
 const itemsSelected = ref<Item[]>([items.value[14]]);
 

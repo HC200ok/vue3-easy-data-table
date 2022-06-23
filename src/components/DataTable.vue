@@ -4,24 +4,38 @@
     class="vue3-easy-data-table"
   >
     <div
+      ref="tableBody"
       class="data-table__body"
       :class="{
         'fixed-header': fixedHeader,
         'fixed-height': tableHeight,
+        'show-shadow': showShadow,
       }"
     >
       <table>
+        <colgroup>
+          <col
+            v-for="(header, index) in headersForRender"
+            :key="index"
+            :style="getColStyle(header)"
+          />
+        </colgroup>
         <thead v-if="headersForRender.length">
           <tr>
             <th
               v-for="(header, index) in headersForRender"
               :key="index"
+              colspan="1"
+              rowspan="1"
               :class="{
                 sortable: header.sortable,
                 'none': header.sortable && header.sortType === 'none',
                 'desc': header.sortable && header.sortType === 'desc',
                 'asc': header.sortable && header.sortType === 'asc',
+                'fixed': header.fixed,
+                'hasShadow': header.value === lastFixedColumn,
               }"
+              :style="getFixedDistance(header.value)"
               @click="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
             >
               <MutipleSelectCheckBox
@@ -43,7 +57,6 @@
                   class="sortType-icon"
                   :class="{'desc': header.sortType === 'desc'}"
                 ></i>
-
               </span>
             </th>
           </tr>
@@ -65,6 +78,10 @@
               <td
                 v-for="(column, i) in headerColumns"
                 :key="i"
+                colspan="1"
+                rowspan="1"
+                :style="getFixedDistance(column, 'td')"
+                :class="{'hasShadow': column === lastFixedColumn}"
               >
                 <slot
                   v-if="slots[column]"
@@ -114,11 +131,14 @@
       v-if="showFooter"
       class="data-table__footer"
     >
-      <div class="footer__rows-per-page">
+      <div
+        v-if="!hideRowsPerPage"
+        class="footer__rows-per-page"
+      >
         rows per page:
         <RowsSelector
           v-model="rowsPerPageReactive"
-          :rows-items="rowsItems"
+          :rows-items="rowsItemsComputed"
         />
       </div>
       <div class="footer__items-index">
@@ -162,7 +182,7 @@
 
 <script setup lang="ts">
 import {
-  useSlots, computed, toRefs, PropType, ref, watch, provide,
+  useSlots, computed, toRefs, PropType, ref, watch, provide, onMounted,
 } from 'vue';
 import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
@@ -185,6 +205,8 @@ type HeaderForRender = {
   value: string,
   sortable?: boolean,
   sortType?: SortType | 'none',
+  fixed?: Boolean,
+  width?: number,
 }
 
 type ServerOptionsComputed = {
@@ -339,6 +361,26 @@ const props = defineProps({
     type: Array as PropType<FilterOption[]>,
     default: null,
   },
+  fixedCheckbox: {
+    type: Boolean,
+    default: false,
+  },
+  fixedIndex: {
+    type: Boolean,
+    default: false,
+  },
+  indexColumnWidth: {
+    type: Number,
+    default: 60,
+  },
+  checkboxColumnWidth: {
+    type: Number,
+    default: null,
+  },
+  hideRowsPerPage: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const {
@@ -359,6 +401,7 @@ const {
 const fontSizePx = computed(() => `${props.tableFontSize}px`);
 const rowHeight = computed(() => props.tableFontSize * (props.dense ? 2 : 3));
 const rowHeightPx = computed(() => `${rowHeight.value}px`);
+const shadowRightPx = computed(() => `-${rowHeight.value}px`);
 const tableHeightPx = computed(() => (props.tableHeight ? `${props.tableHeight}px` : null));
 const minHeightPx = computed(() => `${rowHeight.value * 5}px`);
 const sortTypeIconSize = computed(() => Math.round(props.tableFontSize / 2.5));
@@ -369,7 +412,7 @@ const sortTypeDescIconMarginTopPx = computed(() => `${sortTypeIconMargin.value}p
 const loadingEntitySizePx = computed(() => `${props.tableFontSize * 5}px`);
 const loadingWrapperSizePx = computed(() => (props.tableHeight ? `${props.tableHeight - rowHeight.value}px`
   : `${props.tableFontSize * 5 * 2}px`));
-
+const checkboxColumnWidthComputed = computed(() => props.checkboxColumnWidth ?? 1.3 * props.tableFontSize + 20);
 // global style related variable
 provide('themeColor', props.themeColor);
 provide('loadingEntitySizePx', loadingEntitySizePx.value);
@@ -386,7 +429,16 @@ const ifHasLoadingSlot = computed(() => slots.loading);
 
 // global dataTable $ref
 const dataTable = ref();
+const tableBody = ref();
 provide('dataTable', dataTable);
+
+// fixed shadow
+const showShadow = ref(false);
+onMounted(() => {
+  tableBody.value.addEventListener('scroll', () => {
+    showShadow.value = tableBody.value.scrollLeft > 0;
+  });
+});
 
 // define emits
 const emits = defineEmits([
@@ -419,6 +471,13 @@ const isMutipleSelectable = computed((): boolean => props.itemsSelected !== null
 
 const isServerSideMode = computed((): boolean => serverOptionsComputed.value !== null);
 
+const rowsItemsComputed = computed((): number[] => {
+  if (!isServerSideMode.value && props.rowsItems.findIndex((item) => item === props.rowsPerPage) === -1) {
+    return [props.rowsPerPage, ...props.rowsItems];
+  }
+  return props.rowsItems;
+});
+
 const initClientSortOptions = (): ClientSortOptions | null => {
   if (props.sortBy !== '') {
     return {
@@ -431,9 +490,33 @@ const initClientSortOptions = (): ClientSortOptions | null => {
 
 const clientSortOptions = ref<ClientSortOptions | null>(initClientSortOptions());
 
+type FixedColumnsInfo = {
+  value: string,
+  fixed: Boolean,
+  distance: number,
+  width: number,
+};
+
+const getColStyle = (header: HeaderForRender): string | undefined => {
+  const width = header.width ?? (header.fixed ? 100 : null);
+  if (width) return `width: ${width}px; min-width: ${width}px;`;
+  return undefined;
+};
+
+const hasFixedColumnsFromUser = computed(() => props.headers.findIndex((header) => header.fixed) !== -1);
+const fixedHeadersFromUser = computed(() => {
+  if (hasFixedColumnsFromUser.value) return props.headers.filter((header) => header.fixed);
+  return [];
+});
+const unFixedHeaders = computed(() => props.headers.filter((header) => !header.fixed));
+
 // headers for render (integrating sortType, checkbox...)
 const headersForRender = computed((): HeaderForRender[] => {
-  const headersSorting = props.headers.map((header: HeaderForRender) => {
+  // fixed order
+  const fixedHeaders = [...fixedHeadersFromUser.value,
+    ...unFixedHeaders.value] as HeaderForRender[];
+  // sorting
+  const headersSorting: HeaderForRender[] = fixedHeaders.map((header: HeaderForRender) => {
     const headerSorting = header;
     if (header.sortable) headerSorting.sortType = 'none';
     if (serverOptionsComputed.value
@@ -445,11 +528,58 @@ const headersForRender = computed((): HeaderForRender[] => {
     }
     return headerSorting;
   });
-  const headersWithIndex = props.showIndex ? [{ text: '#', value: 'index' }, ...headersSorting] : headersSorting;
-  const headersWithCheckbox = isMutipleSelectable.value
-    ? [{ text: 'checkbox', value: 'checkbox' }, ...headersWithIndex] : headersWithIndex;
+  // show index
+  let headersWithIndex: HeaderForRender[] = [];
+  if (!props.showIndex) {
+    headersWithIndex = headersSorting;
+  } else {
+    const headerIndex: HeaderForRender = (props.fixedIndex || hasFixedColumnsFromUser.value) ? {
+      text: '#', value: 'index', fixed: true, width: props.indexColumnWidth,
+    } : { text: '#', value: 'index' };
+    headersWithIndex = [headerIndex, ...headersSorting];
+  }
+  // checkbox
+  let headersWithCheckbox: HeaderForRender[] = [];
+  if (!isMutipleSelectable.value) {
+    headersWithCheckbox = headersWithIndex;
+  } else {
+    const headerCheckbox: HeaderForRender = (props.fixedCheckbox || hasFixedColumnsFromUser.value) ? {
+      text: 'checkbox', value: 'checkbox', fixed: true, width: checkboxColumnWidthComputed.value,
+    } : { text: 'checkbox', value: 'checkbox' };
+    headersWithCheckbox = [headerCheckbox, ...headersWithIndex];
+  }
   return headersWithCheckbox;
 });
+
+const fixedHeaders = computed((): HeaderForRender[] => headersForRender.value.filter((header) => header.fixed));
+const lastFixedColumn = computed((): string => {
+  if (!fixedHeaders.value.length) return '';
+  return fixedHeaders.value[fixedHeaders.value.length - 1].value;
+});
+
+const fixedColumnsInfos = computed((): FixedColumnsInfo[] => {
+  if (!fixedHeaders.value.length) return [];
+  const fixedHeadersWidthArr = fixedHeaders.value.map((header) => header.width ?? 100);
+  return fixedHeaders.value.map((header: HeaderForRender, index: number): FixedColumnsInfo => ({
+    value: header.value,
+    fixed: header.fixed ?? true,
+    width: header.width ?? 100,
+    distance: index === 0 ? 0 : fixedHeadersWidthArr.reduce((previous: number, current: number, i: number): number => {
+      let distance = previous;
+      if (i < index) distance += current;
+      return distance;
+    }),
+  }));
+});
+
+const getFixedDistance = (column: string, type: 'td' | 'th' = 'th') => {
+  if (!fixedHeaders.value.length) return undefined;
+  const columInfo = fixedColumnsInfos.value.find((info) => info.value === column);
+  if (columInfo) {
+    return `left: ${columInfo.distance}px;z-index: ${type === 'th' ? 3 : 1}; position: sticky`;
+  }
+  return undefined;
+};
 
 const headerColumns = computed((): string[] => headersForRender.value.map((header) => header.value));
 
@@ -784,11 +914,38 @@ defineExpose({
       overflow: auto;
       min-height: v-bind(minHeightPx);
 
+      &::-webkit-scrollbar-track
+      {
+        border-radius: 10px;
+        background-color: #fff;
+      }
+
+      &::-webkit-scrollbar
+      {
+        width: 7px;
+        height: 7px;
+        background-color: #fff;
+      }
+
+      &::-webkit-scrollbar-thumb
+      {
+        border-radius: 10px;
+        background-color: #c1c1c1;
+      }
+
+      &.show-shadow {
+        th.hasShadow, td.hasShadow {
+          &::after {
+            box-shadow: inset 6px 0 5px -3px rgb(0 0 0 / 20%)
+          }
+        }
+      }
+
       &.fixed-header {
-        thead {
+        thead tr th{
           position: sticky;
           top: 0;
-          z-index: 1;
+          z-index: 2;
         }
       }
       &.fixed-height {
@@ -856,6 +1013,19 @@ defineExpose({
           text-align: left;
           padding: 0px 10px;
         }
+        th.hasShadow, td.hasShadow {
+          &::after {
+            pointer-events: none;
+            content: "";
+            width: v-bind(rowHeightPx);
+            display: inline-block;
+            height: 100%;
+            position: absolute;
+            top: 0px;
+            right: v-bind(shadowRightPx);
+            box-shadow: none;
+          }
+        }
         thead, tbody {
           position: relative;
         }
@@ -875,6 +1045,11 @@ defineExpose({
               display: flex;
               align-items: center;
               height: v-bind(fontSizePx);
+            }
+
+            &.fixed {
+              position: sticky;
+              z-index: 3;
             }
 
             &.sortable {
@@ -948,8 +1123,10 @@ defineExpose({
             }
           }
           td {
+            background-color: v-bind(rowBackgroundColor);
             border: none;
             border-bottom: 1px solid v-bind(rowBorderColor);
+            position: relative;
           }
           &.row-alternation {
             &.hover-to-change-color {
@@ -958,7 +1135,7 @@ defineExpose({
                 color: v-bind(rowHoverFontColor);
               }
             }
-            tr:nth-child(2n) {
+            tr:nth-child(2n) td{
               color: v-bind(evenRowFontColor);
               background-color: v-bind(evenRowBackgroundColor);
             }

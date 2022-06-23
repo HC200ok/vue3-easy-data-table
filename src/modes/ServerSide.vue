@@ -2,6 +2,7 @@
   <div>
     <DataTable
       ref="dataTable"
+      v-model:items-selected="itemsSelected"
       v-model:server-options="serverOptions"
       :headers="headers"
       :items="items"
@@ -9,6 +10,9 @@
       :loading="loading"
       show-index
       buttons-pagination
+      fixed-checkbox
+      fixed-index
+      :index-column-width="40"
       alternating
       sort-by="age"
       sort-type="desc"
@@ -19,7 +23,7 @@
       <template #address="{ address }">
         <a :href="address">{{ address }}</a>
       </template>
-      <template #pagination="{ prevPage, nextPage, isFirstPage, isLastPage }">
+      <!-- <template #pagination="{ prevPage, nextPage, isFirstPage, isLastPage }">
         <button
           :disabled="isFirstPage"
           @click="prevPage"
@@ -32,7 +36,7 @@
         >
           next page
         </button>
-      </template>
+      </template> -->
     </DataTable>
     <div class="customize-footer">
       <div class="customize-index">
@@ -81,14 +85,23 @@ import { mockClientItems, mockServerItems } from '../mock';
 export default defineComponent({
   components: { DataTable },
   setup() {
+    // const headers: Header[] = [
+    //   { text: 'Name', value: 'name', fixed: true, width: 200 },
+    //   { text: 'Address', value: 'address', fixed: true, width: 200  },
+    //   { text: 'Height', value: 'height', sortable: true, width: 200 },
+    //   { text: 'Weight', value: 'weight', sortable: true, width: 200 },
+    //   { text: 'Age', value: 'age', sortable: true, width: 200 },
+    //   { text: 'Favourite sport', value: 'favouriteSport', width: 200 },
+    //   { text: 'Favourite fruits', value: 'favouriteFruits', width: 200 },
+    // ];
     const headers: Header[] = [
-      { text: 'Name', value: 'name' },
-      { text: 'Address', value: 'address' },
-      { text: 'Height', value: 'height', sortable: true },
-      { text: 'Weight', value: 'weight', sortable: true },
-      { text: 'Age', value: 'age', sortable: true },
-      { text: 'Favourite sport', value: 'favouriteSport' },
-      { text: 'Favourite fruits', value: 'favouriteFruits' },
+      { text: 'Name', value: 'name', width: 150, fixed: true},
+      { text: 'Address', value: 'address', width: 200},
+      { text: 'Height', value: 'height', sortable: true, width: 200 },
+      { text: 'Weight', value: 'weight', sortable: true, width: 200 },
+      { text: 'Age', value: 'age', sortable: true, width: 200 },
+      { text: 'Favourite sport', value: 'favouriteSport', width: 200 },
+      { text: 'Favourite fruits', value: 'favouriteFruits', width: 200 },
     ];
     const items = ref<Item[]>([]);
     const itemsSelected = ref<Item[]>([items.value[0]]);
@@ -165,6 +178,7 @@ export default defineComponent({
       currentPaginationNumber,
       isFirstPage,
       isLastPage,
+      itemsSelected,
       nextPage,
       prevPage,
       updatePage,
