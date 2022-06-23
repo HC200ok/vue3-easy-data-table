@@ -112,11 +112,11 @@ const switchToNested = () => {
 };
 
 const headers: Header[] = [
-  { text: 'Name', value: 'name', fixed: true, width: 200 },
+  { text: 'Name', value: 'name' },
   { text: 'Address', value: 'address', width: 200 },
-  { text: 'Height', value: 'info.out.height', sortable: true, width: 200 },
-  { text: 'Weight', value: 'info.out.weight', sortable: true, width: 200 },
-  { text: 'Age', value: 'age', sortable: true, fixed: true, width: 200 },
+  { text: 'Height', value: 'info.out.height', sortable: true },
+  { text: 'Weight', value: 'info.out.weight', sortable: true },
+  { text: 'Age', value: 'age', sortable: true, width: 200 },
   { text: 'Favourite sport', value: 'favouriteSport', width: 200 },
   { text: 'Favourite fruits', value: 'favouriteFruits', width: 200 },
 ];
