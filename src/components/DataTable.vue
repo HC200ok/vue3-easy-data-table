@@ -105,7 +105,7 @@
       >
         <div
           class="loading-mask"
-          :class="{'no-footer': !showFooter}"
+          :class="{'no-footer': hideFooter}"
         ></div>
         <div class="loading-entity">
           <slot
@@ -124,7 +124,7 @@
       </div>
     </div>
     <div
-      v-if="showFooter"
+      v-if="!hideFooter"
       class="data-table__footer"
     >
       <div
@@ -349,9 +349,9 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  showFooter: {
+  hideFooter: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   filterOptions: {
     type: Array as PropType<FilterOption[]>,
