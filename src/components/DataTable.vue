@@ -1096,7 +1096,7 @@ defineExpose({
         tbody {
           font-size: v-bind(fontSizePx);
           &.hover-to-change-color {
-            tr:hover {
+            tr:hover td{
               background-color: v-bind(rowHoverBackgroundColor);
               color: v-bind(rowHoverFontColor);
             }
@@ -1129,7 +1129,7 @@ defineExpose({
           }
           &.row-alternation {
             &.hover-to-change-color {
-              tr:hover {
+              tr:hover td, tr:nth-child(2n):hover td {
                 background-color: v-bind(rowHoverBackgroundColor);
                 color: v-bind(rowHoverFontColor);
               }
