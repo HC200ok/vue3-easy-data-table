@@ -50,6 +50,20 @@
       sort-by="age"
       sort-type="desc"
       @click-row="showItem"
+      v-model:items-selected="itemsSelected"
+      table-border-color="#445269"
+      row-border-color="#445269"
+      header-background-color="#2d3a4f"
+      header-font-color="#c1cad4"
+      even-row-background-color="#4c5d7a"
+      even-row-font-color="#fff"
+      footer-background-color="#2d3a4f"
+      footer-font-color="#c0c7d2"
+      row-background-color="#2d3a4f"
+      row-font-color="#c0c7d2"
+      row-hover-background-color="#eee"
+      row-hover-font-color="#2d3a4f"
+      theme-color="#1d90ff"
     >
     </DataTable>
 
