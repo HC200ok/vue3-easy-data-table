@@ -909,6 +909,7 @@ defineExpose({
       width: 100%;
       overflow: auto;
       min-height: v-bind(minHeightPx);
+      background-color: v-bind(rowBackgroundColor);
 
       &::-webkit-scrollbar-track
       {

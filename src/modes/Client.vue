@@ -1,5 +1,12 @@
 <template>
   <div>
+    <span>search field:</span>
+    <select v-model="searchField">
+      <option>name</option>
+      <option>address</option>
+    </select> &nbsp;&nbsp;
+    <span>search value: </span>
+    <input type="text" v-model="searchValue"><br/><br/>
     <!-- <div class="filter-wrapper">
       <span class="field">
         filtering by age:
@@ -44,6 +51,8 @@
       ref="dataTable"
       :headers="headers"
       :items="items"
+      :search-field="searchField"
+      :search-value="searchValue"
       :rows-per-page="10"
       buttons-pagination
       alternating
@@ -110,12 +119,12 @@ import {
   Header, Item, FilterOption, clickRowArgument,
 } from '../types/main';
 import DataTable from '../components/DataTable.vue';
-import { mockClientNestedItems, mockClientItems } from '../mock';
+import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems } from '../mock';
 
 const searchField = ref('name');
 const searchValue = ref('name-1');
 
-const items = ref<Item[]>(mockClientNestedItems(100));
+const items = ref<Item[]>(mockDuplicateClientNestedItems(100));
 
 const switchToNested300 = () => {
   items.value = mockClientNestedItems(300);
