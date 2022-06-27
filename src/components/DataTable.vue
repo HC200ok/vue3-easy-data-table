@@ -69,8 +69,8 @@
             :class="{'row-alternation': alternating, 'hover-to-change-color': hoverToChangeColor}"
           >
             <tr
-              v-for="(item) in itemsForRender"
-              :key="JSON.stringify(item)"
+              v-for="(item, index) in itemsForRender"
+              :key="index"
               @click="clickRow(item)"
             >
               <td
