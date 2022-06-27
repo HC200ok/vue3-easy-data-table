@@ -122,9 +122,9 @@ import DataTable from '../components/DataTable.vue';
 import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems } from '../mock';
 
 const searchField = ref('name');
-const searchValue = ref('name-1');
+const searchValue = ref('');
 
-const items = ref<Item[]>(mockDuplicateClientNestedItems(100));
+const items = ref<Item[]>(mockDuplicateClientNestedItems(5));
 
 const switchToNested300 = () => {
   items.value = mockClientNestedItems(300);
@@ -135,7 +135,7 @@ const switchToNested = () => {
 };
 
 const headers: Header[] = [
-  { text: 'Name', value: 'name' },
+  { text: 'Name', value: 'name', sortable: true },
   { text: 'Address', value: 'address', width: 200 },
   { text: 'Height', value: 'info.out.height', sortable: true },
   { text: 'Weight', value: 'info.out.weight', sortable: true },
