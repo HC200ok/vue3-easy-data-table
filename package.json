@@ -3,7 +3,7 @@
   "author": "HC200ok",
   "description": "A customizable and easy-to-use data table component made with Vue.js 3.x.",
   "private": false,
-  "version": "1.2.19",
+  "version": "1.2.20",
   "types": "./types/main.d.ts",
   "license": "MIT",
   "files": [
@@ -14,7 +14,7 @@
     "vue3",
     "data-table-component",
     "data-table",
-    "mvue3-component",
+    "vue3-component",
     "vue-component"
   ],
   "homepage": "https://github.com/HC200ok/vue3-easy-data-table",
