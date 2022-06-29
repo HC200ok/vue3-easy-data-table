@@ -31,10 +31,10 @@
                 'desc': header.sortable && header.sortType === 'desc',
                 'asc': header.sortable && header.sortType === 'asc',
                 'fixed': header.fixed,
-                'hasShadow': header.value === lastFixedColumn,
+                'has-shadow': header.value === lastFixedColumn,
+                'no-padding': noThPadding
               }"
               :style="getFixedDistance(header.value)"
-              @click="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
             >
               <MutipleSelectCheckBox
                 v-if="header.text === 'checkbox'"
@@ -44,9 +44,17 @@
               />
               <span
                 v-else
-                class="header-text__wrapper"
+                class="header-item"
               >
-                <span class="header-text">
+                <slot
+                  v-if="slots[`header-${header.value}`]"
+                  :name="`header-${header.value}`"
+                  v-bind="header"
+                />
+                <span
+                  v-else
+                  class="header-text"
+                >
                   {{ header.text }}
                 </span>
                 <i
@@ -54,6 +62,7 @@
                   :key="header.sortType ? header.sortType : 'none'"
                   class="sortType-icon"
                   :class="{'desc': header.sortType === 'desc'}"
+                  @click.stop="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
                 ></i>
               </span>
             </th>
@@ -77,11 +86,14 @@
                 v-for="(column, i) in headerColumns"
                 :key="i"
                 :style="getFixedDistance(column, 'td')"
-                :class="{'hasShadow': column === lastFixedColumn}"
+                :class="{
+                  'has-shadow': column === lastFixedColumn,
+                  'no-padding': noTdPadding,
+                }"
               >
                 <slot
-                  v-if="slots[column]"
-                  :name="column"
+                  v-if="slots[`item-${column}`]"
+                  :name="`item-${column}`"
                   v-bind="item"
                 />
                 <template v-else-if="column === 'checkbox'">
@@ -377,6 +389,14 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  noThPadding: {
+    type: Boolean,
+    default: false,
+  },
+  noTdPadding: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const {
@@ -402,6 +422,8 @@ const tableHeightPx = computed(() => (props.tableHeight ? `${props.tableHeight}p
 const minHeightPx = computed(() => `${rowHeight.value * 5}px`);
 const sortTypeIconSize = computed(() => Math.round(props.tableFontSize / 2.5));
 const sortTypeIconSizePx = computed(() => `${sortTypeIconSize.value}px`);
+const sortClickAreaSizePx = computed(() => `${sortTypeIconSize.value * 5}px`);
+const sortClickAreaOffsetSizePx = computed(() => `-${sortTypeIconSize.value * 2.5}px`);
 const sortTypeIconMargin = computed(() => Math.round(sortTypeIconSize.value));
 const sortTypeAscIconMarginTopPx = computed(() => `-${sortTypeIconMargin.value}px`);
 const sortTypeDescIconMarginTopPx = computed(() => `${sortTypeIconMargin.value}px`);
@@ -893,7 +915,6 @@ defineExpose({
   prevPage,
   updatePage,
 });
-
 </script>
 
 <style lang="scss" scoped>
@@ -914,14 +935,14 @@ defineExpose({
       &::-webkit-scrollbar-track
       {
         border-radius: 10px;
-        background-color: #fff;
+        background-color: v-bind(rowBackgroundColor);
       }
 
       &::-webkit-scrollbar
       {
         width: 7px;
         height: 7px;
-        background-color: #fff;
+        background-color: v-bind(rowBackgroundColor);
       }
 
       &::-webkit-scrollbar-thumb
@@ -931,7 +952,7 @@ defineExpose({
       }
 
       &.show-shadow {
-        th.hasShadow, td.hasShadow {
+        th.has-shadow, td.has-shadow {
           &::after {
             box-shadow: inset 6px 0 5px -3px rgb(0 0 0 / 20%)
           }
@@ -1013,7 +1034,10 @@ defineExpose({
           text-align: left;
           padding: 0px 10px;
         }
-        th.hasShadow, td.hasShadow {
+        th.no-padding, td.no-padding {
+          padding: 0px;
+        }
+        th.has-shadow, td.has-shadow {
           &::after {
             pointer-events: none;
             content: "";
@@ -1041,7 +1065,7 @@ defineExpose({
             color: v-bind(headerFontColor);
             position: relative;
             background-color: v-bind(headerBackgroundColor);
-            .header-text__wrapper {
+            .header-item {
               display: flex;
               align-items: center;
               height: v-bind(fontSizePx);
@@ -1062,7 +1086,17 @@ defineExpose({
                 display: inline-block;
                 height: 0;
                 width: 0;
+                position: relative;
                 border-bottom-color: v-bind(headerFontColor);
+                &::after {
+                  content: "";
+                  display: block;
+                  width: v-bind(sortClickAreaSizePx);
+                  height: v-bind(sortClickAreaSizePx);
+                  position: absolute;
+                  left: v-bind(sortClickAreaOffsetSizePx);
+                  top: v-bind(sortClickAreaOffsetSizePx);;
+                }
               }
 
               &.none {
@@ -1081,15 +1115,6 @@ defineExpose({
                   margin-top: v-bind(sortTypeDescIconMarginTopPx);
                   transform: rotate(180deg);
                 }
-              }
-            }
-
-            .sortType-icon {
-              display: inline-block;
-              width: v-bind(fontSizePx);
-              height: v-bind(fontSizePx);
-              &.desc {
-                transform: rotate(180deg);
               }
             }
           }
