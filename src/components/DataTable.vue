@@ -35,6 +35,7 @@
                 'no-padding': noThPadding
               }"
               :style="getFixedDistance(header.value)"
+              @click.stop="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
             >
               <MutipleSelectCheckBox
                 v-if="header.text === 'checkbox'"
@@ -62,7 +63,6 @@
                   :key="header.sortType ? header.sortType : 'none'"
                   class="sortType-icon"
                   :class="{'desc': header.sortType === 'desc'}"
-                  @click.stop="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
                 ></i>
               </span>
             </th>
@@ -1092,15 +1092,6 @@ defineExpose({
                 width: 0;
                 position: relative;
                 border-bottom-color: v-bind(headerFontColor);
-                &::after {
-                  content: "";
-                  display: block;
-                  width: v-bind(sortClickAreaSizePx);
-                  height: v-bind(sortClickAreaSizePx);
-                  position: absolute;
-                  left: v-bind(sortClickAreaOffsetSizePx);
-                  top: v-bind(sortClickAreaOffsetSizePx);;
-                }
               }
 
               &.none {
