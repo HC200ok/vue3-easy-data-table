@@ -143,7 +143,7 @@
         v-if="!hideRowsPerPage"
         class="footer__rows-per-page"
       >
-        rows per page:
+        {{ rowsPerPageMessage }}
         <RowsSelector
           v-model="rowsPerPageReactive"
           :rows-items="rowsItemsComputed"
@@ -396,6 +396,10 @@ const props = defineProps({
   noTdPadding: {
     type: Boolean,
     default: false,
+  },
+  rowsPerPageMessage: {
+    type: String,
+    default: 'rows per page:',
   },
 });
 
