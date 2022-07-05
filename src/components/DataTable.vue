@@ -20,7 +20,7 @@
             :style="getColStyle(header)"
           />
         </colgroup>
-        <thead v-if="headersForRender.length">
+        <thead v-if="headersForRender.length && !hideHeader">
           <tr>
             <th
               v-for="(header, index) in headersForRender"
@@ -362,6 +362,10 @@ const props = defineProps({
     default: false,
   },
   hideFooter: {
+    type: Boolean,
+    default: false,
+  },
+  hideHeader: {
     type: Boolean,
     default: false,
   },
