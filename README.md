@@ -29,14 +29,15 @@ https://hc200ok.github.io/vue3-easy-data-table-doc/
 15. [Expand slot](https://hc200ok.github.io/vue3-easy-data-table-doc/features/expand-slot.html) (new feature since version `1.3.2`)
 
 ## Getting started
-### Install
+### 1. ES module
+#### Install
 ```js
 npm install vue3-easy-data-table
 // or
 yarn add vue3-easy-data-table
 ```
 
-### Regist
+#### Regist
 ```js
 import Vue3EasyDataTable from 'vue3-easy-data-table';
 import 'vue3-easy-data-table/dist/style.css';
@@ -45,7 +46,7 @@ const app = createApp(App);
 app.component('EasyDataTable', Vue3EasyDataTable);
 ```
 
-### Use
+#### Use
 ```js
 <template>
   <EasyDataTable
@@ -81,8 +82,51 @@ export default defineComponent({
 </script>
 ```
 
+### 2. CDN:
+```html
+<link href="https://unpkg.com/vue3-easy-data-table/dist/style.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/vue@3.2.1/dist/vue.global.js"></script>
+<script src="https://unpkg.com/vue3-easy-data-table"></script>
+
+<div id="app">
+  <easy-data-table
+    :headers="headers"
+    :items="items"
+  />
+</div>
+
+<script>
+  const App = {
+    components: {
+      EasyDataTable: window['vue3-easy-data-table'],
+    },
+    data () {
+      return {
+        headers:[
+          { text: "PLAYER", value: "player" },
+          { text: "TEAM", value: "team"},
+          { text: "NUMBER", value: "number"},
+          { text: "POSITION", value: "position"},
+          { text: "HEIGHT", value: "indicator.height"},
+          { text: "WEIGHT (lbs)", value: "indicator.weight", sortable: true},
+          { text: "LAST ATTENDED", value: "lastAttended", width: 200},
+          { text: "COUNTRY", value: "country"},
+        ],
+        items: [
+          { player: "Stephen Curry", team: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
+          { player: "Lebron James", team: "LAL", number: 6, position: 'F', indicator: {"height": '6-9', "weight": 250}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
+          { player: "Kevin Durant", team: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
+          { player: "Giannis Antetokounmpo", team: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+        ],
+      }
+    },
+  };
+  Vue.createApp(App).mount('#app');
+</script>
+```
+
 ## Todo
-1. refactory (use render function instead of slot)
+1. Refactory (use render function instead of slot)
 2. Migrate from color properties to css variables.
 3. Make table header customizable 🎛️.
 4. Vitual table rows.
