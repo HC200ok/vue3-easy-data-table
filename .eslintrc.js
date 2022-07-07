@@ -24,5 +24,6 @@ module.exports = {
     'no-obj-calls': 'off',
     'vue/no-multiple-template-root': 'off',
     'vue/no-v-model-argument': 'off',
+    'vue/no-v-for-template-key': 'off',
   },
 };
