@@ -82,6 +82,7 @@
               :key="index"
             >
               <tr
+                :class="{'even-row': (index + 1) % 2 === 0}"
                 @click="clickRow(item)"
               >
                 <td
@@ -119,9 +120,9 @@
               </tr>
               <tr
                 v-if="ifHasExpandSlot && expandingItemIndexList.includes(index)"
+                :class="{'even-row': (index + 1) % 2 === 0}"
               >
                 <td
-                  class="expand-td"
                   :colspan="headersForRender.length"
                 >
                   <slot
@@ -1221,12 +1222,12 @@ defineExpose({
           }
           &.row-alternation {
             &.hover-to-change-color {
-              tr:hover td, tr:nth-child(2n):hover td {
+              tr:hover td {
                 background-color: v-bind(rowHoverBackgroundColor);
                 color: v-bind(rowHoverFontColor);
               }
             }
-            tr:nth-child(2n) td{
+            .even-row td {
               color: v-bind(evenRowFontColor);
               background-color: v-bind(evenRowBackgroundColor);
             }
