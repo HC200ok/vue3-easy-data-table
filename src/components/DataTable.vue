@@ -77,36 +77,60 @@
             v-if="items.length && headerColumns.length"
             :class="{'row-alternation': alternating, 'hover-to-change-color': hoverToChangeColor}"
           >
-            <tr
+            <template
               v-for="(item, index) in itemsForRender"
               :key="index"
-              @click="clickRow(item)"
             >
-              <td
-                v-for="(column, i) in headerColumns"
-                :key="i"
-                :style="getFixedDistance(column, 'td')"
-                :class="{
-                  'has-shadow': column === lastFixedColumn,
-                  'no-padding': noTdPadding,
-                }"
+              <tr
+                @click="clickRow(item)"
               >
-                <slot
-                  v-if="slots[`item-${column}`]"
-                  :name="`item-${column}`"
-                  v-bind="item"
-                />
-                <template v-else-if="column === 'checkbox'">
-                  <SingleSelectCheckBox
-                    :checked="item[column]"
-                    @change="toggleSelectItem(item)"
+                <td
+                  v-for="(column, i) in headerColumns"
+                  :key="i"
+                  :style="getFixedDistance(column, 'td')"
+                  :class="{
+                    'has-shadow': column === lastFixedColumn,
+                    'no-padding': noTdPadding,
+                    'can-expand': column === 'expand',
+                  }"
+                  @click="column === 'expand' ? updateExpandingItemIndexList(index, $event) : null"
+                >
+                  <slot
+                    v-if="slots[`item-${column}`]"
+                    :name="`item-${column}`"
+                    v-bind="item"
                   />
-                </template>
-                <template v-else>
-                  {{ generateColumnContent(column, item) }}
-                </template>
-              </td>
-            </tr>
+                  <template v-else-if="column === 'expand'">
+                    <i
+                      class="expand-icon"
+                      :class="{'expanding': expandingItemIndexList.includes(index)}"
+                    />
+                  </template>
+                  <template v-else-if="column === 'checkbox'">
+                    <SingleSelectCheckBox
+                      :checked="item[column]"
+                      @change="toggleSelectItem(item)"
+                    />
+                  </template>
+                  <template v-else>
+                    {{ generateColumnContent(column, item) }}
+                  </template>
+                </td>
+              </tr>
+              <tr
+                v-if="ifHasExpandSlot && expandingItemIndexList.includes(index)"
+              >
+                <td
+                  class="expand-td"
+                  :colspan="headersForRender.length"
+                >
+                  <slot
+                    name="expand"
+                    v-bind="item"
+                  />
+                </td>
+              </tr>
+            </template>
           </tbody>
         </template>
       </table>
@@ -385,6 +409,14 @@ const props = defineProps({
     type: Number,
     default: 60,
   },
+  fixedExpand: {
+    type: Boolean,
+    default: false,
+  },
+  expandColumnWidth: {
+    type: Number,
+    default: 36,
+  },
   checkboxColumnWidth: {
     type: Number,
     default: null,
@@ -430,8 +462,6 @@ const tableHeightPx = computed(() => (props.tableHeight ? `${props.tableHeight}p
 const minHeightPx = computed(() => `${rowHeight.value * 5}px`);
 const sortTypeIconSize = computed(() => Math.round(props.tableFontSize / 2.5));
 const sortTypeIconSizePx = computed(() => `${sortTypeIconSize.value}px`);
-const sortClickAreaSizePx = computed(() => `${sortTypeIconSize.value * 5}px`);
-const sortClickAreaOffsetSizePx = computed(() => `-${sortTypeIconSize.value * 2.5}px`);
 const sortTypeIconMargin = computed(() => Math.round(sortTypeIconSize.value));
 const sortTypeAscIconMarginTopPx = computed(() => `-${sortTypeIconMargin.value}px`);
 const sortTypeDescIconMarginTopPx = computed(() => `${sortTypeIconMargin.value}px`);
@@ -452,6 +482,7 @@ const slots = useSlots();
 const ifHasBodySlot = computed(() => slots.body);
 const ifHasPaginationSlot = computed(() => slots.pagination);
 const ifHasLoadingSlot = computed(() => slots.loading);
+const ifHasExpandSlot = computed(() => slots.expand);
 
 // global dataTable $ref
 const dataTable = ref();
@@ -548,15 +579,25 @@ const headersForRender = computed((): HeaderForRender[] => {
     }
     return headerSorting;
   });
+  // expand icon
+  let headersWithExpand: HeaderForRender[] = [];
+  if (!ifHasExpandSlot.value) {
+    headersWithExpand = headersSorting;
+  } else {
+    const headerExpand: HeaderForRender = (props.fixedExpand || hasFixedColumnsFromUser.value) ? {
+      text: '', value: 'expand', fixed: true, width: props.expandColumnWidth,
+    } : { text: '', value: 'expand' };
+    headersWithExpand = [headerExpand, ...headersSorting];
+  }
   // show index
   let headersWithIndex: HeaderForRender[] = [];
   if (!props.showIndex) {
-    headersWithIndex = headersSorting;
+    headersWithIndex = headersWithExpand;
   } else {
     const headerIndex: HeaderForRender = (props.fixedIndex || hasFixedColumnsFromUser.value) ? {
       text: '#', value: 'index', fixed: true, width: props.indexColumnWidth,
     } : { text: '#', value: 'index' };
-    headersWithIndex = [headerIndex, ...headersSorting];
+    headersWithIndex = [headerIndex, ...headersWithExpand];
   }
   // checkbox
   let headersWithCheckbox: HeaderForRender[] = [];
@@ -570,6 +611,18 @@ const headersForRender = computed((): HeaderForRender[] => {
   }
   return headersWithCheckbox;
 });
+
+// expand
+const expandingItemIndexList = ref<number[]>([]);
+const updateExpandingItemIndexList = (expandingItemIndex: number, event: Event) => {
+  event.stopPropagation();
+  const index = expandingItemIndexList.value.indexOf(expandingItemIndex);
+  if (index !== -1) {
+    expandingItemIndexList.value.splice(index, 1);
+  } else {
+    expandingItemIndexList.value.push(expandingItemIndex);
+  }
+};
 
 const fixedHeaders = computed((): HeaderForRender[] => headersForRender.value.filter((header) => header.fixed));
 const lastFixedColumn = computed((): string => {
@@ -1151,6 +1204,20 @@ defineExpose({
             border: none;
             border-bottom: 1px solid v-bind(rowBorderColor);
             position: relative;
+            &.can-expand {
+              cursor: pointer;
+            }
+            .expand-icon {
+              border: solid v-bind(rowFontColor);
+              border-width: 0 2px 2px 0;
+              display: inline-block;
+              padding: 3px;
+              transform: rotate(-45deg);
+              transition: 0.2s;
+              &.expanding {
+                transform: rotate(45deg);
+              }
+            }
           }
           &.row-alternation {
             &.hover-to-change-color {
