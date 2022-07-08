@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Item, ServerOptions, Header } from './types/main';
 
 export const headersMocked: Header[] = [
@@ -41,7 +42,7 @@ export const mockClientNestedItems = (itemsNumber = 100): Item[] => {
     mockItems.push({
       name: `name-${i}`,
       address: `address-${i}`,
-      info: {out: { height: i, weight: i }},
+      info: { out: { height: i, weight: i } },
       age: i,
       favouriteSport: sports[i % 4],
       favouriteFruits: fruits[i % 4],
@@ -59,7 +60,7 @@ export const mockDuplicateClientNestedItems = (itemsNumber = 100): Item[] => {
     mockItems.push({
       name: `name-${i}`,
       address: `address-${i}`,
-      info: {out: { height: i, weight: i }},
+      info: { out: { height: i, weight: i } },
       age: i,
       favouriteSport: sports[i % 4],
       favouriteFruits: fruits[i % 4],
@@ -75,6 +76,18 @@ export const mockDuplicateClientNestedItems = (itemsNumber = 100): Item[] => {
     favouriteFruits: fruits[1 % 4],
   });
   return mockItems;
+};
+
+export const mockItemIntroduction = async (name: string): Promise<string> => {
+  // eslint-disable-next-line no-promise-executor-return
+  await new Promise((s) => setTimeout(s, 2000));
+  const briefs: Record<string, string> = {
+    'Stephen Curry': 'Wardell Stephen Curry II is an American professional basketball player for the Golden State Warriors of the National Basketball Association (NBA).',
+    'Lebron James': 'LeBron Raymone James Sr is an American professional basketball player for the Los Angeles Lakers of the National Basketball Association (NBA).',
+    'Kevin Durant': 'Kevin Wayne Durant also known by his initials KD, is an American professional basketball player for the Brooklyn Nets of the National Basketball Association (NBA).',
+    'Giannis Antetokounmpo': 'Giannis Sina Ugo Antetokounmpo (né Adetokunbo; December 6, 1994) is a Greek-Nigerian professional basketball player for the Milwaukee Bucks of the National Basketball Association (NBA).',
+  };
+  return briefs[name];
 };
 
 export const mockServerItems = async (
