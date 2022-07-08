@@ -94,7 +94,7 @@
                     'no-padding': noTdPadding,
                     'can-expand': column === 'expand',
                   }"
-                  @click="column === 'expand' ? updateExpandingItemIndexList(index, $event) : null"
+                  @click="column === 'expand' ? updateExpandingItemIndexList(index, item, $event) : null"
                 >
                   <slot
                     v-if="slots[`item-${column}`]"
@@ -124,7 +124,12 @@
               >
                 <td
                   :colspan="headersForRender.length"
+                  class="expand"
                 >
+                  <LoadingLine
+                    v-if="item.expandLoading"
+                    class="expand-loading"
+                  />
                   <slot
                     name="expand"
                     v-bind="item"
@@ -221,6 +226,7 @@ import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
 import RowsSelector from './RowsSelector.vue';
 import Loading from './Loading.vue';
+import LoadingLine from './LoadingLine.vue';
 import ButtonsPagination from './ButtonsPagination.vue';
 import PaginationArrows from './PaginationArrows.vue';
 
@@ -438,6 +444,10 @@ const props = defineProps({
     type: String,
     default: 'rows per page:',
   },
+  expandLoading: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const {
@@ -503,6 +513,7 @@ const emits = defineEmits([
   'update:itemsSelected',
   'update:serverOptions',
   'clickRow',
+  'expandRow',
 ]);
 
 const serverOptionsComputed = computed({
@@ -615,12 +626,13 @@ const headersForRender = computed((): HeaderForRender[] => {
 
 // expand
 const expandingItemIndexList = ref<number[]>([]);
-const updateExpandingItemIndexList = (expandingItemIndex: number, event: Event) => {
+const updateExpandingItemIndexList = (expandingItemIndex: number, expandingItem: Item, event: Event) => {
   event.stopPropagation();
   const index = expandingItemIndexList.value.indexOf(expandingItemIndex);
   if (index !== -1) {
     expandingItemIndexList.value.splice(index, 1);
   } else {
+    emits('expandRow', props.items.findIndex((item) => item === expandingItem));
     expandingItemIndexList.value.push(expandingItemIndex);
   }
 };
@@ -1205,6 +1217,14 @@ defineExpose({
             border: none;
             border-bottom: 1px solid v-bind(rowBorderColor);
             position: relative;
+            &.expand {
+              position: relative;
+              .expand-loading {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+              }
+            }
             &.can-expand {
               cursor: pointer;
             }
