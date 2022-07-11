@@ -121,10 +121,11 @@ export default defineComponent({
 ```
 
 ## Todo
-1. Refactory (use render function instead of slot)
+1. Refactory (use render function instead of slot).
 2. Migrate from color properties to css variables.
 3. Make table header customizable 🎛️.
 4. Vitual table rows.
+5. mobile responsive.
 
 ## ⭐ Stargazers
 [![Stargazers repo roster for @HC200ok/vue3-easy-data-table](https://reporoster.com/stars/dark/notext/HC200ok/vue3-easy-data-table)](https://github.com/HC200ok/vue3-easy-data-table/stargazers)
