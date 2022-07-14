@@ -131,6 +131,4 @@ export default defineComponent({
 [![Stargazers repo roster for @HC200ok/vue3-easy-data-table](https://reporoster.com/stars/dark/notext/HC200ok/vue3-easy-data-table)](https://github.com/HC200ok/vue3-easy-data-table/stargazers)
 
 ## Contribution
-If you find any bug or demand any other features, plese let me know by reporting issues.
-
-And making pull requests is also very welcomed!
+Shout out to the people who made new feature requests and reported issues to make this component better.
