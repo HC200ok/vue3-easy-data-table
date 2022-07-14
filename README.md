@@ -121,7 +121,7 @@ export default defineComponent({
 ```
 
 ## Todo
-1. Refactory (use render function instead of slot).
+1. Refactory.
 2. Migrate from color properties to css variables.
 3. Make table header customizable 🎛️.
 4. Vitual table rows.
