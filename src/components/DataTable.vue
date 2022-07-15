@@ -1004,6 +1004,14 @@ defineExpose({
       }
     }
   }
+
+  .vue3-easy-data-table__body.row-alternation {
+    tr.even-row td {
+      color: var(--easy-table-body-even-row-font-color);
+      background-color: var(--easy-table-body-even-row-background-color);
+    }
+  }
+
   table {
     display: table;
     width: 100%;
@@ -1105,12 +1113,6 @@ defineExpose({
     }
   }
 
-  .vue3-easy-data-table__body.row-alternation {
-    .even-row td {
-      color: var(--easy-table-body-even-row-font-color);
-      background-color: var(--easy-table-body-even-row-background-color);
-    }
-  }
   .vue3-easy-data-table__body td {
     padding: var(--easy-table-body-item-padding);
     background-color: var(--easy-table-body-row-background-color);
@@ -1226,8 +1228,8 @@ defineExpose({
     --easy-table-body-row-hover-font-color: #212121;
     --easy-table-body-row-hover-background-color: #eee;
 
-    --easy-table-body-even-row-font-color: #373737;
-    --easy-table-body-even-row-background-color: #fff;
+    --easy-table-body-even-row-font-color: #212121;
+    --easy-table-body-even-row-background-color: #fafafa;
     /*body-item*/
     --easy-table-body-item-padding: 0px 10px;
     /*footer*/
