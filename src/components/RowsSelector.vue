@@ -95,9 +95,6 @@ onBeforeUnmount(() => {
 });
 
 const themeColor = inject('themeColor');
-const footerBackgroundColor = inject('footerBackgroundColor');
-const footerFontColor = inject('footerFontColor');
-
 </script>
 
 <style scoped lang="scss">
@@ -108,7 +105,7 @@ const footerFontColor = inject('footerFontColor');
   margin: 0px 10px;
   .rows-input__wrapper {
     height: 20px;
-    border-bottom: 1px solid v-bind(footerFontColor);
+    border-bottom: 1px solid var(--easy-table-footer-font-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -119,7 +116,7 @@ const footerFontColor = inject('footerFontColor');
       vertical-align: middle;
       width: 0px;
       height: 0px;
-      border-top: solid 6px v-bind(footerFontColor);
+      border-top: solid 6px var(--easy-table-footer-font-color);
       border-left: solid 6px transparent;
       border-right: solid 6px transparent;
     }
@@ -145,7 +142,7 @@ const footerFontColor = inject('footerFontColor');
     li {
       cursor: pointer;
       padding: 5px;
-      background-color: v-bind(footerBackgroundColor);
+      background-color: var(--easy-table-footer-background-color);
 
       &.selected {
         color: #fff;

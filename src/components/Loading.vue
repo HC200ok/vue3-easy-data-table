@@ -8,15 +8,14 @@
 import { inject } from 'vue';
 
 const themeColor = inject('themeColor');
-const loadingEntitySizePx = inject('loadingEntitySizePx') as number;
 </script>
 
 <style lang="scss" scoped>
 .lds-ring {
   display: inline-block;
   position: relative;
-  width: v-bind(loadingEntitySizePx);
-  height: v-bind(loadingEntitySizePx);
+  width: 60px;
+  height: 60px;
 }
 .lds-ring div {
   box-sizing: border-box;
