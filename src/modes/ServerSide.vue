@@ -23,6 +23,7 @@
       :body-row-class-name="bodyRowClassName"
       table-class-name="hc-table"
       theme-color="#1d90ff"
+      border-cell
     >
       <template #address="{ address }">
         <a :href="address">{{ address }}</a>
@@ -203,17 +204,18 @@ export default defineComponent({
 }
 </style>
 
-<style>
+<!-- <style>
 .hc-table {
   --easy-table-border: 1px solid #445269;
   --easy-table-row-border: 1px solid #445269;
 
-  --easy-table-header-font-size: 14px;
-  --easy-table-header-height: 50px;
-  --easy-table-header-font-color: #c1cad4;
-  --easy-table-header-background-color: #2d3a4f;
+  --easy-table-header-row-font-size: 14px;
+  --easy-table-header-row-height: 50px;
+  --easy-table-header-row-font-color: #c1cad4;
+  --easy-table-header-row-background-color: #2d3a4f;
 
   --easy-table-header-item-padding: 10px 15px;
+  --easy-table-header-item-background-color: #2d3a4f;
 
   --easy-table-body-even-row-font-color: #fff;
   --easy-table-body-even-row-background-color: #4c5d7a;
@@ -227,6 +229,7 @@ export default defineComponent({
   --easy-table-body-row-hover-background-color: #eee;
 
   --easy-table-body-item-padding: 10px 15px;
+  --easy-table-body-item-background-color: #2d3a4f;
 
   --easy-table-footer-background-color: #2d3a4f;
   --easy-table-footer-font-color: #c0c7d2;
@@ -242,4 +245,4 @@ export default defineComponent({
   --easy-table-loading-mask-background-color: #2d3a4f;
 }
 
-</style>
+</style> -->

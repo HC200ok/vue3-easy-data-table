@@ -12,7 +12,8 @@
         'fixed-height': tableHeight,
         'show-shadow': showShadow,
         'table-fixed': fixedHeaders.length,
-        'hoverable': !noHover
+        'hoverable': !noHover,
+        'border-cell': borderCell,
       }"
     >
       <table>
@@ -397,6 +398,10 @@ const props = defineProps({
     default: '',
   },
   noHover: {
+    type: Boolean,
+    default: false,
+  },
+  borderCell: {
     type: Boolean,
     default: false,
   },
@@ -982,10 +987,28 @@ defineExpose({
         }
       }
     }
+    &.border-cell {
+      .vue3-easy-data-table__header th {
+        border-right: var(--easy-table-row-border);
+      }
+
+      .vue3-easy-data-table__header th:last-of-type {
+        border-right: none;
+      }
+
+      .vue3-easy-data-table__body td {
+        border-right: var(--easy-table-row-border);
+      }
+      .vue3-easy-data-table__body td:last-of-type {
+        border-right: none;
+      }
+    }
   }
   table {
+    display: table;
     width: 100%;
     border-spacing: 0;
+    margin: 0px;
   }
   // fixed-columns feature related
   .vue3-easy-data-table__header, vue3-easy-data-table__body {
@@ -993,11 +1016,13 @@ defineExpose({
   }
   .vue3-easy-data-table__header tr {
     font-size: var(--easy-table-header-font-size);
+    border: none;
     height: var(--easy-table-header-height);
   }
   .vue3-easy-data-table__header th {
     background-color: var(--easy-table-header-background-color);
     color: var(--easy-table-header-font-color);
+    border: none;
     border-bottom: var(--easy-table-row-border);
 
     padding: var(--easy-table-header-item-padding);
@@ -1089,6 +1114,7 @@ defineExpose({
   .vue3-easy-data-table__body td {
     padding: var(--easy-table-body-item-padding);
     background-color: var(--easy-table-body-row-background-color);
+    border: none;
     border-bottom: var(--easy-table-row-border);
 
     position: relative;
@@ -1188,10 +1214,8 @@ defineExpose({
     --easy-table-header-height: 36px;
     --easy-table-header-font-color: #373737;
     --easy-table-header-background-color: #fff;
-
     /*header-item*/
     --easy-table-header-item-padding: 0px 10px;
-
     /*body-row*/
     --easy-table-body-row-height: 36px;
     --easy-table-body-row-font-size: 12px;
@@ -1204,10 +1228,8 @@ defineExpose({
 
     --easy-table-body-even-row-font-color: #373737;
     --easy-table-body-even-row-background-color: #fff;
-
     /*body-item*/
     --easy-table-body-item-padding: 0px 10px;
-
     /*footer*/
     --easy-table-footer-background-color: #fff;
     --easy-table-footer-font-color: #212121;

@@ -68,7 +68,7 @@
       :body-row-class-name="bodyRowClassNameFunction"
       :header-item-class-name="headerItemClassNameFunction"
       :body-item-class-name="bodyItemClassNameFunction"
-      
+      border-cell
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -136,7 +136,7 @@ const switchToNested = () => {
 };
 
 const headers: Header[] = [
-  { text: 'Name', value: 'name', sortable: true, fixed: true },
+  { text: 'Name', value: 'name', sortable: true },
   { text: 'Address', value: 'address', width: 200 },
   { text: 'Height', value: 'info.out.height', sortable: true },
   { text: 'Weight', value: 'info.out.weight', sortable: true },
@@ -251,7 +251,7 @@ const updatePage = (paginationNumber: number) => {
 }
 </style>
 
-<!-- <style>
+<style>
 .hc-table {
   --easy-table-border: 1px solid #445269;
   --easy-table-row-border: 1px solid #445269;
@@ -290,4 +290,4 @@ const updatePage = (paginationNumber: number) => {
   --easy-table-loading-mask-background-color: #2d3a4f;
 }
 
-</style> -->
+</style>

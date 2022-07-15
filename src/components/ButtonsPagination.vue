@@ -158,10 +158,11 @@ const themeColor = inject('themeColor');
   padding: 0px;
   border-radius: 4px;
   .item {
+    box-sizing: border-box;
     cursor: pointer;
-    height: 23px;
-    min-width: 23px;
-    line-height: 23px;
+    // height: calc(var(--easy-table-footer-font-size) * 2);
+    min-width: calc(var(--easy-table-footer-font-size) * 1.8);
+    line-height: calc(var(--easy-table-footer-font-size) * 1.8);
     border-top: var(--easy-table-buttons-pagination-border);
     border-bottom: var(--easy-table-buttons-pagination-border);
     border-right: var(--easy-table-buttons-pagination-border);
