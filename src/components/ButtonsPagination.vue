@@ -149,9 +149,6 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
   return paginationItems;
 });
 
-const rowHeight = inject('rowHeight') as number;
-const buttonSizePx = computed(() => `${rowHeight * 0.6}px`);
-const rowBorderColor = inject('rowBorderColor');
 const themeColor = inject('themeColor');
 </script>
 <style lang="scss" scoped>
@@ -161,16 +158,17 @@ const themeColor = inject('themeColor');
   padding: 0px;
   border-radius: 4px;
   .item {
+    box-sizing: border-box;
     cursor: pointer;
-    height: v-bind(buttonSizePx);
-    min-width: v-bind(buttonSizePx);
-    line-height: v-bind(buttonSizePx);
-    border-top: 1px solid v-bind(rowBorderColor);
-    border-bottom: 1px solid v-bind(rowBorderColor);
-    border-right: 1px solid v-bind(rowBorderColor);
+    // height: calc(var(--easy-table-footer-font-size) * 2);
+    min-width: calc(var(--easy-table-footer-font-size) * 1.8);
+    line-height: calc(var(--easy-table-footer-font-size) * 1.8);
+    border-top: var(--easy-table-buttons-pagination-border);
+    border-bottom: var(--easy-table-buttons-pagination-border);
+    border-right: var(--easy-table-buttons-pagination-border);
     text-align: center;
     &:first-of-type  {
-      border-left: 1px solid v-bind(rowBorderColor);
+      border-left: var(--easy-table-buttons-pagination-border);
       border-top-left-radius: 4px;
       border-bottom-left-radius: 4px;
     }

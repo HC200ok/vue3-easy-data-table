@@ -37,3 +37,7 @@ export type clickRowArgument = Item & {
   isSelected?: boolean,
   indexInCurrentPage?: number,
 }
+
+export type HeaderItemClassNameFunction = (header: Header, index: number) => string
+export type BodyRowClassNameFunction = (item: Item, index: number) => string
+export type BodyItemClassNameFunction = (column: string, index: number) => string

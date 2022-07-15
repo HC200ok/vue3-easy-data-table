@@ -2,17 +2,21 @@
   <div
     ref="dataTable"
     class="vue3-easy-data-table"
+    :class="[tableClassName]"
   >
     <div
       ref="tableBody"
-      class="data-table__body"
+      class="vue3-easy-data-table__main"
       :class="{
         'fixed-header': fixedHeader,
         'fixed-height': tableHeight,
         'show-shadow': showShadow,
+        'table-fixed': fixedHeaders.length,
+        'hoverable': !noHover,
+        'border-cell': borderCell,
       }"
     >
-      <table :class="{'fixed': fixedHeaders.length}">
+      <table>
         <colgroup>
           <col
             v-for="(header, index) in headersForRender"
@@ -20,20 +24,23 @@
             :style="getColStyle(header)"
           />
         </colgroup>
-        <thead v-if="headersForRender.length && !hideHeader">
+        <thead
+          v-if="headersForRender.length && !hideHeader"
+          class="vue3-easy-data-table__header"
+          :class="[headerClassName]"
+        >
           <tr>
             <th
               v-for="(header, index) in headersForRender"
               :key="index"
-              :class="{
+              :class="[{
                 sortable: header.sortable,
                 'none': header.sortable && header.sortType === 'none',
                 'desc': header.sortable && header.sortType === 'desc',
                 'asc': header.sortable && header.sortType === 'asc',
-                'fixed': header.fixed,
-                'has-shadow': header.value === lastFixedColumn,
-                'no-padding': noThPadding
-              }"
+                'shadow': header.value === lastFixedColumn,
+              // eslint-disable-next-line max-len
+              }, typeof headerItemClassName === 'string' ? headerItemClassName : headerItemClassName(header as HeaderForRender, index)]"
               :style="getFixedDistance(header.value)"
               @click.stop="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
             >
@@ -45,7 +52,7 @@
               />
               <span
                 v-else
-                class="header-item"
+                class="header"
               >
                 <slot
                   v-if="slots[`header-${header.value}`]"
@@ -68,86 +75,79 @@
             </th>
           </tr>
         </thead>
-        <slot
-          v-if="ifHasBodySlot"
-          name="body"
-        />
-        <template v-else>
-          <tbody
-            v-if="items.length && headerColumns.length"
-            :class="{'row-alternation': alternating, 'hover-to-change-color': hoverToChangeColor}"
+        <tbody
+          v-if="items.length && headerColumns.length"
+          class="vue3-easy-data-table__body"
+          :class="{'row-alternation': alternating}"
+        >
+          <template
+            v-for="(item, index) in itemsForRender"
+            :key="index"
           >
-            <template
-              v-for="(item, index) in itemsForRender"
-              :key="index"
+            <tr
+              :class="[{'even-row': (index + 1) % 2 === 0},
+                       typeof bodyRowClassName === 'string' ? bodyRowClassName : bodyRowClassName(item, index)]"
+              @click="clickRow(item)"
             >
-              <tr
-                :class="{'even-row': (index + 1) % 2 === 0}"
-                @click="clickRow(item)"
+              <td
+                v-for="(column, i) in headerColumns"
+                :key="i"
+                :style="getFixedDistance(column, 'td')"
+                :class="[{
+                  'shadow': column === lastFixedColumn,
+                  'can-expand': column === 'expand',
+                }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, i)]"
+                @click="column === 'expand' ? updateExpandingItemIndexList(index, item, $event) : null"
               >
-                <td
-                  v-for="(column, i) in headerColumns"
-                  :key="i"
-                  :style="getFixedDistance(column, 'td')"
-                  :class="{
-                    'has-shadow': column === lastFixedColumn,
-                    'no-padding': noTdPadding,
-                    'can-expand': column === 'expand',
-                  }"
-                  @click="column === 'expand' ? updateExpandingItemIndexList(index, item, $event) : null"
-                >
-                  <slot
-                    v-if="slots[`item-${column}`]"
-                    :name="`item-${column}`"
-                    v-bind="item"
+                <slot
+                  v-if="slots[`item-${column}`]"
+                  :name="`item-${column}`"
+                  v-bind="item"
+                />
+                <template v-else-if="column === 'expand'">
+                  <i
+                    class="expand-icon"
+                    :class="{'expanding': expandingItemIndexList.includes(index)}"
                   />
-                  <template v-else-if="column === 'expand'">
-                    <i
-                      class="expand-icon"
-                      :class="{'expanding': expandingItemIndexList.includes(index)}"
-                    />
-                  </template>
-                  <template v-else-if="column === 'checkbox'">
-                    <SingleSelectCheckBox
-                      :checked="item[column]"
-                      @change="toggleSelectItem(item)"
-                    />
-                  </template>
-                  <template v-else>
-                    {{ generateColumnContent(column, item) }}
-                  </template>
-                </td>
-              </tr>
-              <tr
-                v-if="ifHasExpandSlot && expandingItemIndexList.includes(index)"
-                :class="{'even-row': (index + 1) % 2 === 0}"
+                </template>
+                <template v-else-if="column === 'checkbox'">
+                  <SingleSelectCheckBox
+                    :checked="item[column]"
+                    @change="toggleSelectItem(item)"
+                  />
+                </template>
+                <template v-else>
+                  {{ generateColumnContent(column, item) }}
+                </template>
+              </td>
+            </tr>
+            <tr
+              v-if="ifHasExpandSlot && expandingItemIndexList.includes(index)"
+              :class="{'even-row': (index + 1) % 2 === 0}"
+            >
+              <td
+                :colspan="headersForRender.length"
+                class="expand"
               >
-                <td
-                  :colspan="headersForRender.length"
-                  class="expand"
-                >
-                  <LoadingLine
-                    v-if="item.expandLoading"
-                    class="expand-loading"
-                  />
-                  <slot
-                    name="expand"
-                    v-bind="item"
-                  />
-                </td>
-              </tr>
-            </template>
-          </tbody>
-        </template>
+                <LoadingLine
+                  v-if="item.expandLoading"
+                  class="expand-loading"
+                />
+                <slot
+                  name="expand"
+                  v-bind="item"
+                />
+              </td>
+            </tr>
+          </template>
+        </tbody>
       </table>
       <div
         v-if="loading"
-        class="loading-wrapper"
-        :class="{'initial-loading': (!items.length && loading) }"
+        class="vue3-easy-data-table__loading"
       >
         <div
-          class="loading-mask"
-          :class="{'no-footer': hideFooter}"
+          class="vue3-easy-data-table__loading-mask "
         ></div>
         <div class="loading-entity">
           <slot
@@ -160,18 +160,18 @@
 
       <div
         v-if="!itemsForRender.length && !loading"
-        class="data-table__message"
+        class="vue3-easy-data-table__message"
       >
         {{ emptyMessage }}
       </div>
     </div>
     <div
       v-if="!hideFooter"
-      class="data-table__footer"
+      class="vue3-easy-data-table__footer"
     >
       <div
         v-if="!hideRowsPerPage"
-        class="footer__rows-per-page"
+        class="pagination__rows-per-page"
       >
         {{ rowsPerPageMessage }}
         <RowsSelector
@@ -179,7 +179,7 @@
           :rows-items="rowsItemsComputed"
         />
       </div>
-      <div class="footer__items-index">
+      <div class="pagination__items-index">
         {{ `${firstIndexOfItemsInCurrentPage}-${lastIndexOfItemsInCurrentPage}` }}
         of {{ totalItemsLength }}
       </div>
@@ -232,6 +232,7 @@ import PaginationArrows from './PaginationArrows.vue';
 
 import type {
   SortType, Header, Item, ServerOptions, FilterOption,
+  HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
 } from '../types/main';
 
 type ClientSortOptions = {
@@ -264,145 +265,29 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  rowBorderColor: {
-    type: String,
-    default: '#e0e0e0',
-  },
-  tableBorderColor: {
-    type: String,
-    default: '#e0e0e0',
-  },
-  rowBackgroundColor: {
-    type: String,
-    default: '#fff',
-  },
-  footerBackgroundColor: {
-    type: String,
-    default: '#fff',
-  },
-  rowFontColor: {
-    type: String,
-    default: '#212121',
-  },
-  footerFontColor: {
-    type: String,
-    default: '#212121',
+  checkboxColumnWidth: {
+    type: Number,
+    default: null,
   },
   emptyMessage: {
     type: String,
     default: 'No Available Data',
   },
-  fixedHeader: {
-    type: Boolean,
-    default: true,
-  },
-  headerFontColor: {
-    type: String,
-    default: '#373737',
-  },
-  headerBackgroundColor: {
-    type: String,
-    default: '#fff',
-  },
-  tableFontSize: {
+  expandColumnWidth: {
     type: Number,
-    default: 12,
-  },
-  evenRowBackgroundColor: {
-    type: String,
-    default: '#fafafa',
-  },
-  evenRowFontColor: {
-    type: String,
-    default: '#212121',
-  },
-  headers: {
-    type: Array as PropType<Header[]>,
-    required: true,
-  },
-  hoverToChangeColor: {
-    type: Boolean,
-    default: true,
-  },
-  items: {
-    type: Array as PropType<Item[]>,
-    required: true,
-  },
-  tableHeight: {
-    type: Number,
-    default: () => null,
-  },
-  itemsSelected: {
-    type: Array as PropType<Item[]> | null,
-    default: null,
-  },
-  searchField: {
-    type: String,
-    default: '',
-  },
-  searchValue: {
-    type: String,
-    default: '',
-  },
-  rowsPerPage: {
-    type: Number,
-    default: 25,
-  },
-  rowsItems: {
-    type: Array as PropType<number[]>,
-    default: () => [25, 50, 100],
-  },
-  rowHoverBackgroundColor: {
-    type: String,
-    default: '#eee',
-  },
-  rowHoverFontColor: {
-    type: String,
-    default: '#212121',
-  },
-  loading: {
-    type: Boolean,
-    deault: false,
-  },
-  serverOptions: {
-    type: Object as PropType<ServerOptions> | null,
-    default: null,
-  },
-  serverItemsLength: {
-    type: Number,
-    default: 0,
-  },
-  sortBy: {
-    type: String,
-    default: '',
-  },
-  sortType: {
-    type: String as PropType<SortType>,
-    default: 'asc',
-  },
-  themeColor: {
-    type: String,
-    default: '#42b883',
-  },
-  dense: {
-    type: Boolean,
-    default: false,
-  },
-  showIndex: {
-    type: Boolean,
-    default: false,
-  },
-  hideFooter: {
-    type: Boolean,
-    default: false,
-  },
-  hideHeader: {
-    type: Boolean,
-    default: false,
+    default: 36,
   },
   filterOptions: {
     type: Array as PropType<FilterOption[]>,
     default: null,
+  },
+  fixedExpand: {
+    type: Boolean,
+    default: false,
+  },
+  fixedHeader: {
+    type: Boolean,
+    default: true,
   },
   fixedCheckbox: {
     type: Boolean,
@@ -412,85 +297,124 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  indexColumnWidth: {
-    type: Number,
-    default: 60,
+  headers: {
+    type: Array as PropType<Header[]>,
+    required: true,
   },
-  fixedExpand: {
+  hideFooter: {
     type: Boolean,
     default: false,
-  },
-  expandColumnWidth: {
-    type: Number,
-    default: 36,
-  },
-  checkboxColumnWidth: {
-    type: Number,
-    default: null,
   },
   hideRowsPerPage: {
     type: Boolean,
     default: false,
   },
-  noThPadding: {
+  hideHeader: {
     type: Boolean,
     default: false,
   },
-  noTdPadding: {
+  indexColumnWidth: {
+    type: Number,
+    default: 60,
+  },
+  items: {
+    type: Array as PropType<Item[]>,
+    required: true,
+  },
+  itemsSelected: {
+    type: Array as PropType<Item[]> | null,
+    default: null,
+  },
+  loading: {
     type: Boolean,
-    default: false,
+    deault: false,
+  },
+  rowsPerPage: {
+    type: Number,
+    default: 25,
+  },
+  rowsItems: {
+    type: Array as PropType<number[]>,
+    default: () => [25, 50, 100],
   },
   rowsPerPageMessage: {
     type: String,
     default: 'rows per page:',
   },
-  expandLoading: {
+  searchField: {
+    type: String,
+    default: '',
+  },
+  searchValue: {
+    type: String,
+    default: '',
+  },
+  serverOptions: {
+    type: Object as PropType<ServerOptions> | null,
+    default: null,
+  },
+  serverItemsLength: {
+    type: Number,
+    default: 0,
+  },
+  showIndex: {
+    type: Boolean,
+    default: false,
+  },
+  sortBy: {
+    type: String,
+    default: '',
+  },
+  sortType: {
+    type: String as PropType<SortType>,
+    default: 'asc',
+  },
+  tableHeight: {
+    type: Number,
+    default: null,
+  },
+  themeColor: {
+    type: String,
+    default: '#42b883',
+  },
+  tableClassName: {
+    type: String,
+    default: '',
+  },
+  headerClassName: {
+    type: String,
+    default: '',
+  },
+  headerItemClassName: {
+    type: [Function, String] as PropType<HeaderItemClassNameFunction | string>,
+    default: '',
+  },
+  bodyRowClassName: {
+    type: [Function, String] as PropType<BodyRowClassNameFunction | string>,
+    default: '',
+  },
+  bodyItemClassName: {
+    type: [Function, String] as PropType<BodyItemClassNameFunction | string>,
+    default: '',
+  },
+  noHover: {
+    type: Boolean,
+    default: false,
+  },
+  borderCell: {
     type: Boolean,
     default: false,
   },
 });
 
-const {
-  rowBorderColor,
-  tableBorderColor,
-  headerFontColor,
-  rowFontColor,
-  rowHoverBackgroundColor,
-  rowHoverFontColor,
-  footerBackgroundColor,
-  rowBackgroundColor,
-  evenRowBackgroundColor,
-  evenRowFontColor,
-  footerFontColor,
-} = toRefs(props);
-
 // style related computed variables
-const fontSizePx = computed(() => `${props.tableFontSize}px`);
-const rowHeight = computed(() => props.tableFontSize * (props.dense ? 2 : 3));
-const rowHeightPx = computed(() => `${rowHeight.value}px`);
-const shadowRightPx = computed(() => `-${rowHeight.value}px`);
 const tableHeightPx = computed(() => (props.tableHeight ? `${props.tableHeight}px` : null));
-const minHeightPx = computed(() => `${rowHeight.value * 5}px`);
-const sortTypeIconSize = computed(() => Math.round(props.tableFontSize / 2.5));
-const sortTypeIconSizePx = computed(() => `${sortTypeIconSize.value}px`);
-const sortTypeIconMargin = computed(() => Math.round(sortTypeIconSize.value));
-const sortTypeAscIconMarginTopPx = computed(() => `-${sortTypeIconMargin.value}px`);
-const sortTypeDescIconMarginTopPx = computed(() => `${sortTypeIconMargin.value}px`);
-const loadingEntitySizePx = computed(() => `${props.tableFontSize * 5}px`);
-const loadingWrapperSizePx = computed(() => (props.tableHeight ? `${props.tableHeight - rowHeight.value}px`
-  : `${props.tableFontSize * 5 * 2}px`));
-const checkboxColumnWidthComputed = computed(() => props.checkboxColumnWidth ?? 1.3 * props.tableFontSize + 20);
+
 // global style related variable
 provide('themeColor', props.themeColor);
-provide('loadingEntitySizePx', loadingEntitySizePx.value);
-provide('rowHeight', rowHeight.value);
-provide('rowBorderColor', rowBorderColor.value);
-provide('footerBackgroundColor', footerBackgroundColor.value);
-provide('footerFontColor', footerFontColor.value);
 
 // slot
 const slots = useSlots();
-const ifHasBodySlot = computed(() => slots.body);
 const ifHasPaginationSlot = computed(() => slots.pagination);
 const ifHasLoadingSlot = computed(() => slots.loading);
 const ifHasExpandSlot = computed(() => slots.expand);
@@ -500,7 +424,7 @@ const dataTable = ref();
 const tableBody = ref();
 provide('dataTable', dataTable);
 
-// fixed shadow
+// fixed-columns shadow
 const showShadow = ref(false);
 onMounted(() => {
   tableBody.value.addEventListener('scroll', () => {
@@ -617,7 +541,7 @@ const headersForRender = computed((): HeaderForRender[] => {
     headersWithCheckbox = headersWithIndex;
   } else {
     const headerCheckbox: HeaderForRender = (props.fixedCheckbox || hasFixedColumnsFromUser.value) ? {
-      text: 'checkbox', value: 'checkbox', fixed: true, width: checkboxColumnWidthComputed.value,
+      text: 'checkbox', value: 'checkbox', fixed: true, width: props.checkboxColumnWidth ?? 36,
     } : { text: 'checkbox', value: 'checkbox' };
     headersWithCheckbox = [headerCheckbox, ...headersWithIndex];
   }
@@ -668,7 +592,7 @@ const getFixedDistance = (column: string, type: 'td' | 'th' = 'th') => {
   if (!fixedHeaders.value.length) return undefined;
   const columInfo = fixedColumnsInfos.value.find((info) => info.value === column);
   if (columInfo) {
-    return `left: ${columInfo.distance}px;z-index: ${type === 'th' ? 3 : 1}; position: sticky`;
+    return `left: ${columInfo.distance}px;z-index: ${type === 'th' ? 3 : 1};position: sticky;`;
   }
   return undefined;
 };
@@ -993,295 +917,338 @@ defineExpose({
 
 <style lang="scss" scoped>
   .vue3-easy-data-table {
+    border: var(--easy-table-border);
     position: relative;
-    border: 1px solid v-bind(tableBorderColor);
     box-sizing: border-box;
-    tr, td, th, tbody, thead, table, div {
-      box-sizing: border-box;
+  }
+  .vue3-easy-data-table__main {
+    border: none;
+    width: 100%;
+    overflow: auto;
+    background-color: var(--easy-table-body-row-background-color);
+    min-height: 180px;
+
+    &::-webkit-scrollbar-track
+    {
+      border-radius: 10px;
+      background-color: var(--easy-table-scrollbar-track-color);
     }
-    .data-table__body {
-      border: none;
-      width: 100%;
-      overflow: auto;
-      min-height: v-bind(minHeightPx);
-      background-color: v-bind(rowBackgroundColor);
 
-      &::-webkit-scrollbar-track
-      {
-        border-radius: 10px;
-        background-color: v-bind(rowBackgroundColor);
-      }
+    &::-webkit-scrollbar
+    {
+      width: 7px;
+      height: 7px;
+      background-color: var(--easy-table-scrollbar-color);
+    }
 
-      &::-webkit-scrollbar
-      {
-        width: 7px;
-        height: 7px;
-        background-color: v-bind(rowBackgroundColor);
-      }
+    &::-webkit-scrollbar-thumb
+    {
+      border-radius: 10px;
+      background-color: var(--easy-table-scrollbar-thumb-color);
+    }
 
-      &::-webkit-scrollbar-thumb
-      {
-        border-radius: 10px;
-        background-color: #c1c1c1;
-      }
+    &::-webkit-scrollbar-corner
+    {
+      background-color: var(--easy-table-scrollbar-corner-color);
+    }
 
-      &.show-shadow {
-        th.has-shadow, td.has-shadow {
-          &::after {
-            box-shadow: inset 6px 0 5px -3px rgb(0 0 0 / 20%)
-          }
-        }
-      }
-
-      &.fixed-header {
-        thead tr th{
-          position: sticky;
-          top: 0;
-          z-index: 2;
-        }
-      }
-      &.fixed-height {
-        height: v-bind(tableHeightPx);
-        .loading-wrapper {
-          height: v-bind(loadingWrapperSizePx);
-          top: v-bind(rowHeightPx);
-          padding: 0px!important;
-          .loading-mask {
-            height: 100%;
-            top: 0px;
-          }
-          &.initial-loading {
-            top: 0px;
-          }
-        }
-      }
-      .loading-wrapper {
-        &.initial-loading {
-          position: relative;
-        }
-        overflow: hidden;
-        padding-top: v-bind(rowHeightPx);
-        padding-bottom: v-bind(rowHeightPx);
-        position: absolute;
-        width: 100%;
-        top: 0px;
-        left:0px;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        font-size: v-bind(fontSizePx);
-        color: v-bind(rowFontColor);
-
-        .loading-mask {
-          position: absolute;
-          width: 100%;
-          height: calc(100% - v-bind(rowHeightPx) - v-bind(rowHeightPx));
-          top: v-bind(rowHeightPx);
-          left:0px;
-          background-color: v-bind(rowBackgroundColor);
-          opacity: 0.5;
-          z-index: 1;
-          &.no-footer {
-            height: calc(100%);
-          }
-        }
-        .loading-entity {
-          z-index: 1;
-        }
-      }
-
+    &.table-fixed {
       table {
-        &.fixed {
-          table-layout: fixed;
-        }
-        display: table;
-        margin: 0px;
-        width: 100%;
-        background-color: v-bind(rowBackgroundColor);
-        border-spacing: 0;
-        tr {
-          border: none;
-        }
-        th, td {
-          text-align: left;
-          padding: 0px 10px;
-        }
-        th.no-padding, td.no-padding {
-          padding: 0px;
-        }
-        th.has-shadow, td.has-shadow {
-          &::after {
-            pointer-events: none;
-            content: "";
-            width: v-bind(rowHeightPx);
-            display: inline-block;
-            height: 100%;
-            position: absolute;
-            top: 0px;
-            right: v-bind(shadowRightPx);
-            box-shadow: none;
-          }
-        }
-        thead, tbody {
-          position: relative;
-        }
-        thead {
-          font-size: v-bind(fontSizePx);
-          tr {
-            border: none;
-            height: v-bind(rowHeightPx);
-          }
-          th {
-            border: none;
-            border-bottom: 1px solid v-bind(rowBorderColor);;
-            color: v-bind(headerFontColor);
-            position: relative;
-            background-color: v-bind(headerBackgroundColor);
-            .header-item {
-              display: flex;
-              align-items: center;
-              height: v-bind(fontSizePx);
-            }
-
-            &.fixed {
-              position: sticky;
-              z-index: 3;
-            }
-
-            &.sortable {
-              cursor: pointer;
-
-              .sortType-icon {
-                border: v-bind(sortTypeIconSizePx) solid transparent;
-                margin-top: v-bind(sortTypeAscIconMarginTopPx);
-                margin-left: 4px;
-                display: inline-block;
-                height: 0;
-                width: 0;
-                position: relative;
-                border-bottom-color: v-bind(headerFontColor);
-              }
-
-              &.none {
-                &:hover {
-                  .sortType-icon {
-                    opacity: 1;
-                  }
-                }
-                .sortType-icon {
-                  opacity: 0;
-                  transition: 0.5s ease;
-                }
-              }
-              &.desc {
-                .sortType-icon {
-                  margin-top: v-bind(sortTypeDescIconMarginTopPx);
-                  transform: rotate(180deg);
-                }
-              }
-            }
-          }
-        }
-        tbody {
-          font-size: v-bind(fontSizePx);
-          &.hover-to-change-color {
-            tr:hover td{
-              background-color: v-bind(rowHoverBackgroundColor);
-              color: v-bind(rowHoverFontColor);
-            }
-          }
-          tr {
-            height: v-bind(rowHeightPx);
-            color: v-bind(rowFontColor);
-            &:nth-child(-n+3) {
-              td {
-                border-bottom: 1px solid v-bind(rowBorderColor)!important;
-              }
-            }
-            &:last-child {
-              border-bottom: none;
-              td {
-                border-bottom: none;
-              }
-            }
-            &:first-child {
-              td {
-                border-bottom: 1px solid v-bind(rowBorderColor);
-              }
-            }
-          }
-          td {
-            background-color: v-bind(rowBackgroundColor);
-            border: none;
-            border-bottom: 1px solid v-bind(rowBorderColor);
-            position: relative;
-            &.expand {
-              position: relative;
-              .expand-loading {
-                position: absolute;
-                top: 0px;
-                left: 0px;
-              }
-            }
-            &.can-expand {
-              cursor: pointer;
-            }
-            .expand-icon {
-              border: solid v-bind(rowFontColor);
-              border-width: 0 2px 2px 0;
-              display: inline-block;
-              padding: 3px;
-              transform: rotate(-45deg);
-              transition: 0.2s;
-              &.expanding {
-                transform: rotate(45deg);
-              }
-            }
-          }
-          &.row-alternation {
-            &.hover-to-change-color {
-              tr:hover td {
-                background-color: v-bind(rowHoverBackgroundColor);
-                color: v-bind(rowHoverFontColor);
-              }
-            }
-            .even-row td {
-              color: v-bind(evenRowFontColor);
-              background-color: v-bind(evenRowBackgroundColor);
-            }
-          }
-        }
-      }
-
-      .data-table__message {
-        background-color: v-bind(rowBackgroundColor);
-        text-align: center;
-        color: v-bind(rowFontColor);
-        font-size: v-bind(fontSizePx);
-        padding: 20px;
+        table-layout: fixed;
       }
     }
-    .data-table__footer {
-      background-color: v-bind(footerBackgroundColor);;
-      color: v-bind(footerFontColor);
-      width: 100%;
+    &.show-shadow {
+      th.shadow, td.shadow {
+        &::after {
+          box-shadow: inset 6px 0 5px -3px rgb(0 0 0 / 20%);
+        }
+      }
+    }
+    &.fixed-header {
+      th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+      }
+    }
+    &.fixed-height {
+      height: v-bind(tableHeightPx);
+    }
+    &.hoverable {
+      tr:hover td {
+        background-color: var(--easy-table-body-row-hover-background-color);
+        color: var(--easy-table-body-row-hover-font-color);
+      }
+
+      .vue3-easy-data-table__body.row-alternation {
+        .even-row:hover td {
+          color: var(--easy-table-body-row-hover-font-color);
+          background-color: var(--easy-table-body-row-hover-background-color);
+        }
+      }
+    }
+    &.border-cell {
+      .vue3-easy-data-table__header th {
+        border-right: var(--easy-table-row-border);
+      }
+
+      .vue3-easy-data-table__header th:last-of-type {
+        border-right: none;
+      }
+
+      .vue3-easy-data-table__body td {
+        border-right: var(--easy-table-row-border);
+      }
+      .vue3-easy-data-table__body td:last-of-type {
+        border-right: none;
+      }
+    }
+  }
+  table {
+    display: table;
+    width: 100%;
+    border-spacing: 0;
+    margin: 0px;
+  }
+  // fixed-columns feature related
+  .vue3-easy-data-table__header, vue3-easy-data-table__body {
+    position: relative;
+  }
+  .vue3-easy-data-table__header tr {
+    font-size: var(--easy-table-header-font-size);
+    border: none;
+    height: var(--easy-table-header-height);
+  }
+  .vue3-easy-data-table__header th {
+    background-color: var(--easy-table-header-background-color);
+    color: var(--easy-table-header-font-color);
+    border: none;
+    border-bottom: var(--easy-table-row-border);
+
+    padding: var(--easy-table-header-item-padding);
+
+    position: relative;
+    .header {
       display: flex;
-      border-top: 1px solid v-bind(rowBorderColor);
-      font-size: v-bind(fontSizePx);
       align-items: center;
-      justify-content: flex-end;
-      padding: 0px 5px;
-      height: v-bind(rowHeightPx);
+    }
 
-      .footer__rows-per-page {
-        display: flex;
-        align-items: center;
+    &.sortable {
+      cursor: pointer;
+      .sortType-icon {
+        border: 5px solid transparent;
+        margin-top: -3px;
+        margin-left: 4px;
+        display: inline-block;
+        height: 0;
+        width: 0;
+        position: relative;
+        border-bottom-color: var(--easy-table-header-font-color);
       }
-      .footer__items-index {
-        margin: 0px 20px 0px 10px;
+
+      &.none {
+        &:hover {
+          .sortType-icon {
+            opacity: 1;
+          }
+        }
+        .sortType-icon {
+          opacity: 0;
+          transition: 0.5s ease;
+        }
+      }
+      &.desc {
+        .sortType-icon {
+          margin-top: 5px;
+          transform: rotate(180deg);
+        }
       }
     }
+  }
+
+  // fixed-columns feature related
+  .vue3-easy-data-table__header th, .vue3-easy-data-table__body td {
+    &.shadow {
+      &::after {
+        pointer-events: none;
+        content: "";
+        width: 36px;
+        display: inline-block;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        right: -36px;
+        box-shadow: none;
+      }
+    }
+  }
+  .vue3-easy-data-table__body tr {
+    height: var(--easy-table-body-row-height);
+    color: var(--easy-table-body-row-font-color);
+    font-size: var(--easy-table-body-row-font-size);
+
+    &:nth-child(-n+3) {
+      td {
+        border-bottom: var(--easy-table-row-border)!important;
+      }
+    }
+    &:last-child {
+      td {
+        border-bottom: none;
+      }
+    }
+    &:first-child {
+
+      td {
+        border-bottom: var(--easy-table-row-border);
+      }
+    }
+  }
+
+  .vue3-easy-data-table__body.row-alternation {
+    .even-row td {
+      color: var(--easy-table-body-even-row-font-color);
+      background-color: var(--easy-table-body-even-row-background-color);
+    }
+  }
+  .vue3-easy-data-table__body td {
+    padding: var(--easy-table-body-item-padding);
+    background-color: var(--easy-table-body-row-background-color);
+    border: none;
+    border-bottom: var(--easy-table-row-border);
+
+    position: relative;
+    .expand-icon {
+      border: solid;
+      border-color: var(easy-table-body-row-font-color);
+
+      border-width: 0 2px 2px 0;
+      display: inline-block;
+      padding: 3px;
+      transform: rotate(-45deg);
+      transition: 0.2s;
+      &.expanding {
+        transform: rotate(45deg);
+      }
+    }
+  }
+
+  // expandable row feature related
+  .vue3-easy-data-table__body td.expand {
+    position: relative;
+    .expand-loading {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
+  }
+  .vue3-easy-data-table__body td.can-expand {
+    cursor: pointer;
+  }
+
+  .vue3-easy-data-table__footer {
+    background-color: var(--easy-table-footer-background-color);
+    color: var(--easy-table-footer-font-color);
+    border-top: var(--easy-table-row-border);
+    font-size: var(--easy-table-footer-font-size);
+    height: var(--easy-table-footer-height);
+    padding: var(--easy-table-footer-padding);
+
+    box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+
+    .pagination__rows-per-page {
+      display: flex;
+      align-items: center;
+    }
+    .pagination__items-index {
+      margin: 0px 20px 0px 10px;
+    }
+  }
+  .vue3-easy-data-table__message {
+    color: var(--easy-table-message-font-color);
+    font-size: var(--easy-table-message-font-size);
+    padding: var(--easy-table-message-padding);
+
+    text-align: center;
+  }
+  .vue3-easy-data-table__loading {
+    z-index: 3;
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .loading-entity {
+      z-index: 1;
+    }
+  }
+  .vue3-easy-data-table__loading-mask {
+    background-color: var(--easy-table-loading-mask-background-color);
+    opacity: var(--easy-table-loading-mask-opacity);
+
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+  }
+</style>
+
+<style>
+  :root {
+    /*table*/
+    --easy-table-border: 1px solid #e0e0e0;
+    --easy-table-row-border: 1px solid #e0e0e0;
+    /*header-row*/
+    --easy-table-header-font-size: 12px;
+    --easy-table-header-height: 36px;
+    --easy-table-header-font-color: #373737;
+    --easy-table-header-background-color: #fff;
+    /*header-item*/
+    --easy-table-header-item-padding: 0px 10px;
+    /*body-row*/
+    --easy-table-body-row-height: 36px;
+    --easy-table-body-row-font-size: 12px;
+
+    --easy-table-body-row-font-color: #212121;
+    --easy-table-body-row-background-color: #fff;
+
+    --easy-table-body-row-hover-font-color: #212121;
+    --easy-table-body-row-hover-background-color: #eee;
+
+    --easy-table-body-even-row-font-color: #373737;
+    --easy-table-body-even-row-background-color: #fff;
+    /*body-item*/
+    --easy-table-body-item-padding: 0px 10px;
+    /*footer*/
+    --easy-table-footer-background-color: #fff;
+    --easy-table-footer-font-color: #212121;
+    --easy-table-footer-font-size: 12px;
+    --easy-table-footer-padding: 0px 5px;
+    --easy-table-footer-height: 36px;
+    /*message*/
+    --easy-table-message-font-color: #212121;
+    --easy-table-message-font-size: 12px;
+    --easy-table-message-padding: 20px;
+    /*loading-mask*/
+    --easy-table-loading-mask-background-color: #fff;
+    --easy-table-loading-mask-opacity: 0.5;
+    /*scroll-bar*/
+    --easy-table-scrollbar-track-color: #fff;
+    --easy-table-scrollbar-color: #fff;
+    --easy-table-scrollbar-thumb-color: #c1c1c1;
+    --easy-table-scrollbar-corner-color: #fff;
+    /*buttons-pagination*/
+    --easy-table-buttons-pagination-border: 1px solid #e0e0e0;
   }
 </style>
