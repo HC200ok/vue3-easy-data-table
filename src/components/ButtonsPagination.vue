@@ -179,7 +179,6 @@ const themeColor = inject('themeColor');
     &.button {
       &.active {
         background-color: v-bind(themeColor);
-        border: 1px solid v-bind(themeColor);
         color: #fff;
       }
     }
