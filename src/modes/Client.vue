@@ -69,6 +69,7 @@
       :header-item-class-name="headerItemClassNameFunction"
       :body-item-class-name="bodyItemClassNameFunction"
       border-cell
+      must-sort
     >
       <template #expand="item">
         <div style="padding: 15px">
