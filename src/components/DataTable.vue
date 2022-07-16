@@ -405,6 +405,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  mustSort: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 // style related computed variables
@@ -719,7 +723,7 @@ const updateSortField = (newSortBy: string, oldSortType: SortType | 'none') => {
   } else if (oldSortType === 'asc') {
     newSortType = 'desc';
   } else {
-    newSortType = null;
+    newSortType = (props.mustSort) ? 'asc' : null;
   }
 
   if (serverOptionsComputed.value) {
