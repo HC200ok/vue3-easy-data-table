@@ -762,9 +762,7 @@ const totalItemsLength = computed((): number => (isServerSideMode.value ? props.
 
 const lastIndexOfItemsInCurrentPage = computed((): number => {
   if (isServerSideMode.value) {
-    return Math.min(
-			totalItemsLength.value,
-			currentPaginationNumber.value * rowsPerPageReactive.value);
+    return Math.min(totalItemsLength.value, currentPaginationNumber.value * rowsPerPageReactive.value);
   }
   return Math.min(
     itemsFiltering.value.length,
