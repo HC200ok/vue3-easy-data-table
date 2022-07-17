@@ -180,7 +180,7 @@
         />
       </div>
       <div class="pagination__items-index">
-        {{ `${firstIndexOfItemsInCurrentPage}-${lastIndexOfItemsInCurrentPage}` }}
+        {{ `${firstIndexOfItemsInCurrentPage}–${lastIndexOfItemsInCurrentPage}` }}
         of {{ totalItemsLength }}
       </div>
 
@@ -762,7 +762,9 @@ const totalItemsLength = computed((): number => (isServerSideMode.value ? props.
 
 const lastIndexOfItemsInCurrentPage = computed((): number => {
   if (isServerSideMode.value) {
-    return currentPaginationNumber.value * rowsPerPageReactive.value;
+    return Math.min(
+			totalItemsLength.value,
+			currentPaginationNumber.value * rowsPerPageReactive.value);
   }
   return Math.min(
     itemsFiltering.value.length,
