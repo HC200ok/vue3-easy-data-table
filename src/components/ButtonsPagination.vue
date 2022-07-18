@@ -7,6 +7,7 @@
       :class="{
         button: item.type === 'button',
         active: item.type === 'button' && item.active,
+        'active-prev': item.type === 'button' && item.activePrev,
         omission: item.type === 'omission',
       }"
       @click="changePage(item)"
@@ -32,6 +33,7 @@ type PaginationItem = {
   type: 'button',
   page: number,
   active: boolean,
+  activePrev: boolean,
 } | {
   type: 'omission',
 };
@@ -49,6 +51,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
         type: 'button',
         page: i,
         active: i === props.currentPaginationNumber,
+        activePrev: (i + 1) === props.currentPaginationNumber,
       });
     }
   } else if ([1, 2, props.maxPaginationNumber, props.maxPaginationNumber - 1].includes(props.currentPaginationNumber)) {
@@ -59,6 +62,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page: i,
           active: i === props.currentPaginationNumber,
+          activePrev: (i + 1) === props.currentPaginationNumber,
         });
       } else if (i === 4) {
         paginationItems.push({
@@ -70,6 +74,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page,
           active: page === props.currentPaginationNumber,
+          activePrev: (i + 1) === props.currentPaginationNumber,
         });
       }
     }
@@ -81,6 +86,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page: i,
           active: i === props.currentPaginationNumber,
+          activePrev: (i + 1) === props.currentPaginationNumber,
         });
       } else if (i === 6) {
         paginationItems.push({
@@ -91,6 +97,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page: props.maxPaginationNumber,
           active: props.maxPaginationNumber === props.currentPaginationNumber,
+          activePrev: (i + 1) === props.currentPaginationNumber,
         });
       }
     }
@@ -102,6 +109,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page: 1,
           active: props.currentPaginationNumber === 1,
+          activePrev: (i + 1) === props.currentPaginationNumber,
         });
       } else if (i === 2) {
         paginationItems.push({
@@ -113,6 +121,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page,
           active: page === props.currentPaginationNumber,
+          activePrev: (i + 1) === props.currentPaginationNumber,
         });
       }
     }
@@ -124,6 +133,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page: 1,
           active: props.currentPaginationNumber === 1,
+          activePrev: (i + 1) === props.currentPaginationNumber,
         });
       } else if (i === 2 || i === 6) {
         paginationItems.push({
@@ -134,6 +144,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page: props.maxPaginationNumber,
           active: props.maxPaginationNumber === props.currentPaginationNumber,
+          activePrev: (i + 1) === props.currentPaginationNumber,
         });
       } else {
         const diff = 4 - i;
@@ -142,6 +153,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page,
           active: page === props.currentPaginationNumber,
+          activePrev: (i + 1) === props.currentPaginationNumber,
         });
       }
     }
@@ -179,7 +191,12 @@ const themeColor = inject('themeColor');
     &.button {
       &.active {
         background-color: v-bind(themeColor);
+        border-left: var(--easy-table-buttons-pagination-border);
+        border-color: v-bind(themeColor)!important;
         color: #fff;
+      }
+      &.active-prev {
+        border-right: none;
       }
     }
   }
