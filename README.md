@@ -128,8 +128,5 @@ export default defineComponent({
 4. Vitual table rows.
 5. Mobile responsive.
 
-## ⭐ Stargazers
-[![Stargazers repo roster for @HC200ok/vue3-easy-data-table](https://reporoster.com/stars/dark/notext/HC200ok/vue3-easy-data-table)](https://github.com/HC200ok/vue3-easy-data-table/stargazers)
-
 ## Contribution
 Shout out to the people who made new feature requests and reported issues to make this component better.
