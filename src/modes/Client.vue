@@ -1,52 +1,5 @@
 <template>
   <div>
-    <span>search field:</span>
-    <select v-model="searchField">
-      <option>name</option>
-      <option>address</option>
-    </select> &nbsp;&nbsp;
-    <span>search value: </span>
-    <input type="text" v-model="searchValue"><br/><br/>
-    <!-- <div class="filter-wrapper">
-      <span class="field">
-        filtering by age:
-      </span>
-      <Slider v-model="ageCriteria" class="slider"/>
-    </div> -->
-    <button @click="switchToNested300">use nested 300</button>
-    <button @click="switchToNested">use nested</button>
-    <div class="filter-wrapper">
-      <span class="field">
-        filtering by sport:
-      </span>
-      <select
-        v-model="favouriteSportCriteria"
-        name="favouriteSport"
-      >
-        <option value="basketball">
-          basketball
-        </option>
-        <option value="running">
-          running
-        </option>
-        <option value="football">
-          football
-        </option>
-        <option value="swimming">
-          swimming
-        </option>
-        <option value="all">
-          all
-        </option>
-      </select>
-    </div>
-    <!-- <span>search field:</span>
-    <select v-model="searchField">
-      <option>name</option>
-      <option>address</option>
-    </select><br />
-    <span>search value: </span>
-    <input type="text" v-model="searchValue" /> -->
     <DataTable
       noHover
       ref="dataTable"
@@ -70,10 +23,28 @@
       :body-item-class-name="bodyItemClassNameFunction"
       border-cell
       must-sort
+      :filterOptions="filterOptions"
     >
       <template #expand="item">
         <div style="padding: 15px">
           {{item.name}} won championships
+        </div>
+      </template>
+
+      <template #header-name="header">
+        <div class="filter-column">
+          <span
+            class="filter-icon"
+            @click.stop="showNameFilter=!showNameFilter">
+            icon
+          </span>
+          {{ header.text }}
+          <div
+            v-if="showNameFilter"
+            class="filter-menu filter-age-menu"
+          >
+            <input v-model="nameCriteria">
+          </div>
         </div>
       </template>
     </DataTable>
@@ -113,7 +84,7 @@
 </template>
 
 <script lang="ts" setup>
-// import Slider from '@vueform/slider';
+import Slider from '@vueform/slider';
 import {
   computed, ref, reactive, toRefs,
 } from 'vue';
@@ -137,7 +108,7 @@ const switchToNested = () => {
 };
 
 const headers: Header[] = [
-  { text: 'Name', value: 'name', sortable: true },
+  { text: 'Name', value: 'name' },
   { text: 'Address', value: 'address', width: 200 },
   { text: 'Height', value: 'info.out.height', sortable: true },
   { text: 'Weight', value: 'info.out.weight', sortable: true },
@@ -168,22 +139,31 @@ const ageCriteria = ref<[number, number]>([1, 15]);
 
 const favouriteSportCriteria = ref('all');
 
-// const filterOptions = computed((): FilterOption[] => {
-//   const filterOptionsArray: FilterOption[] = [];
-//   if (favouriteSportCriteria.value !== 'all') {
-//     filterOptionsArray.push({
-//       field: 'favouriteSport',
-//       comparison: '=',
-//       criteria: favouriteSportCriteria.value,
-//     });
-//   }
-//   filterOptionsArray.push({
-//     field: 'age',
-//     comparison: 'between',
-//     criteria: ageCriteria.value,
-//   });
-//   return filterOptionsArray;
-// });
+const showNameFilter = ref(false);
+const nameCriteria = ref('');
+
+const filterOptions = computed((): FilterOption[] => {
+  const filterOptionsArray: FilterOption[] = [];
+  if (favouriteSportCriteria.value !== 'all') {
+    filterOptionsArray.push({
+      field: 'favouriteSport',
+      comparison: '=',
+      criteria: favouriteSportCriteria.value,
+    });
+  }
+  filterOptionsArray.push({
+    field: 'age',
+    comparison: 'between',
+    criteria: ageCriteria.value,
+  });
+  filterOptionsArray.push({
+    field: 'name',
+    criteria: nameCriteria.value,
+    comparison: (value, criteria): boolean => (value != null
+      && value.includes(`name-${criteria}`)),
+  });
+  return filterOptionsArray;
+});
 const bodyRowClassNameFunction: BodyRowClassNameFunction = (item: Item, index: number): string => (index === 0 ? 'first-row test-row' : '');
 const headerItemClassNameFunction: HeaderItemClassNameFunction = (header: Header, index: number): string => (header.value === 'name' ? 'name-header' : '');
 const bodyItemClassNameFunction: BodyItemClassNameFunction = (column: string, index: number): string => (column === 'name' ? 'name-item' : '');

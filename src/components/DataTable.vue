@@ -646,6 +646,9 @@ const itemsFiltering = computed((): Item[] => {
     props.filterOptions.forEach((option: FilterOption) => {
       itemsFiltered = itemsFiltered.filter((item) => {
         const { field, comparison, criteria } = option;
+        if (typeof comparison === 'function') {
+          return comparison(item[field], criteria as string);
+        }
         switch (comparison) {
           case '=':
             return item[field] === criteria;
