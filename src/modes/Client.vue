@@ -84,7 +84,6 @@
 </template>
 
 <script lang="ts" setup>
-import Slider from '@vueform/slider';
 import {
   computed, ref, reactive, toRefs,
 } from 'vue';
@@ -192,8 +191,6 @@ const updatePage = (paginationNumber: number) => {
   dataTable.value.updatePage(paginationNumber);
 };
 </script>
-
-<style src="@vueform/slider/themes/default.css"></style>
 
 <style scoped>
 .customize-footer {
