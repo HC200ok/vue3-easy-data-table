@@ -690,4 +690,8 @@ defineExpose({
 
 <style lang="scss" scoped>
 @import '../scss/vue3-easy-data-table.scss';
+
+.vue3-easy-data-table__main.fixed-height {
+  height: v-bind(tableHeightPx);
+}
 </style>

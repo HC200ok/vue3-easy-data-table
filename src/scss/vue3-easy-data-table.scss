@@ -53,9 +53,6 @@
       z-index: 2;
     }
   }
-  &.fixed-height {
-    height: v-bind(tableHeightPx);
-  }
   &.hoverable {
     tr:hover td {
       background-color: var(--easy-table-body-row-hover-background-color);
