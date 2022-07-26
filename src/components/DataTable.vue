@@ -180,7 +180,7 @@
         />
       </div>
       <div class="pagination__items-index">
-        {{ `${firstIndexOfItemsInCurrentPage}–${lastIndexOfItemsInCurrentPage}` }}
+        {{ `${currentPageFirstIndex}–${currentPageLastIndex}` }}
         of {{ totalItemsLength }}
       </div>
       <slot
@@ -548,8 +548,8 @@ const {
 );
 
 const {
-  firstIndexOfItemsInCurrentPage,
-  lastIndexOfItemsInCurrentPage,
+  currentPageFirstIndex,
+  currentPageLastIndex,
   multipleSelectStatus,
   pageItems,
 } = usePageItems(
@@ -626,8 +626,8 @@ watch(rowsPerPageReactive, (value) => {
 });
 
 defineExpose({
-  firstIndexOfItemsInCurrentPage,
-  lastIndexOfItemsInCurrentPage,
+  currentPageFirstIndex,
+  currentPageLastIndex,
   clientItemsLength: totalItemsLength,
   maxPaginationNumber,
   currentPaginationNumber,
