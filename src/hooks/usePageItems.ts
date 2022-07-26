@@ -15,10 +15,10 @@ export default function usePageItems(
   totalItems: ComputedRef<Item[]>,
   totalItemsLength: ComputedRef<number>,
 ) {
-  const firstIndexOfItemsInCurrentPage = computed((): number => (currentPaginationNumber.value - 1)
+  const currentPageFirstIndex = computed((): number => (currentPaginationNumber.value - 1)
     * rowsPerPageReactive.value + 1);
 
-  const lastIndexOfItemsInCurrentPage = computed((): number => {
+  const currentPageLastIndex = computed((): number => {
     if (isServerSideMode.value) {
       return Math.min(totalItemsLength.value, currentPaginationNumber.value * rowsPerPageReactive.value);
     }
@@ -31,12 +31,12 @@ export default function usePageItems(
   // items in current page
   const itemsInPage = computed((): Item[] => {
     if (isServerSideMode.value) return items.value;
-    return totalItems.value.slice(firstIndexOfItemsInCurrentPage.value - 1, lastIndexOfItemsInCurrentPage.value);
+    return totalItems.value.slice(currentPageFirstIndex.value - 1, currentPageLastIndex.value);
   });
 
   const itemsWithIndex = computed((): Item[] => {
     if (showIndex.value) {
-      return itemsInPage.value.map((item, index) => ({ index: firstIndexOfItemsInCurrentPage.value + index, ...item }));
+      return itemsInPage.value.map((item, index) => ({ index: currentPageFirstIndex.value + index, ...item }));
     }
     return itemsInPage.value;
   });
@@ -90,8 +90,8 @@ export default function usePageItems(
   });
 
   return {
-    firstIndexOfItemsInCurrentPage,
-    lastIndexOfItemsInCurrentPage,
+    currentPageFirstIndex,
+    currentPageLastIndex,
     multipleSelectStatus,
     pageItems,
   };
