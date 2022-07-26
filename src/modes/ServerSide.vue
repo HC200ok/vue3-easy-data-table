@@ -84,7 +84,7 @@ import {
   defineComponent, ref, computed, watch, onMounted, Ref,
 } from 'vue';
 import {
-  Header, Item, ServerOptions, BodyItemClassNameFunction, BodyRowClassNameFunction, HeaderItemClassNameFunction
+  Header, Item, ServerOptions, BodyItemClassNameFunction, BodyRowClassNameFunction, HeaderItemClassNameFunction,
 } from '../types/main';
 import DataTable from '../components/DataTable.vue';
 import { mockClientItems, mockServerItems } from '../mock';
@@ -104,11 +104,19 @@ export default defineComponent({
     //   { text: 'Favourite fruits', value: 'favouriteFruits', width: 200 },
     // ];
     const headers: Header[] = [
-      { text: 'Name', value: 'name', width: 150, fixed: true},
-      { text: 'Address', value: 'address', width: 200},
-      { text: 'Height', value: 'height', sortable: true, width: 200 },
-      { text: 'Weight', value: 'weight', sortable: true, width: 200 },
-      { text: 'Age', value: 'age', sortable: true, width: 200 },
+      {
+        text: 'Name', value: 'name', width: 150, fixed: true,
+      },
+      { text: 'Address', value: 'address', width: 200 },
+      {
+        text: 'Height', value: 'height', sortable: true, width: 200,
+      },
+      {
+        text: 'Weight', value: 'weight', sortable: true, width: 200,
+      },
+      {
+        text: 'Age', value: 'age', sortable: true, width: 200,
+      },
       { text: 'Favourite sport', value: 'favouriteSport', width: 200 },
       { text: 'Favourite fruits', value: 'favouriteFruits', width: 200 },
     ];
@@ -139,6 +147,7 @@ export default defineComponent({
     watch(
       serverOptions,
       () => {
+        console.log(111);
         loadFromServer();
       },
       { deep: true },

@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { Item, ServerOptions, Header } from './types/main';
+import type { Item, ServerOptions, Header } from './types/main';
 
 export const headersMocked: Header[] = [
   { text: 'Name', value: 'name' },

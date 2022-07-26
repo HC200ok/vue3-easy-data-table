@@ -74,7 +74,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page,
           active: page === props.currentPaginationNumber,
-          activePrev: (i + 1) === props.currentPaginationNumber,
+          activePrev: (page + 1) === props.currentPaginationNumber,
         });
       }
     }
@@ -121,7 +121,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page,
           active: page === props.currentPaginationNumber,
-          activePrev: (i + 1) === props.currentPaginationNumber,
+          activePrev: (page + 1) === props.currentPaginationNumber,
         });
       }
     }
@@ -153,7 +153,7 @@ const paginationItemsForRender = computed((): PaginationItem[] => {
           type: 'button',
           page,
           active: page === props.currentPaginationNumber,
-          activePrev: (i + 1) === props.currentPaginationNumber,
+          activePrev: (page + 1) === props.currentPaginationNumber,
         });
       }
     }
