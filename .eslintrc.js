@@ -26,5 +26,22 @@ module.exports = {
     'vue/no-multiple-template-root': 'off',
     'vue/no-v-model-argument': 'off',
     'vue/no-v-for-template-key': 'off',
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
+  },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+      },
+    },
   },
 };

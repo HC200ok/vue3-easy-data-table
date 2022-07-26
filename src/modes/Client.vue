@@ -1,9 +1,11 @@
 <template>
   <div>
     <DataTable
-      noHover
       ref="dataTable"
+      v-model:items-selected="itemsSelected"
       alternating
+      border-cell
+      no-hover
       show-index
       :headers="headers"
       :items="items"
@@ -13,21 +15,18 @@
       buttons-pagination
       sort-by="age"
       sort-type="desc"
-      @click-row="showItem"
-      v-model:items-selected="itemsSelected"
       theme-color="#1d90ff"
       table-class-name="hc-table"
       header-class-name="hc-header"
       :body-row-class-name="bodyRowClassNameFunction"
       :header-item-class-name="headerItemClassNameFunction"
       :body-item-class-name="bodyItemClassNameFunction"
-      border-cell
       must-sort
-      :filterOptions="filterOptions"
+      @click-row="showItem"
     >
       <template #expand="item">
         <div style="padding: 15px">
-          {{item.name}} won championships
+          {{ item.name }} won championships
         </div>
       </template>
 
@@ -35,7 +34,8 @@
         <div class="filter-column">
           <span
             class="filter-icon"
-            @click.stop="showNameFilter=!showNameFilter">
+            @click.stop="showNameFilter=!showNameFilter"
+          >
             icon
           </span>
           {{ header.text }}
@@ -108,10 +108,14 @@ const switchToNested = () => {
 
 const headers: Header[] = [
   { text: 'Name', value: 'name' },
-  { text: 'Address', value: 'address', width: 200 },
+  {
+    text: 'Address', value: 'address', width: 200, fixed: true,
+  },
   { text: 'Height', value: 'info.out.height', sortable: true },
   { text: 'Weight', value: 'info.out.weight', sortable: true },
-  { text: 'Age', value: 'age', sortable: true, width: 200 },
+  {
+    text: 'Age', value: 'age', sortable: true, width: 200,
+  },
   { text: 'Favourite sport', value: 'favouriteSport', width: 200 },
   { text: 'Favourite fruits', value: 'favouriteFruits', width: 200 },
 ];
@@ -130,7 +134,7 @@ const itemsSelected = ref<Item[]>([items.value[14]]);
 
 const showItem = (item: clickRowArgument) => {
   console.log('item');
-  console.log(item);
+  console.log(JSON.stringify(item));
 };
 // filtering
 
@@ -141,28 +145,28 @@ const favouriteSportCriteria = ref('all');
 const showNameFilter = ref(false);
 const nameCriteria = ref('');
 
-const filterOptions = computed((): FilterOption[] => {
-  const filterOptionsArray: FilterOption[] = [];
-  if (favouriteSportCriteria.value !== 'all') {
-    filterOptionsArray.push({
-      field: 'favouriteSport',
-      comparison: '=',
-      criteria: favouriteSportCriteria.value,
-    });
-  }
-  filterOptionsArray.push({
-    field: 'age',
-    comparison: 'between',
-    criteria: ageCriteria.value,
-  });
-  filterOptionsArray.push({
-    field: 'name',
-    criteria: nameCriteria.value,
-    comparison: (value, criteria): boolean => (value != null
-      && value.includes(`name-${criteria}`)),
-  });
-  return filterOptionsArray;
-});
+// const filterOptions = computed((): FilterOption[] => {
+//   const filterOptionsArray: FilterOption[] = [];
+//   if (favouriteSportCriteria.value !== 'all') {
+//     filterOptionsArray.push({
+//       field: 'favouriteSport',
+//       comparison: '=',
+//       criteria: favouriteSportCriteria.value,
+//     });
+//   }
+//   filterOptionsArray.push({
+//     field: 'age',
+//     comparison: 'between',
+//     criteria: ageCriteria.value,
+//   });
+//   filterOptionsArray.push({
+//     field: 'name',
+//     criteria: nameCriteria.value,
+//     comparison: (value, criteria): boolean => (value != null
+//       && value.includes(`name-${criteria}`)),
+//   });
+//   return filterOptionsArray;
+// });
 const bodyRowClassNameFunction: BodyRowClassNameFunction = (item: Item, index: number): string => (index === 0 ? 'first-row test-row' : '');
 const headerItemClassNameFunction: HeaderItemClassNameFunction = (header: Header, index: number): string => (header.value === 'name' ? 'name-header' : '');
 const bodyItemClassNameFunction: BodyItemClassNameFunction = (column: string, index: number): string => (column === 'name' ? 'name-item' : '');
