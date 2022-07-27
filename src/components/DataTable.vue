@@ -245,192 +245,78 @@ import type {
   HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
 } from '../types/main';
 
-import type { HeaderForRender } from '../types/internal';
+import type { HeaderForRender, Props } from '../types/internal';
 
 // eslint-disable-next-line import/extensions
 import { generateColumnContent } from '../utils';
 
-const props = defineProps({
-  alternating: {
-    type: Boolean,
-    default: false,
-  },
-  buttonsPagination: {
-    type: Boolean,
-    default: false,
-  },
-  checkboxColumnWidth: {
-    type: Number,
-    default: null,
-  },
-  emptyMessage: {
-    type: String,
-    default: 'No Available Data',
-  },
-  expandColumnWidth: {
-    type: Number,
-    default: 36,
-  },
-  filterOptions: {
-    type: Array as PropType<FilterOption[]>,
-    default: null,
-  },
-  fixedExpand: {
-    type: Boolean,
-    default: false,
-  },
-  fixedHeader: {
-    type: Boolean,
-    default: true,
-  },
-  fixedCheckbox: {
-    type: Boolean,
-    default: false,
-  },
-  fixedIndex: {
-    type: Boolean,
-    default: false,
-  },
-  headers: {
-    type: Array as PropType<Header[]>,
-    required: true,
-  },
-  hideFooter: {
-    type: Boolean,
-    default: false,
-  },
-  hideRowsPerPage: {
-    type: Boolean,
-    default: false,
-  },
-  hideHeader: {
-    type: Boolean,
-    default: false,
-  },
-  indexColumnWidth: {
-    type: Number,
-    default: 60,
-  },
-  items: {
-    type: Array as PropType<Item[]>,
-    required: true,
-  },
-  itemsSelected: {
-    type: Array as PropType<Item[]> | null,
-    default: null,
-  },
-  loading: {
-    type: Boolean,
-    deault: false,
-  },
-  rowsPerPage: {
-    type: Number,
-    default: 25,
-  },
-  rowsItems: {
-    type: Array as PropType<number[]>,
-    default: () => [25, 50, 100],
-  },
-  rowsPerPageMessage: {
-    type: String,
-    default: 'rows per page:',
-  },
-  searchField: {
-    type: String,
-    default: '',
-  },
-  searchValue: {
-    type: String,
-    default: '',
-  },
-  serverOptions: {
-    type: Object as PropType<ServerOptions> | null,
-    default: null,
-  },
-  serverItemsLength: {
-    type: Number,
-    default: 0,
-  },
-  showIndex: {
-    type: Boolean,
-    default: false,
-  },
-  sortBy: {
-    type: String,
-    default: '',
-  },
-  sortType: {
-    type: String as PropType<SortType>,
-    default: 'asc',
-  },
-  tableHeight: {
-    type: Number,
-    default: null,
-  },
-  themeColor: {
-    type: String,
-    default: '#42b883',
-  },
-  tableClassName: {
-    type: String,
-    default: '',
-  },
-  headerClassName: {
-    type: String,
-    default: '',
-  },
-  headerItemClassName: {
-    type: [Function, String] as PropType<HeaderItemClassNameFunction | string>,
-    default: '',
-  },
-  bodyRowClassName: {
-    type: [Function, String] as PropType<BodyRowClassNameFunction | string>,
-    default: '',
-  },
-  bodyItemClassName: {
-    type: [Function, String] as PropType<BodyItemClassNameFunction | string>,
-    default: '',
-  },
-  noHover: {
-    type: Boolean,
-    default: false,
-  },
-  borderCell: {
-    type: Boolean,
-    default: false,
-  },
-  mustSort: {
-    type: Boolean,
-    default: false,
-  },
-});
-
 const {
-  checkboxColumnWidth,
-  expandColumnWidth,
-  filterOptions,
-  fixedCheckbox,
-  fixedExpand,
-  fixedHeader,
-  fixedIndex,
+  alternating = false,
+  bodyItemClassName = '',
+  bodyRowClassName = '',
+  borderCell = false,
+  buttonsPagination = false,
+  checkboxColumnWidth = null,
+  emptyMessage = 'No Available Data',
+  expandColumnWidth = 36,
+  filterOptions = null,
+  fixedExpand = false,
+  fixedHeader = true,
+  fixedCheckbox = false,
+  fixedIndex = false,
   headers,
-  indexColumnWidth,
+  headerClassName = '',
+  headerItemClassName = '',
+  hideFooter = false,
+  hideRowsPerPage = false,
+  hideHeader = false,
+  indexColumnWidth = 60,
   items,
-  itemsSelected,
-  loading,
-  mustSort,
-  rowsItems,
-  rowsPerPage,
-  searchField,
-  searchValue,
-  serverItemsLength,
-  serverOptions,
-  showIndex,
-  sortBy,
-  sortType,
-  tableHeight,
-  themeColor,
-} = toRefs(props);
+  itemsSelected = null,
+  loading = false,
+  mustSort = false,
+  noHover = false,
+  rowsPerPage = 25,
+  rowsItems = [25, 50, 100],
+  rowsPerPageMessage = 'rows per page:',
+  searchField = '',
+  searchValue = '',
+  serverOptions = null,
+  serverItemsLength = 0,
+  showIndex = false,
+  sortBy = '',
+  sortType = 'asc',
+  tableHeight = null,
+  themeColor = '#42b883',
+  tableClassName = '',
+} = defineProps<Props>();
+
+// const {
+//   checkboxColumnWidth,
+//   expandColumnWidth,
+//   filterOptions,
+//   fixedCheckbox,
+//   fixedExpand,
+//   fixedHeader,
+//   fixedIndex,
+//   headers,
+//   indexColumnWidth,
+//   items,
+//   itemsSelected,
+//   loading,
+//   mustSort,
+//   rowsItems,
+//   rowsPerPage,
+//   searchField,
+//   searchValue,
+//   serverItemsLength,
+//   serverOptions,
+//   showIndex,
+//   sortBy,
+//   sortType,
+//   tableHeight,
+//   themeColor,
+// } = toRefs(props);
 
 // style related computed variables
 const tableHeightPx = computed(() => (tableHeight.value ? `${tableHeight.value}px` : null));

@@ -23,6 +23,7 @@
       :body-item-class-name="bodyItemClassNameFunction"
       must-sort
       @click-row="showItem"
+      :table-height="30"
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -172,6 +173,10 @@ const headerItemClassNameFunction: HeaderItemClassNameFunction = (header: Header
 const bodyItemClassNameFunction: BodyItemClassNameFunction = (column: string, index: number): string => (column === 'name' ? 'name-item' : '');
 // $ref dataTable
 const dataTable = ref();
+console.log('dataTable');
+console.log(dataTable);
+console.log(dataTable.value);
+console.log(typeof dataTable);
 
 // index related
 const currentPageFirstIndex = computed(() => dataTable.value?.currentPageFirstIndex);

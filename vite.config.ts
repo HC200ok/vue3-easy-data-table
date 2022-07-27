@@ -20,7 +20,9 @@ export default defineConfig({
       },
     },
   },
-  plugins: [vue()],
+  plugins: [vue({
+    reactivityTransform: true,
+  })],
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
