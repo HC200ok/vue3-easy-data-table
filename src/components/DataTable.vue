@@ -175,7 +175,7 @@
       >
         {{ rowsPerPageMessage }}
         <RowsSelector
-          v-model="rowsPerPageReactive"
+          v-model="rowsPerPageRef"
           :rows-items="rowsItemsComputed"
         />
       </div>
@@ -503,7 +503,7 @@ const {
 
 const {
   rowsItemsComputed,
-  rowsPerPageReactive,
+  rowsPerPageRef,
 } = useRows(
   isServerSideMode,
   rowsItems,
@@ -542,7 +542,7 @@ const {
   isServerSideMode,
   loading,
   totalItemsLength,
-  rowsPerPageReactive,
+  rowsPerPageRef,
   serverOptions,
   updateServerOptionsPage,
 );
@@ -557,7 +557,7 @@ const {
   isMutipleSelectable,
   isServerSideMode,
   items,
-  rowsPerPageReactive,
+  rowsPerPageRef,
   selectItemsComputed,
   showIndex,
   totalItems,
@@ -617,7 +617,7 @@ watch(items, () => {
   if (!isServerSideMode.value) updatePage(1);
 }, { deep: true });
 
-watch(rowsPerPageReactive, (value) => {
+watch(rowsPerPageRef, (value) => {
   if (!isServerSideMode.value) {
     updatePage(1);
   } else {
