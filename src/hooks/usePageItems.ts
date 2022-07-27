@@ -9,22 +9,22 @@ export default function usePageItems(
   isMutipleSelectable: ComputedRef<boolean>,
   isServerSideMode: ComputedRef<boolean>,
   items: Ref<Item[]>,
-  rowsPerPageReactive: Ref<number>,
+  rowsPerPageRef: Ref<number>,
   selectItemsComputed: WritableComputedRef<Item[]>,
   showIndex: Ref<boolean>,
   totalItems: ComputedRef<Item[]>,
   totalItemsLength: ComputedRef<number>,
 ) {
   const currentPageFirstIndex = computed((): number => (currentPaginationNumber.value - 1)
-    * rowsPerPageReactive.value + 1);
+    * rowsPerPageRef.value + 1);
 
   const currentPageLastIndex = computed((): number => {
     if (isServerSideMode.value) {
-      return Math.min(totalItemsLength.value, currentPaginationNumber.value * rowsPerPageReactive.value);
+      return Math.min(totalItemsLength.value, currentPaginationNumber.value * rowsPerPageRef.value);
     }
     return Math.min(
       totalItems.value.length,
-      currentPaginationNumber.value * rowsPerPageReactive.value,
+      currentPaginationNumber.value * rowsPerPageRef.value,
     );
   });
 
@@ -66,11 +66,7 @@ export default function usePageItems(
     return 'partSelected';
   });
 
-  /**
-   * items computed flow:
-   * items searching => filtering => sorting => current page => with index => with checkbox => render
-  */
-  // items for render (with checbox)
+  // items for render
   const pageItems = computed((): Item[] => {
     if (!isMutipleSelectable.value) return itemsWithIndex.value;
     // multi select

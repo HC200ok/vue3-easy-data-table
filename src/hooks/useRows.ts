@@ -14,10 +14,10 @@ export default function useRows(
     return rowsItems.value;
   });
 
-  const rowsPerPageReactive = ref(serverOptions.value ? serverOptions.value.rowsPerPage : rowsPerPage.value);
+  const rowsPerPageRef = ref(serverOptions.value ? serverOptions.value.rowsPerPage : rowsPerPage.value);
 
   return {
     rowsItemsComputed,
-    rowsPerPageReactive,
+    rowsPerPageRef,
   };
 }
