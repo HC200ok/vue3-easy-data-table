@@ -87,8 +87,8 @@
 import {
   computed, ref, reactive, toRefs,
 } from 'vue';
-import {
-  Header, Item, FilterOption, clickRowArgument, HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
+import type {
+  Header, Item, FilterOption, ClickRowArgument, HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
 } from '../types/main';
 import DataTable from '../components/DataTable.vue';
 import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems } from '../mock';
@@ -132,7 +132,7 @@ const headers: Header[] = [
 
 const itemsSelected = ref<Item[]>([items.value[14]]);
 
-const showItem = (item: clickRowArgument) => {
+const showItem = (item: ClickRowArgument) => {
   console.log('item');
   console.log(JSON.stringify(item));
 };
