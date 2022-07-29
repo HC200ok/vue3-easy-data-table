@@ -245,10 +245,10 @@ import type { HeaderForRender } from '../types/internal';
 
 // eslint-disable-next-line import/extensions
 import { generateColumnContent } from '../utils';
-import withOptionalProps from '../withOptionalProps';
+import propsWithDefault from '../propsWithDefault';
 
 const props = defineProps({
-  ...withOptionalProps,
+  ...propsWithDefault,
   items: {
     type: Array as PropType<Item[]>,
     required: true,
