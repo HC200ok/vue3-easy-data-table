@@ -314,6 +314,7 @@ onMounted(() => {
 const emits = defineEmits([
   'clickRow',
   'expandRow',
+  'updateSort',
   'update:itemsSelected',
   'update:serverOptions',
 ]);
@@ -353,6 +354,7 @@ const {
   sortBy,
   sortType,
   updateServerOptionsSort,
+  emits
 );
 
 const {
