@@ -6,7 +6,7 @@ import type { MultipleSelectStatus } from '../types/internal';
 
 export default function usePageItems(
   currentPaginationNumber: Ref<number>,
-  isMutipleSelectable: ComputedRef<boolean>,
+  isMultipleSelectable: ComputedRef<boolean>,
   isServerSideMode: ComputedRef<boolean>,
   items: Ref<Item[]>,
   rowsPerPageRef: Ref<number>,
@@ -68,7 +68,7 @@ export default function usePageItems(
 
   // items for render
   const pageItems = computed((): Item[] => {
-    if (!isMutipleSelectable.value) return itemsWithIndex.value;
+    if (!isMultipleSelectable.value) return itemsWithIndex.value;
     // multi select
     if (multipleSelectStatus.value === 'allSelected') {
       return itemsWithIndex.value.map((item) => ({ checkbox: true, ...item }));

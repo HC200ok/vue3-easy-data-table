@@ -3,13 +3,13 @@ import type { Item } from '../types/main';
 import type { EmitsEventName } from '../types/internal';
 
 export default function useClickRow(
-  isMutipleSelectable: ComputedRef<boolean>,
+  isMultipleSelectable: ComputedRef<boolean>,
   showIndex: Ref<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const clickRow = (item: Item) => {
     const clickRowArgument = { ...item };
-    if (isMutipleSelectable.value) {
+    if (isMultipleSelectable.value) {
       const { checkbox } = item;
       delete clickRowArgument.checkbox;
       clickRowArgument.isSelected = checkbox;

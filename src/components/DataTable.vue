@@ -44,7 +44,7 @@
               :style="getFixedDistance(header.value)"
               @click.stop="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
             >
-              <MutipleSelectCheckBox
+              <MultipleSelectCheckBox
                 v-if="header.text === 'checkbox'"
                 :key="multipleSelectStatus"
                 :status="multipleSelectStatus"
@@ -222,7 +222,7 @@ import {
   useSlots, computed, toRefs, ref, watch, provide, onMounted, PropType,
 } from 'vue';
 
-import MutipleSelectCheckBox from './MutipleSelectCheckBox.vue';
+import MultipleSelectCheckBox from './MultipleSelectCheckBox.vue';
 import SingleSelectCheckBox from './SingleSelectCheckBox.vue';
 import RowsSelector from './RowsSelector.vue';
 import Loading from './Loading.vue';
@@ -318,7 +318,7 @@ const emits = defineEmits([
   'update:serverOptions',
 ]);
 
-const isMutipleSelectable = computed((): boolean => itemsSelected.value !== null);
+const isMultipleSelectable = computed((): boolean => itemsSelected.value !== null);
 const isServerSideMode = computed((): boolean => serverOptions.value !== null);
 
 const {
@@ -345,7 +345,7 @@ const {
   headers,
   ifHasExpandSlot,
   indexColumnWidth,
-  isMutipleSelectable,
+  isMultipleSelectable,
   isServerSideMode,
   mustSort,
   serverOptionsComputed,
@@ -408,7 +408,7 @@ const {
   pageItems,
 } = usePageItems(
   currentPaginationNumber,
-  isMutipleSelectable,
+  isMultipleSelectable,
   isServerSideMode,
   items,
   rowsPerPageRef,
@@ -437,7 +437,7 @@ const {
 const {
   clickRow,
 } = useClickRow(
-  isMutipleSelectable,
+  isMultipleSelectable,
   showIndex,
   emits,
 );
