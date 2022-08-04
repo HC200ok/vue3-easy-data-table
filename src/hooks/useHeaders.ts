@@ -13,7 +13,7 @@ export default function useHeaders(
   headers: Ref<Header[]>,
   ifHasExpandSlot: ComputedRef<boolean>,
   indexColumnWidth: Ref<number>,
-  isMutipleSelectable: ComputedRef<boolean>,
+  isMultipleSelectable: ComputedRef<boolean>,
   isServerSideMode: ComputedRef<boolean>,
   mustSort: Ref<boolean>,
   serverOptionsComputed: WritableComputedRef<ServerOptionsComputed | null>,
@@ -79,7 +79,7 @@ export default function useHeaders(
     }
     // checkbox
     let headersWithCheckbox: HeaderForRender[] = [];
-    if (!isMutipleSelectable.value) {
+    if (!isMultipleSelectable.value) {
       headersWithCheckbox = headersWithIndex;
     } else {
       const headerCheckbox: HeaderForRender = (fixedCheckbox.value || hasFixedColumnsFromUser.value) ? {
