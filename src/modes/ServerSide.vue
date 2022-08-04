@@ -25,6 +25,11 @@
       theme-color="#1d90ff"
       border-cell
     >
+      <template #expand="item">
+        <div style="padding: 15px">
+          {{ item.name }} won championships
+        </div>
+      </template>
       <template #address="{ address }">
         <a :href="address">{{ address }}</a>
       </template>
