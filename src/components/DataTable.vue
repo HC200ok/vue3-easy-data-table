@@ -97,7 +97,7 @@
                   'shadow': column === lastFixedColumn,
                   'can-expand': column === 'expand',
                 }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, i)]"
-                @click="column === 'expand' ? updateExpandingItemIndexList(index, item, $event) : null"
+                @click="column === 'expand' ? updateExpandingItems(item, $event) : null"
               >
                 <slot
                   v-if="slots[`item-${column}`]"
@@ -107,7 +107,7 @@
                 <template v-else-if="column === 'expand'">
                   <i
                     class="expand-icon"
-                    :class="{'expanding': expandingItemIndexList.includes(index)}"
+                    :class="{'expanding': getExpandingItemIndex(item) !== -1}"
                   />
                 </template>
                 <template v-else-if="column === 'checkbox'">
@@ -122,7 +122,7 @@
               </td>
             </tr>
             <tr
-              v-if="ifHasExpandSlot && expandingItemIndexList.includes(index)"
+              v-if="ifHasExpandSlot && getExpandingItemIndex(item) !== -1"
               :class="{'even-row': (index + 1) % 2 === 0}"
             >
               <td
@@ -419,9 +419,8 @@ const {
 );
 
 const {
-  expandingItemIndexList,
-  updateExpandingItemIndexList,
-  clearExpandingItemIndexList,
+  updateExpandingItems,
+  getExpandingItemIndex,
 } = useExpandableRow(
   items,
   emits,
@@ -479,10 +478,6 @@ watch(rowsPerPageRef, (value) => {
     updateServerOptionsRowsPerPage(value);
   }
 });
-
-watch(pageItems, () => {
-  clearExpandingItemIndexList();
-}, { deep: true });
 
 defineExpose({
   currentPageFirstIndex,

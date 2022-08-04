@@ -6,26 +6,24 @@ export default function useExpandableRow(
   items: Ref<Item[]>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
-  const expandingItemIndexList = ref<number[]>([]);
+  const expandingItems = ref<Item[]>([]);
 
-  const updateExpandingItemIndexList = (expandingItemIndex: number, expandingItem: Item, event: Event) => {
+  const getExpandingItemIndex = (expandingItem: Item) => expandingItems.value.findIndex((item) => JSON.stringify(item)
+    === JSON.stringify(expandingItem));
+
+  const updateExpandingItems = (expandingItem: Item, event: Event) => {
     event.stopPropagation();
-    const index = expandingItemIndexList.value.indexOf(expandingItemIndex);
+    const index = getExpandingItemIndex(expandingItem);
     if (index !== -1) {
-      expandingItemIndexList.value.splice(index, 1);
+      expandingItems.value.splice(index, 1);
     } else {
       emits('expandRow', items.value.findIndex((item) => item === expandingItem));
-      expandingItemIndexList.value.push(expandingItemIndex);
+      expandingItems.value.push(expandingItem);
     }
   };
 
-  const clearExpandingItemIndexList = () => {
-    expandingItemIndexList.value = [];
-  };
-
   return {
-    expandingItemIndexList,
-    updateExpandingItemIndexList,
-    clearExpandingItemIndexList,
+    updateExpandingItems,
+    getExpandingItemIndex,
   };
 }
