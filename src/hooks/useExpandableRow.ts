@@ -19,8 +19,13 @@ export default function useExpandableRow(
     }
   };
 
+  const clearExpandingItemIndexList = () => {
+    expandingItemIndexList.value = [];
+  };
+
   return {
     expandingItemIndexList,
     updateExpandingItemIndexList,
+    clearExpandingItemIndexList,
   };
 }

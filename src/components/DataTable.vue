@@ -421,6 +421,7 @@ const {
 const {
   expandingItemIndexList,
   updateExpandingItemIndexList,
+  clearExpandingItemIndexList,
 } = useExpandableRow(
   items,
   emits,
@@ -478,6 +479,10 @@ watch(rowsPerPageRef, (value) => {
     updateServerOptionsRowsPerPage(value);
   }
 });
+
+watch(pageItems, () => {
+  clearExpandingItemIndexList();
+}, { deep: true });
 
 defineExpose({
   currentPageFirstIndex,
