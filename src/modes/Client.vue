@@ -1,4 +1,14 @@
 <template>
+  <span>search field:</span>
+  <select v-model="searchField">
+    <option>name</option>
+    <option>height</option>
+  </select>
+  
+  <br/>
+
+  <span>search value: </span>
+  <input type="text" v-model="searchValue">
   <div>
     <DataTable
       ref="dataTable"

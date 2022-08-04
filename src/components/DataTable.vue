@@ -421,6 +421,7 @@ const {
 const {
   expandingItemIndexList,
   updateExpandingItemIndexList,
+  clearExpandingItemIndexList,
 } = useExpandableRow(
   items,
   emits,
@@ -463,6 +464,7 @@ watch(loading, (newVal, oldVal) => {
     // in server-side mode, turn to next page when api request finished.
     if (newVal === false && oldVal === true) {
       updateCurrentPaginationNumber(serverOptionsComputed.value.page);
+      clearExpandingItemIndexList();
     }
   }
 });
@@ -478,6 +480,10 @@ watch(rowsPerPageRef, (value) => {
     updateServerOptionsRowsPerPage(value);
   }
 });
+
+watch([currentPaginationNumber, clientSortOptions, searchField, searchValue, filterOptions], () => {
+  clearExpandingItemIndexList();
+}, { deep: true });
 
 defineExpose({
   currentPageFirstIndex,
@@ -549,3 +555,4 @@ defineExpose({
   height: v-bind(tableHeightPx);
 }
 </style>
+
