@@ -42,6 +42,11 @@ export type ClickRowArgument = Item & {
   indexInCurrentPage?: number
 }
 
+export type UpdateSortArgument = {
+  sortType: SortType | null
+  sortBy: string
+}
+
 export type HeaderItemClassNameFunction = (header: Header, index: number) => string
 export type BodyRowClassNameFunction = (item: Item, index: number) => string
 export type BodyItemClassNameFunction = (column: string, index: number) => string

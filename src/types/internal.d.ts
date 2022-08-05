@@ -23,4 +23,4 @@ export type ClientSortOptions = {
 
 export type MultipleSelectStatus = 'allSelected' | 'noneSelected' | 'partSelected'
 
-export type EmitsEventName = 'clickRow' | 'expandRow' | 'update:itemsSelected' | 'update:serverOptions'
+export type EmitsEventName = 'clickRow' | 'expandRow' | 'updateSort' | 'update:itemsSelected' | 'update:serverOptions'
