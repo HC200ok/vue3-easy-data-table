@@ -2,7 +2,9 @@ import {
   ref, Ref, computed, ComputedRef, WritableComputedRef,
 } from 'vue';
 import type { Header, SortType } from '../types/main';
-import type { ServerOptionsComputed, HeaderForRender, ClientSortOptions, EmitsEventName } from '../types/internal';
+import type {
+  ServerOptionsComputed, HeaderForRender, ClientSortOptions, EmitsEventName,
+} from '../types/internal';
 
 export default function useHeaders(
   checkboxColumnWidth: Ref<number>,
@@ -114,7 +116,10 @@ export default function useHeaders(
         sortDesc: newSortType === 'desc',
       };
     }
-    emits("updateSort", newSortType, newSortBy)
+    emits('updateSort', {
+      sortType: newSortType,
+      sortBy: newSortBy,
+    });
   };
 
   return {

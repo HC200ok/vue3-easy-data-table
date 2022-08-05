@@ -24,6 +24,7 @@
       table-class-name="hc-table"
       theme-color="#1d90ff"
       border-cell
+      @update-sort="updateSort"
     >
       <template #address="{ address }">
         <a :href="address">{{ address }}</a>
@@ -84,7 +85,7 @@ import {
   defineComponent, ref, computed, watch, onMounted, Ref,
 } from 'vue';
 import {
-  Header, Item, ServerOptions, BodyItemClassNameFunction, BodyRowClassNameFunction, HeaderItemClassNameFunction,
+  Header, Item, ServerOptions, UpdateSortArgument, BodyItemClassNameFunction, BodyRowClassNameFunction, HeaderItemClassNameFunction,
 } from '../types/main';
 import DataTable from '../components/DataTable.vue';
 import { mockClientItems, mockServerItems } from '../mock';
@@ -159,6 +160,9 @@ export default defineComponent({
     const currentPageLastIndex = computed(() => dataTable.value?.currentPageLastIndex);
     const clientItemsLength = computed(() => dataTable.value?.clientItemsLength);
 
+    const updateSort = (sortOption: UpdateSortArgument) => {
+      console.log(sortOption);
+    };
     console.log('dataTable');
     console.log(dataTable.value);
 
@@ -201,6 +205,7 @@ export default defineComponent({
       prevPage,
       updatePage,
       bodyRowClassName,
+      updateSort,
     };
   },
 

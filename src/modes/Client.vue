@@ -21,8 +21,8 @@
       :body-row-class-name="bodyRowClassNameFunction"
       :header-item-class-name="headerItemClassNameFunction"
       :body-item-class-name="bodyItemClassNameFunction"
-      must-sort
       @click-row="showItem"
+      @update-sort="updateSort"
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -88,7 +88,7 @@ import {
   computed, ref, reactive, toRefs,
 } from 'vue';
 import type {
-  Header, Item, FilterOption, ClickRowArgument, HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
+  Header, Item, FilterOption, ClickRowArgument, UpdateSortArgument, HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
 } from '../types/main';
 import DataTable from '../components/DataTable.vue';
 import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems } from '../mock';
@@ -135,6 +135,10 @@ const itemsSelected = ref<Item[]>([items.value[14]]);
 const showItem = (item: ClickRowArgument) => {
   console.log('item');
   console.log(JSON.stringify(item));
+};
+
+const updateSort = (sortOption: UpdateSortArgument) => {
+  console.log(sortOption);
 };
 // filtering
 
