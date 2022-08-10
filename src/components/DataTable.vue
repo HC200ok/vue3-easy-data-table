@@ -80,6 +80,9 @@
           class="vue3-easy-data-table__body"
           :class="{'row-alternation': alternating}"
         >
+          <slot 
+            name="body.prepend"
+          />
           <template
             v-for="(item, index) in pageItems"
             :key="index"
@@ -140,6 +143,9 @@
               </td>
             </tr>
           </template>
+          <slot 
+            name="body.append"
+          />
         </tbody>
       </table>
       <div
