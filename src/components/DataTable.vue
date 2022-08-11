@@ -76,7 +76,7 @@
           </tr>
         </thead>
         <tbody
-          v-if="items.length && headerColumns.length"
+          v-if="headerColumns.length"
           class="vue3-easy-data-table__body"
           :class="{'row-alternation': alternating}"
         >
