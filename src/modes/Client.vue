@@ -34,6 +34,7 @@
       @click-row="showItem"
       @update-sort="updateSort"
     >
+
       <template #expand="item">
         <div style="padding: 15px">
           {{ item.name }} won championships
@@ -277,6 +278,9 @@ const updatePage = (paginationNumber: number) => {
   --easy-table-footer-font-size: 14px;
   --easy-table-footer-padding: 0px 10px;
   --easy-table-footer-height: 40px;
+
+  --easy-table-rows-per-page-selector-width: 70px;
+  --easy-table-rows-per-page-selector-option-padding: 10px;
 
   --easy-table-scrollbar-track-color: #4c5d7a;
   --easy-table-scrollbar-color: #4c5d7a;

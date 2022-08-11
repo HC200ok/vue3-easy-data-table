@@ -103,6 +103,7 @@ const themeColor = inject('themeColor');
   min-width: 45px;
   position: relative;
   margin: 0px 10px;
+  width: var(--easy-table-rows-per-page-selector-width);
   .rows-input__wrapper {
     height: 20px;
     border-bottom: 1px solid var(--easy-table-footer-font-color);
@@ -141,7 +142,7 @@ const themeColor = inject('themeColor');
     box-shadow: 0 5px 5px -3px rgb(0 0 0 / 20%), 0 8px 10px 1px rgb(0 0 0 / 14%), 0 3px 14px 2px rgb(0 0 0 / 12%);
     li {
       cursor: pointer;
-      padding: 5px;
+      padding: var(--easy-table-rows-per-page-selector-option-padding);
       background-color: var(--easy-table-footer-background-color);
 
       &.selected {

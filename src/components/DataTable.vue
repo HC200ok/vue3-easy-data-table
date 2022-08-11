@@ -354,7 +354,7 @@ const {
   sortBy,
   sortType,
   updateServerOptionsSort,
-  emits
+  emits,
 );
 
 const {
@@ -533,6 +533,9 @@ defineExpose({
     --easy-table-footer-font-size: 12px;
     --easy-table-footer-padding: 0px 5px;
     --easy-table-footer-height: 36px;
+    /**footer-rowsPerPage**/
+    --easy-table-rows-per-page-selector-width: auto;
+    --easy-table-rows-per-page-selector-option-padding: 5px;
     /*message*/
     --easy-table-message-font-color: #212121;
     --easy-table-message-font-size: 12px;
@@ -557,4 +560,3 @@ defineExpose({
   height: v-bind(tableHeightPx);
 }
 </style>
-
