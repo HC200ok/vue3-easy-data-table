@@ -360,6 +360,7 @@ const {
 const {
   rowsItemsComputed,
   rowsPerPageRef,
+  updateRowsPerPage,
 } = useRows(
   isServerSideMode,
   rowsItems,
@@ -498,6 +499,9 @@ defineExpose({
   nextPage,
   prevPage,
   updatePage,
+  rowsPerPageOptions: rowsItemsComputed,
+  rowsPerPageActiveOption: rowsPerPageRef,
+  updateRowsPerPageActiveOption: updateRowsPerPage,
 });
 </script>
 
