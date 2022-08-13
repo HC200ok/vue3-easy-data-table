@@ -16,8 +16,13 @@ export default function useRows(
 
   const rowsPerPageRef = ref(serverOptions.value ? serverOptions.value.rowsPerPage : rowsPerPage.value);
 
+  const updateRowsPerPage = (option: number) => {
+    rowsPerPageRef.value = option;
+  };
+
   return {
     rowsItemsComputed,
     rowsPerPageRef,
+    updateRowsPerPage,
   };
 }
