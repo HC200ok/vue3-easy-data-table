@@ -226,6 +226,9 @@ const nextPage = () => {
 const prevPage = () => {
   dataTable.value.prevPage();
 };
+const updatePage = (paginationNumber: number) => {
+  dataTable.value.updatePage(paginationNumber);
+};
 
 // rows per page
 const rowsPerPageOptions = computed(() => dataTable.value?.rowsPerPageOptions);
