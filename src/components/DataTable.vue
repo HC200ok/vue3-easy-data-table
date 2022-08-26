@@ -82,6 +82,18 @@
         >
           <slot 
             name="body.prepend"
+            v-bind="{
+              items = pageItems,
+              pagination = {
+                isFirstPage,
+                isLastPage,
+                currentPaginationNumber,
+                maxPaginationNumber,
+                nextPage,
+                prevPage
+              },
+              headers = headersForRender
+            }"
           />
           <template
             v-for="(item, index) in pageItems"
@@ -145,6 +157,18 @@
           </template>
           <slot 
             name="body.append"
+            v-bind="{
+              items = pageItems,
+              pagination = {
+                isFirstPage,
+                isLastPage,
+                currentPaginationNumber,
+                maxPaginationNumber,
+                nextPage,
+                prevPage
+              },
+              headers = headersForRender
+            }"
           />
         </tbody>
       </table>
