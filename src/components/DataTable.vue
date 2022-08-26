@@ -83,8 +83,8 @@
           <slot 
             name="body.prepend"
             v-bind="{
-              items = pageItems,
-              pagination = {
+              items: pageItems,
+              pagination: {
                 isFirstPage,
                 isLastPage,
                 currentPaginationNumber,
@@ -92,7 +92,7 @@
                 nextPage,
                 prevPage
               },
-              headers = headersForRender
+              headers: headersForRender
             }"
           />
           <template
@@ -158,8 +158,8 @@
           <slot 
             name="body.append"
             v-bind="{
-              items = pageItems,
-              pagination = {
+              items: pageItems,
+              pagination: {
                 isFirstPage,
                 isLastPage,
                 currentPaginationNumber,
@@ -167,7 +167,7 @@
                 nextPage,
                 prevPage
               },
-              headers = headersForRender
+              headers: headersForRender
             }"
           />
         </tbody>
