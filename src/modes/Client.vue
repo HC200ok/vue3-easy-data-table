@@ -33,6 +33,7 @@
       :body-item-class-name="bodyItemClassNameFunction"
       @click-row="showItem"
       @update-sort="updateSort"
+      hide-footer
     >
       <template #body.prepend="body">
         <tr>
@@ -75,6 +76,21 @@
     </DataTable>
 
     <div class="customize-footer">
+      <div class="customize-rows-per-page">
+        <select
+          class="select-items"
+          @change="updateRowsPerPageSelect"
+        >
+          <option
+            v-for="item in rowsPerPageOptions"
+            :key="item"
+            :selected="item === rowsPerPageActiveOption"
+            :value="item"
+          >
+            {{ item }} rows per page
+          </option>
+        </select>
+      </div>
       <div class="customize-index">
         Now displaying: {{ currentPageFirstIndex }} ~ {{ currentPageLastIndex }} of {{ totalItemsLength }}
       </div>
@@ -112,11 +128,14 @@
 import {
   computed, ref, reactive, toRefs,
 } from 'vue';
+// import { useRowsPerPage } from 'use-vue3-easy-data-table';
+// import type { UseRowsPerPageReturn } from 'use-vue3-easy-data-table';
 import type {
   Header, Item, FilterOption, ClickRowArgument, UpdateSortArgument, HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
 } from '../types/main';
 import DataTable from '../components/DataTable.vue';
 import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems } from '../mock';
+
 
 const searchField = ref('name');
 const searchValue = ref('');
@@ -205,6 +224,7 @@ const dataTable = ref();
 // index related
 const currentPageFirstIndex = computed(() => dataTable.value?.currentPageFirstIndex);
 const currentPageLastIndex = computed(() => dataTable.value?.currentPageLastIndex);
+
 const totalItemsLength = computed(() => dataTable.value?.totalItemsLength);
 
 // paginations related
@@ -226,6 +246,24 @@ const updatePage = (paginationNumber: number) => {
 const isDataHeader = (header: Header) => {
   return !(header.value === 'checkbox' || header.value === 'index' || header.value === 'expand')
 }
+
+// rows per page
+const rowsPerPageOptions = computed(() => dataTable.value?.rowsPerPageOptions);
+const rowsPerPageActiveOption = computed(() => dataTable.value?.rowsPerPageActiveOption);
+
+const updateRowsPerPageSelect = (e: Event) => {
+  dataTable.value.updateRowsPerPageActiveOption(Number((e.target as HTMLInputElement).value));
+};
+
+// const {
+//   rowsPerPageOptions,
+//   rowsPerPageActiveOption,
+//   updateRowsPerPageActiveOption,
+// }: UseRowsPerPageReturn = useRowsPerPage(dataTable);
+
+// const updateRowsPerPageSelect = (e: Event) => {
+//   updateRowsPerPageActiveOption(Number((e.target as HTMLInputElement).value));
+// };
 </script>
 
 <style scoped>
@@ -295,6 +333,9 @@ const isDataHeader = (header: Header) => {
   --easy-table-footer-font-size: 14px;
   --easy-table-footer-padding: 0px 10px;
   --easy-table-footer-height: 40px;
+
+  --easy-table-rows-per-page-selector-width: 70px;
+  --easy-table-rows-per-page-selector-option-padding: 10px;
 
   --easy-table-scrollbar-track-color: #4c5d7a;
   --easy-table-scrollbar-color: #4c5d7a;
