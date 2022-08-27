@@ -35,6 +35,16 @@
       @update-sort="updateSort"
       hide-footer
     >
+      <template #body.prepend="body">
+        <tr>
+          <td
+            v-for="(header, index) in body.headers"
+            :key="index"
+          >
+            <span v-if="isDataHeader(header)">Coloumn {{ header.text }}</span>
+          </td>
+        </tr>
+      </template>
 
       <template #expand="item">
         <div style="padding: 15px">
@@ -58,6 +68,10 @@
             <input v-model="nameCriteria">
           </div>
         </div>
+      </template>
+
+       <template #body.append>
+        <span>body.append</span>
       </template>
     </DataTable>
 
@@ -229,6 +243,9 @@ const prevPage = () => {
 const updatePage = (paginationNumber: number) => {
   dataTable.value.updatePage(paginationNumber);
 };
+const isDataHeader = (header: Header) => {
+  return !(header.value === 'checkbox' || header.value === 'index' || header.value === 'expand')
+}
 
 // rows per page
 const rowsPerPageOptions = computed(() => dataTable.value?.rowsPerPageOptions);

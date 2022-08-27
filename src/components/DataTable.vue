@@ -76,10 +76,25 @@
           </tr>
         </thead>
         <tbody
-          v-if="items.length && headerColumns.length"
+          v-if="headerColumns.length"
           class="vue3-easy-data-table__body"
           :class="{'row-alternation': alternating}"
         >
+          <slot 
+            name="body.prepend"
+            v-bind="{
+              items: pageItems,
+              pagination: {
+                isFirstPage,
+                isLastPage,
+                currentPaginationNumber,
+                maxPaginationNumber,
+                nextPage,
+                prevPage
+              },
+              headers: headersForRender
+            }"
+          />
           <template
             v-for="(item, index) in pageItems"
             :key="index"
@@ -140,6 +155,21 @@
               </td>
             </tr>
           </template>
+          <slot 
+            name="body.append"
+            v-bind="{
+              items: pageItems,
+              pagination: {
+                isFirstPage,
+                isLastPage,
+                currentPaginationNumber,
+                maxPaginationNumber,
+                nextPage,
+                prevPage
+              },
+              headers: headersForRender
+            }"
+          />
         </tbody>
       </table>
       <div
