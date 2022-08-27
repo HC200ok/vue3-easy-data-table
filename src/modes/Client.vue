@@ -60,6 +60,10 @@
           </div>
         </div>
       </template>
+
+       <template #body.append>
+        <span>body.append</span>
+      </template>
     </DataTable>
 
     <div class="customize-footer">
@@ -230,6 +234,9 @@ const prevPage = () => {
 const updatePage = (paginationNumber: number) => {
   dataTable.value.updatePage(paginationNumber);
 };
+const isDataHeader = (header: Header) => {
+  return !(header.value === 'checkbox' || header.value === 'index' || header.value === 'expand')
+}
 
 // rows per page
 const rowsPerPageOptions = computed(() => dataTable.value?.rowsPerPageOptions);
