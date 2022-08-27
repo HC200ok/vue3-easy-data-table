@@ -50,3 +50,5 @@ export type UpdateSortArgument = {
 export type HeaderItemClassNameFunction = (header: Header, index: number) => string
 export type BodyRowClassNameFunction = (item: Item, index: number) => string
 export type BodyItemClassNameFunction = (column: string, index: number) => string
+
+export type TextDirection = 'center' | 'left' | 'right'

@@ -17,7 +17,8 @@ $line-color: #fff;
   position: relative;
   width: $checkbox-size;
   height: $checkbox-size;
-
+  font-size: var(--easy-table-body-row-font-size);
+  margin: 0 auto;
   label {
     cursor: pointer;
     display: inline;

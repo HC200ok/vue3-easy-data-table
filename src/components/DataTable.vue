@@ -53,6 +53,7 @@
               <span
                 v-else
                 class="header"
+                :class="`direction-${headerTextDirection}`"
               >
                 <slot
                   v-if="slots[`header-${header.value}`]"
@@ -80,6 +81,21 @@
           class="vue3-easy-data-table__body"
           :class="{'row-alternation': alternating}"
         >
+          <slot
+            name="body-prepend"
+            v-bind="{
+              items: pageItems,
+              pagination: {
+                isFirstPage,
+                isLastPage,
+                currentPaginationNumber,
+                maxPaginationNumber,
+                nextPage,
+                prevPage
+              },
+              headers: headersForRender
+            }"
+          />
           <template
             v-for="(item, index) in pageItems"
             :key="index"
@@ -96,7 +112,8 @@
                 :class="[{
                   'shadow': column === lastFixedColumn,
                   'can-expand': column === 'expand',
-                }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, i)]"
+                // eslint-disable-next-line max-len
+                }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, i), `direction-${bodyTextDirection}`]"
                 @click="column === 'expand' ? updateExpandingItemIndexList(index, item, $event) : null"
               >
                 <slot
@@ -140,6 +157,21 @@
               </td>
             </tr>
           </template>
+          <slot
+            name="body-append"
+            v-bind="{
+              items: pageItems,
+              pagination: {
+                isFirstPage,
+                isLastPage,
+                currentPaginationNumber,
+                maxPaginationNumber,
+                nextPage,
+                prevPage
+              },
+              headers: headersForRender
+            }"
+          />
         </tbody>
       </table>
       <div
@@ -260,6 +292,7 @@ const props = defineProps({
 });
 
 const {
+  bodyTextDirection,
   checkboxColumnWidth,
   expandColumnWidth,
   filterOptions,
@@ -268,6 +301,7 @@ const {
   fixedHeader,
   fixedIndex,
   headers,
+  headerTextDirection,
   indexColumnWidth,
   items,
   itemsSelected,
