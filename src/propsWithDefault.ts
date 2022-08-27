@@ -2,6 +2,7 @@ import { PropType } from 'vue';
 import type {
   SortType, Item, ServerOptions, FilterOption,
   HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
+  TextDirection,
 } from './types/main';
 
 export default {
@@ -44,6 +45,14 @@ export default {
   fixedIndex: {
     type: Boolean,
     default: false,
+  },
+  headerTextDirection: {
+    type: String as PropType<TextDirection>,
+    default: 'left',
+  },
+  bodyTextDirection: {
+    type: String as PropType<TextDirection>,
+    default: 'left',
   },
   hideFooter: {
     type: Boolean,
@@ -149,4 +158,4 @@ export default {
     type: Boolean,
     default: false,
   },
-}
+};

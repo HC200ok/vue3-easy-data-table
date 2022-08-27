@@ -34,18 +34,9 @@
       @click-row="showItem"
       @update-sort="updateSort"
       hide-footer
+      body-text-direction="left"
+      header-text-direction="left"
     >
-      <template #body.prepend="body">
-        <tr>
-          <td
-            v-for="(header, index) in body.headers"
-            :key="index"
-          >
-            <span v-if="isDataHeader(header)">Coloumn {{ header.text }}</span>
-          </td>
-        </tr>
-      </template>
-
       <template #expand="item">
         <div style="padding: 15px">
           {{ item.name }} won championships
@@ -132,10 +123,10 @@ import {
 // import type { UseRowsPerPageReturn } from 'use-vue3-easy-data-table';
 import type {
   Header, Item, FilterOption, ClickRowArgument, UpdateSortArgument, HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
+  TextDirection,
 } from '../types/main';
 import DataTable from '../components/DataTable.vue';
 import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems } from '../mock';
-
 
 const searchField = ref('name');
 const searchValue = ref('');
@@ -153,15 +144,15 @@ const switchToNested = () => {
 const headers: Header[] = [
   { text: 'Name', value: 'name' },
   {
-    text: 'Address', value: 'address', width: 200, fixed: true,
+    text: 'Address', value: 'address', fixed: true,
   },
   { text: 'Height', value: 'info.out.height', sortable: true },
   { text: 'Weight', value: 'info.out.weight', sortable: true },
   {
-    text: 'Age', value: 'age', sortable: true, width: 200,
+    text: 'Age', value: 'age', sortable: true
   },
-  { text: 'Favourite sport', value: 'favouriteSport', width: 200 },
-  { text: 'Favourite fruits', value: 'favouriteFruits', width: 200 },
+  { text: 'Favourite sport', value: 'favouriteSport' },
+  { text: 'Favourite fruits', value: 'favouriteFruits' },
 ];
 
 // const headers: Header[] = [
@@ -313,7 +304,7 @@ const updateRowsPerPageSelect = (e: Event) => {
   --easy-table-header-font-color: #c1cad4;
   --easy-table-header-background-color: #2d3a4f;
 
-  --easy-table-header-item-padding: 10px 15px;
+  /* --easy-table-header-item-padding: 10px 15px; */
 
   --easy-table-body-even-row-font-color: #fff;
   --easy-table-body-even-row-background-color: #4c5d7a;
@@ -326,7 +317,7 @@ const updateRowsPerPageSelect = (e: Event) => {
   --easy-table-body-row-hover-font-color: #2d3a4f;
   --easy-table-body-row-hover-background-color: #eee;
 
-  --easy-table-body-item-padding: 10px 15px;
+  /* --easy-table-body-item-padding: 10px 15px; */
 
   --easy-table-footer-background-color: #2d3a4f;
   --easy-table-footer-font-color: #c0c7d2;
