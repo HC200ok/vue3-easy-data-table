@@ -118,6 +118,10 @@ export default {
     type: String as PropType<SortType>,
     default: 'asc',
   },
+  tableMinHeight: {
+    type: Number,
+    default: 180,
+  },
   tableHeight: {
     type: Number,
     default: null,
