@@ -317,11 +317,13 @@ const {
   sortBy,
   sortType,
   tableHeight,
+  tableMinHeight,
   themeColor,
 } = toRefs(props);
 
 // style related computed variables
 const tableHeightPx = computed(() => (tableHeight.value ? `${tableHeight.value}px` : null));
+const tableMinHeightPx = computed(() => `${tableMinHeight.value}px`);
 
 // global style related variable
 provide('themeColor', themeColor.value);
@@ -594,6 +596,9 @@ defineExpose({
 <style lang="scss" scoped>
 @import '../scss/vue3-easy-data-table.scss';
 
+.vue3-easy-data-table__main {
+  min-height: v-bind(tableMinHeightPx);
+}
 .vue3-easy-data-table__main.fixed-height {
   height: v-bind(tableHeightPx);
 }
