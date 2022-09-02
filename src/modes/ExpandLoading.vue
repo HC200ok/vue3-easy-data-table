@@ -1,5 +1,6 @@
 <template>
   <DataTable
+    v-model:items-selected="itemsSelected"
     :headers="headers"
     :items="items"
     @expand-row="loadIntroduction"
@@ -36,6 +37,8 @@ const items = ref<Item[]>([
   { player: 'Kevin Durant', team: 'BKN' },
   { player: 'Giannis Antetokounmpo', team: 'MIL' },
 ]);
+
+const itemsSelected = ref<Item[]>([items.value[0]]);
 
 const mockItemIntroduction = async (name: string): Promise<string> => {
   await new Promise((s) => setTimeout(s, 2000));
