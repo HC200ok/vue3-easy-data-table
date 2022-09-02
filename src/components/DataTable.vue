@@ -462,7 +462,7 @@ const {
   updateExpandingItemIndexList,
   clearExpandingItemIndexList,
 } = useExpandableRow(
-  items,
+  pageItems,
   emits,
 );
 
