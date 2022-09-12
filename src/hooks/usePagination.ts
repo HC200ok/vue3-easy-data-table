@@ -4,6 +4,7 @@ import {
 import type { ServerOptions } from '../types/main';
 
 export default function usePagination(
+  currentPage: Ref<number>,
   isServerSideMode: ComputedRef<boolean>,
   loading: Ref<boolean>,
   totalItemsLength: Ref<number>,
@@ -11,12 +12,14 @@ export default function usePagination(
   serverOptions: Ref<ServerOptions | null>,
   updateServerOptionsPage: (page: number) => void,
 ) {
-  const currentPaginationNumber = ref(serverOptions.value ? serverOptions.value.page : 1);
+  const currentPaginationNumber = ref(serverOptions.value ? serverOptions.value.page : currentPage.value);
   const maxPaginationNumber = computed((): number => Math.ceil(totalItemsLength.value / rowsPerPage.value));
-  const isLastPage = computed((): boolean => currentPaginationNumber.value === maxPaginationNumber.value);
+  // eslint-disable-next-line max-len
+  const isLastPage = computed((): boolean => maxPaginationNumber.value === 0 || (currentPaginationNumber.value === maxPaginationNumber.value));
   const isFirstPage = computed((): boolean => currentPaginationNumber.value === 1);
 
   const nextPage = () => {
+    if (totalItemsLength.value === 0) return;
     if (isLastPage.value) return;
     if (loading.value) return;
     if (isServerSideMode.value) {
@@ -28,6 +31,7 @@ export default function usePagination(
   };
 
   const prevPage = () => {
+    if (totalItemsLength.value === 0) return;
     if (isFirstPage.value) return;
     if (loading.value) return;
     if (isServerSideMode.value) {
