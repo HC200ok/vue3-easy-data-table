@@ -3,10 +3,10 @@
   "author": "HC200ok",
   "description": "A customizable and easy-to-use data table component made with Vue.js 3.x.",
   "private": false,
-  "version": "1.4.17",
+  "version": "1.4.18",
   "types": "./types/main.d.ts",
-  "license": "MIT",
-  "files": [
+    "license": "MIT",
+    "files": [
     "dist",
     "types"
   ],
