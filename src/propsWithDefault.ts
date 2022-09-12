@@ -18,6 +18,10 @@ export default {
     type: Number,
     default: null,
   },
+  currentPage: {
+    type: Number,
+    default: 1,
+  },
   emptyMessage: {
     type: String,
     default: 'No Available Data',

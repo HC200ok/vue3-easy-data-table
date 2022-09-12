@@ -33,9 +33,9 @@
       :body-item-class-name="bodyItemClassNameFunction"
       @click-row="showItem"
       @update-sort="updateSort"
-      hide-footer
       body-text-direction="left"
       header-text-direction="left"
+      :current-page=2
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -131,7 +131,7 @@ import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems 
 const searchField = ref('name');
 const searchValue = ref('');
 
-const items = ref<Item[]>(mockDuplicateClientNestedItems(100));
+const items = ref<Item[]>(mockDuplicateClientNestedItems(20));
 
 const switchToNested300 = () => {
   items.value = mockClientNestedItems(300);

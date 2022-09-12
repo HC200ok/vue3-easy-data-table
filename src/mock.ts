@@ -70,7 +70,6 @@ export const mockDuplicateClientNestedItems = (itemsNumber = 100): Item[] => {
   mockItems.push({
     name: 'name-1',
     address: 'address-1',
-    info: { out: { height: 1, weight: 1 } },
     age: 1,
     favouriteSport: sports[1 % 4],
     favouriteFruits: fruits[1 % 4],

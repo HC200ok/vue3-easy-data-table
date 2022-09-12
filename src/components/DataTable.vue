@@ -294,6 +294,7 @@ const props = defineProps({
 const {
   bodyTextDirection,
   checkboxColumnWidth,
+  currentPage,
   expandColumnWidth,
   filterOptions,
   fixedCheckbox,
@@ -432,6 +433,7 @@ const {
   updatePage,
   updateCurrentPaginationNumber,
 } = usePagination(
+  currentPage,
   isServerSideMode,
   loading,
   totalItemsLength,

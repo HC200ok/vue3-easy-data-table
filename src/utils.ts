@@ -3,10 +3,14 @@ import type { Item } from './types/main';
 export function getItemValue(column: string, item: Item) {
   if (column.includes('.')) {
     let content: any = '';
-    const keysArr = column.split('.');
-    keysArr.forEach((key, index) => {
-      content = (index === 0 ? item[key] : content[key]);
-    });
+    const keys = column.split('.');
+    const { length } = keys;
+    let i = 0;
+    while (i < length) {
+      content = (i === 0 ? item[keys[i]] : content[keys[i]]);
+      i += 1;
+      if (content === undefined) break;
+    }
     return content;
   }
   return item[column];
