@@ -28,7 +28,7 @@ https://hc200ok.github.io/vue3-easy-data-table-doc/
 15. [Expand slot](https://hc200ok.github.io/vue3-easy-data-table-doc/features/expand-slot.html) (new feature since version `1.3.2`)
 16. [Style customization](https://hc200ok.github.io/vue3-easy-data-table-doc/features/style-customization.html) (new feature since version `1.3.11`)
 17. [Border cell](https://hc200ok.github.io/vue3-easy-data-table-doc/features/border-cell.html) (new feature since version `1.3.11`)
-18. [Class name customization](http://localhost:8080/vue3-easy-data-table-doc/features/class-name-customization.html) (new feature since version `1.3.11`)
+18. [Class name customization](https://hc200ok.github.io/vue3-easy-data-table-doc/features/class-name-customization.html) (new feature since version `1.3.11`)
 
 ## Getting started
 ### 1. ES module
