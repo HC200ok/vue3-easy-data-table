@@ -114,7 +114,7 @@
                   'can-expand': column === 'expand',
                 // eslint-disable-next-line max-len
                 }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, i), `direction-${bodyTextDirection}`]"
-                @click="column === 'expand' ? updateExpandingItemIndexList(index, item, $event) : null"
+                @click="column === 'expand' ? updateExpandingItemIndexList(index + prevPageEndIndex, item, $event) : null"
               >
                 <slot
                   v-if="slots[`item-${column}`]"
@@ -124,7 +124,7 @@
                 <template v-else-if="column === 'expand'">
                   <i
                     class="expand-icon"
-                    :class="{'expanding': expandingItemIndexList.includes(index)}"
+                    :class="{'expanding': expandingItemIndexList.includes(prevPageEndIndex + index)}"
                   />
                 </template>
                 <template v-else-if="column === 'checkbox'">
@@ -139,7 +139,7 @@
               </td>
             </tr>
             <tr
-              v-if="ifHasExpandSlot && expandingItemIndexList.includes(index)"
+              v-if="ifHasExpandSlot && expandingItemIndexList.includes(index + prevPageEndIndex)"
               :class="{'even-row': (index + 1) % 2 === 0}"
             >
               <td
@@ -459,12 +459,18 @@ const {
   totalItemsLength,
 );
 
+const prevPageEndIndex = computed(() => {
+  if (currentPaginationNumber.value === 0) return 0;
+  return (currentPaginationNumber.value - 1) * rowsPerPageRef.value;
+});
+
 const {
   expandingItemIndexList,
   updateExpandingItemIndexList,
   clearExpandingItemIndexList,
 } = useExpandableRow(
   pageItems,
+  prevPageEndIndex,
   emits,
 );
 
@@ -509,10 +515,6 @@ watch(loading, (newVal, oldVal) => {
     }
   }
 });
-
-watch(items, () => {
-  if (!isServerSideMode.value) updatePage(1);
-}, { deep: true });
 
 watch(rowsPerPageRef, (value) => {
   if (!isServerSideMode.value) {

@@ -35,7 +35,6 @@
       @update-sort="updateSort"
       body-text-direction="left"
       header-text-direction="left"
-      :current-page=2
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -66,7 +65,7 @@
       </template>
     </DataTable>
 
-    <div class="customize-footer">
+    <!-- <div class="customize-footer">
       <div class="customize-rows-per-page">
         <select
           class="select-items"
@@ -111,7 +110,7 @@
           next page
         </button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

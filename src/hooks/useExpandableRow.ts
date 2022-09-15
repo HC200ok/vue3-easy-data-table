@@ -1,9 +1,10 @@
-import { ref, Ref } from 'vue';
+import { ref, Ref, ComputedRef } from 'vue';
 import type { Item } from '../types/main';
 import type { EmitsEventName } from '../types/internal';
 
 export default function useExpandableRow(
   items: Ref<Item[]>,
+  prevPageEndIndex: ComputedRef<number>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const expandingItemIndexList = ref<number[]>([]);
@@ -14,8 +15,9 @@ export default function useExpandableRow(
     if (index !== -1) {
       expandingItemIndexList.value.splice(index, 1);
     } else {
-      emits('expandRow', items.value.findIndex((item) => item === expandingItem));
-      expandingItemIndexList.value.push(expandingItemIndex);
+      const currentPageExpandIndex = items.value.findIndex((item) => JSON.stringify(item) === JSON.stringify(expandingItem));
+      emits('expandRow', prevPageEndIndex.value + currentPageExpandIndex);
+      expandingItemIndexList.value.push(prevPageEndIndex.value + currentPageExpandIndex);
     }
   };
 

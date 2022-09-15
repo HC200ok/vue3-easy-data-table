@@ -3,7 +3,7 @@
   <br><br>
   <ClientMode />
   <br><br>
-  <!-- <ExpandLoading/> -->
+  <ExpandLoading/>
 </template>
 
 <script setup lang="ts">

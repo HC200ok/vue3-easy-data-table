@@ -24,6 +24,7 @@
       table-class-name="hc-table"
       theme-color="#1d90ff"
       border-cell
+      must-sort
       @update-sort="updateSort"
     >
       <template #expand="item">
@@ -34,7 +35,7 @@
       <template #address="{ address }">
         <a :href="address">{{ address }}</a>
       </template>
-      <!-- <template #pagination="{ prevPage, nextPage, isFirstPage, isLastPage }">
+      <template #pagination="{ prevPage, nextPage, isFirstPage, isLastPage }">
         <button
           :disabled="isFirstPage"
           @click="prevPage"
@@ -47,9 +48,9 @@
         >
           next page
         </button>
-      </template> -->
+      </template>
     </DataTable>
-    <div class="customize-footer">
+    <!-- <div class="customize-footer">
       <div class="customize-index">
         Now displaying: {{ currentPageFirstIndex }} ~
         {{ currentPageLastIndex }} of {{ serverItemsLength }}
@@ -81,7 +82,7 @@
           next page
         </button>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
