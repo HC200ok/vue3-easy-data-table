@@ -4,6 +4,7 @@
     :headers="headers"
     :items="items"
     @expand-row="loadIntroduction"
+    :rows-per-page="4"
   >
     <template #expand="item">
       <div
@@ -36,6 +37,10 @@ const items = ref<Item[]>([
   { player: 'Lebron James', team: 'LAL' },
   { player: 'Kevin Durant', team: 'BKN' },
   { player: 'Giannis Antetokounmpo', team: 'MIL' },
+  { player: '1Stephen Curry', team: 'GSW' },
+  { player: '2Lebron James', team: 'LAL' },
+  { player: '3Kevin Durant', team: 'BKN' },
+  { player: '4Giannis Antetokounmpo', team: 'MIL' },
 ]);
 
 const itemsSelected = ref<Item[]>([items.value[0]]);
@@ -47,6 +52,10 @@ const mockItemIntroduction = async (name: string): Promise<string> => {
     'Lebron James': 'LeBron Raymone James Sr is an American professional basketball player for the Los Angeles Lakers of the National Basketball Association (NBA).',
     'Kevin Durant': 'Kevin Wayne Durant also known by his initials KD, is an American professional basketball player for the Brooklyn Nets of the National Basketball Association (NBA).',
     'Giannis Antetokounmpo': 'Giannis Sina Ugo Antetokounmpo (né Adetokunbo; December 6, 1994) is a Greek-Nigerian professional basketball player for the Milwaukee Bucks of the National Basketball Association (NBA).',
+    '1Stephen Curry': 'Wardell Stephen Curry II is an American professional basketball player for the Golden State Warriors of the National Basketball Association (NBA).',
+    '2Lebron James': 'LeBron Raymone James Sr is an American professional basketball player for the Los Angeles Lakers of the National Basketball Association (NBA).',
+    '3Kevin Durant': 'Kevin Wayne Durant also known by his initials KD, is an American professional basketball player for the Brooklyn Nets of the National Basketball Association (NBA).',
+    '4Giannis Antetokounmpo': 'Giannis Sina Ugo Antetokounmpo (né Adetokunbo; December 6, 1994) is a Greek-Nigerian professional basketball player for the Milwaukee Bucks of the National Basketball Association (NBA).',
   };
   return introduction[name];
 };
