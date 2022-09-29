@@ -34,25 +34,26 @@ export default function useTotalItems(
         itemsFiltered = itemsFiltered.filter((item) => {
           const { field, comparison, criteria } = option;
           if (typeof comparison === 'function') {
-            return comparison(item[field], criteria as string);
+            return comparison(getItemValue(field, item), criteria as string);
           }
+          const itemValue = getItemValue(field, item);
           switch (comparison) {
             case '=':
-              return item[field] === criteria;
+              return itemValue === criteria;
             case '!=':
-              return item[field] !== criteria;
+              return itemValue !== criteria;
             case '>':
-              return item[field] > criteria;
+              return itemValue > criteria;
             case '<':
-              return item[field] < criteria;
+              return itemValue < criteria;
             case '<=':
-              return item[field] <= criteria;
+              return itemValue <= criteria;
             case '>=':
-              return item[field] >= criteria;
+              return itemValue >= criteria;
             case 'between':
-              return item[field] >= Math.min(...criteria) && item[field] <= Math.max(...criteria);
+              return itemValue >= Math.min(...criteria) && itemValue <= Math.max(...criteria);
             default:
-              return item[field] === criteria;
+              return itemValue === criteria;
           }
         });
       });

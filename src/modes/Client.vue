@@ -12,7 +12,6 @@
   <div>
     <DataTable
       ref="dataTable"
-      v-model:items-selected="itemsSelected"
       alternating
       border-cell
       no-hover
@@ -31,6 +30,7 @@
       :body-row-class-name="bodyRowClassNameFunction"
       :header-item-class-name="headerItemClassNameFunction"
       :body-item-class-name="bodyItemClassNameFunction"
+      :filter-options="filterOptions"
       @click-row="showItem"
       @update-sort="updateSort"
       body-text-direction="left"
@@ -130,8 +130,6 @@ import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems 
 const searchField = ref('name');
 const searchValue = ref('');
 
-const items = ref<Item[]>(mockDuplicateClientNestedItems(20));
-
 const switchToNested300 = () => {
   items.value = mockClientNestedItems(300);
 };
@@ -140,19 +138,31 @@ const switchToNested = () => {
   items.value = mockClientNestedItems(100);
 };
 
-const headers: Header[] = [
-  { text: 'Name', value: 'name' },
+const filterOptions = [
   {
-    text: 'Address', value: 'address', fixed: true,
+    field: 'indicator.height',
+    comparison: (value: string, criteria: string) => value === criteria,
+    criteria: '6-9',
   },
-  { text: 'Height', value: 'info.out.height', sortable: true },
-  { text: 'Weight', value: 'info.out.weight', sortable: true },
-  {
-    text: 'Age', value: 'age', sortable: true
-  },
-  { text: 'Favourite sport', value: 'favouriteSport' },
-  { text: 'Favourite fruits', value: 'favouriteFruits' },
 ];
+
+const headers: Header[] = [
+  { text: "PLAYER", value: "player" },
+  { text: "TEAM", value: "team"},
+  { text: "NUMBER", value: "number"},
+  { text: "POSITION", value: "position"},
+  { text: "HEIGHT", value: "indicator.height"},
+  { text: "WEIGHT (lbs)", value: "indicator.weight", sortable: true},
+  { text: "LAST ATTENDED", value: "lastAttended", width: 200},
+  { text: "COUNTRY", value: "country"},
+];
+
+const items = ref<Item[]>([
+  { player: "Stephen Curry", team: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
+  { player: "Lebron James", team: "LAL", number: 6, position: 'F', indicator: {"height": '6-9', "weight": 250}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
+  { player: "Kevin Durant", team: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
+  { player: "Giannis Antetokounmpo", team: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+]);
 
 // const headers: Header[] = [
 //   { text: 'Name', value: 'name'},
@@ -164,7 +174,7 @@ const headers: Header[] = [
 //   { text: 'Favourite fruits', value: 'favouriteFruits'},
 // ];
 
-const itemsSelected = ref<Item[]>([items.value[14]]);
+// const itemsSelected = ref<Item[]>([items.value[1]]);
 
 const showItem = (item: ClickRowArgument) => {
   console.log('item');
