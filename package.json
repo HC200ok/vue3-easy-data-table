@@ -20,8 +20,10 @@
   "homepage": "https://github.com/HC200ok/vue3-easy-data-table",
   "main": "./dist/vue3-easy-data-table.umd.js",
   "module": "./dist/vue3-easy-data-table.es.js",
+  "type": "module",
   "exports": {
     ".": {
+      "types": "./types/main.d.ts",
       "import": "./dist/vue3-easy-data-table.es.js",
       "require": "./dist/vue3-easy-data-table.umd.js"
     },
