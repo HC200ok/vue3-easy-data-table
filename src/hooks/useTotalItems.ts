@@ -14,6 +14,7 @@ export default function useTotalItems(
   searchField: Ref<string>,
   searchValue: Ref<string>,
   serverItemsLength: Ref<number>,
+  multiSort: Ref<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   // items searching
@@ -62,6 +63,28 @@ export default function useTotalItems(
     return itemsSearching.value;
   });
 
+  function recursionMuiltSort(sortByArr: string[], sortDescArr: boolean[], itemsToSort: Item[], index: number): Item[] {
+    const sortBy = sortByArr[index];
+    const sortDesc = sortDescArr[index];
+    const sorted = (index === 0 ? itemsToSort
+      : recursionMuiltSort(sortByArr, sortDescArr, itemsToSort, index - 1)).sort((a: Item, b: Item) => {
+      let isAllSame = true;
+      for (let i = 0; i < index; i += 1) {
+        if (getItemValue(sortByArr[i], a) !== getItemValue(sortByArr[i], b)) {
+          isAllSame = false;
+          break;
+        }
+      }
+      if (isAllSame) {
+        if (getItemValue(sortBy as string, a) < getItemValue(sortBy as string, b)) return sortDesc ? 1 : -1;
+        if (getItemValue(sortBy as string, a) > getItemValue(sortBy as string, b)) return sortDesc ? -1 : 1;
+        return 0;
+      }
+      return 0;
+    });
+    return sorted;
+  }
+
   // flow: searching => filtering => sorting
   // (last step: sorting)
   const totalItems = computed((): Item[] => {
@@ -69,10 +92,15 @@ export default function useTotalItems(
     if (clientSortOptions.value === null) return itemsFiltering.value;
     const { sortBy, sortDesc } = clientSortOptions.value;
     const itemsFilteringSorted = [...itemsFiltering.value];
+    // multi sort
+    if (multiSort && Array.isArray(sortBy) && Array.isArray(sortDesc)) {
+      if (sortBy.length === 0) return itemsFilteringSorted;
+      return recursionMuiltSort(sortBy, sortDesc, itemsFilteringSorted, sortBy.length - 1);
+    }
     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
     return itemsFilteringSorted.sort((a, b) => {
-      if (getItemValue(sortBy, a) < getItemValue(sortBy, b)) return sortDesc ? 1 : -1;
-      if (getItemValue(sortBy, a) > getItemValue(sortBy, b)) return sortDesc ? -1 : 1;
+      if (getItemValue(sortBy as string, a) < getItemValue(sortBy as string, b)) return sortDesc ? 1 : -1;
+      if (getItemValue(sortBy as string, a) > getItemValue(sortBy as string, b)) return sortDesc ? -1 : 1;
       return 0;
     });
   });

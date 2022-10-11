@@ -22,17 +22,17 @@
       :search-value="searchValue"
       :rows-per-page="10"
       buttons-pagination
-      sort-by="age"
-      sort-type="desc"
+      :sort-by="sortBy"
+      :sort-type="sortType"
       theme-color="#1d90ff"
       table-class-name="hc-table"
       header-class-name="hc-header"
       :body-row-class-name="bodyRowClassNameFunction"
       :header-item-class-name="headerItemClassNameFunction"
       :body-item-class-name="bodyItemClassNameFunction"
-      :filter-options="filterOptions"
       @click-row="showItem"
       @update-sort="updateSort"
+      multi-sort
       body-text-direction="left"
       header-text-direction="left"
     >
@@ -129,7 +129,8 @@ import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems 
 
 const searchField = ref('name');
 const searchValue = ref('');
-
+const sortBy = ref(['indicator.weight', 'number']);
+const sortType = ref<SortType | SortType[] | undefined>(['desc', 'asc']);
 const switchToNested300 = () => {
   items.value = mockClientNestedItems(300);
 };
@@ -158,10 +159,11 @@ const headers: Header[] = [
 ];
 
 const items = ref<Item[]>([
-  { player: "Stephen Curry", team: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
-  { player: "Lebron James", team: "LAL", number: 6, position: 'F', indicator: {"height": '6-9', "weight": 250}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
-  { player: "Kevin Durant", team: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
-  { player: "Giannis Antetokounmpo", team: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+  { player: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
+  { player: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
+  { player: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
+  { player: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+  { player: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
 ]);
 
 // const headers: Header[] = [

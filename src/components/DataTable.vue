@@ -72,6 +72,12 @@
                   class="sortType-icon"
                   :class="{'desc': header.sortType === 'desc'}"
                 ></i>
+                <span
+                  v-if="multiSort && isMultiSorting(header.value)"
+                  class="multi-sort__number"
+                >
+                  {{ getMultiSortNumber(header.value) }}
+                </span>
               </span>
             </th>
           </tr>
@@ -308,6 +314,7 @@ const {
   itemsSelected,
   loading,
   mustSort,
+  multiSort,
   rowsItems,
   rowsPerPage,
   searchField,
@@ -366,6 +373,7 @@ const {
   updateServerOptionsRowsPerPage,
 } = useServerOptions(
   serverOptions,
+  multiSort,
   emits,
 );
 
@@ -374,6 +382,8 @@ const {
   headerColumns,
   headersForRender,
   updateSortField,
+  isMultiSorting,
+  getMultiSortNumber,
 } = useHeaders(
   checkboxColumnWidth,
   expandColumnWidth,
@@ -390,6 +400,7 @@ const {
   showIndex,
   sortBy,
   sortType,
+  multiSort,
   updateServerOptionsSort,
   emits,
 );
@@ -420,6 +431,7 @@ const {
   searchField,
   searchValue,
   serverItemsLength,
+  multiSort,
   emits,
 );
 

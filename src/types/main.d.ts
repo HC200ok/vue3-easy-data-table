@@ -33,8 +33,8 @@ export type Header = {
 export type ServerOptions = {
   page: number
   rowsPerPage: number
-  sortBy?: string
-  sortType?: SortType
+  sortBy?: string | string[]
+  sortType?: SortType | SortType[]
 }
 
 export type ClickRowArgument = Item & {

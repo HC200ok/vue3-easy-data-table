@@ -141,6 +141,16 @@ table {
       border-bottom-color: var(--easy-table-header-font-color);
     }
 
+    .multi-sort__number {
+      border-radius: 50%;
+      height: 1.5em;
+      width: 1.5em;
+      line-height: 1.5em;
+      margin-left: 4px;
+      background-color: var(--easy-table-header-font-color);
+      color: var(--easy-table-header-background-color);
+    }
+
     &.none {
       &:hover {
         .sortType-icon {
