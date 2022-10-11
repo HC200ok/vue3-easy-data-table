@@ -4,6 +4,7 @@ import type { ServerOptionsComputed, EmitsEventName } from '../types/internal';
 
 export default function useServerOptions(
   serverOptions: Ref<ServerOptions | null>,
+  multiSort: Ref<Boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const serverOptionsComputed = computed({
@@ -47,11 +48,26 @@ export default function useServerOptions(
 
   const updateServerOptionsSort = (newSortBy: string, newSortType: SortType | null) => {
     if (serverOptionsComputed.value) {
-      serverOptionsComputed.value = {
-        ...serverOptionsComputed.value,
-        sortBy: newSortType !== null ? newSortBy : null,
-        sortType: newSortType,
-      };
+      if (multiSort.value && Array.isArray(serverOptionsComputed.value.sortBy)
+      && Array.isArray(serverOptionsComputed.value.sortType)) {
+        const index = serverOptionsComputed.value.sortBy.findIndex((val: string) => val === newSortBy);
+        if (index === -1 && newSortType !== null) {
+          serverOptionsComputed.value.sortBy.push(newSortBy);
+          serverOptionsComputed.value.sortType.push(newSortType);
+        }
+        if (newSortType === null) {
+          serverOptionsComputed.value.sortBy.splice(index, 1);
+          serverOptionsComputed.value.sortType.splice(index, 1);
+        } else {
+          serverOptionsComputed.value.sortType[index] = newSortType;
+        }
+      } else {
+        serverOptionsComputed.value = {
+          ...serverOptionsComputed.value,
+          sortBy: newSortType !== null ? newSortBy : null,
+          sortType: newSortType,
+        };
+      }
     }
   };
 

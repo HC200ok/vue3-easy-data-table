@@ -3,8 +3,8 @@ import type { SortType } from './main';
 export type ServerOptionsComputed = {
   page: number
   rowsPerPage: number
-  sortBy: string | null
-  sortType: SortType | null
+  sortBy: string | string[] | null
+  sortType: SortType | SortType[] | null
 }
 
 export type HeaderForRender = {
@@ -17,8 +17,8 @@ export type HeaderForRender = {
 }
 
 export type ClientSortOptions = {
-  sortBy: string,
-  sortDesc: boolean,
+  sortBy: string | string[],
+  sortDesc: boolean | boolean[],
 }
 
 export type MultipleSelectStatus = 'allSelected' | 'noneSelected' | 'partSelected'

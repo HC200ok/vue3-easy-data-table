@@ -24,7 +24,7 @@
       table-class-name="hc-table"
       theme-color="#1d90ff"
       border-cell
-      must-sort
+      multi-sort
       @update-sort="updateSort"
     >
       <template #expand="item">
@@ -84,7 +84,9 @@
       </div>
     </div> -->
   </div>
+  <div>{{serverOptions}}</div>
 </template>
+
 
 <script lang="ts">
 import {
@@ -111,21 +113,14 @@ export default defineComponent({
     //   { text: 'Favourite fruits', value: 'favouriteFruits', width: 200 },
     // ];
     const headers: Header[] = [
-      {
-        text: 'Name', value: 'name', width: 150, fixed: true,
-      },
-      { text: 'Address', value: 'address', width: 200 },
-      {
-        text: 'Height', value: 'height', sortable: true, width: 200,
-      },
-      {
-        text: 'Weight', value: 'weight', sortable: true, width: 200,
-      },
-      {
-        text: 'Age', value: 'age', sortable: true, width: 200,
-      },
-      { text: 'Favourite sport', value: 'favouriteSport', width: 200 },
-      { text: 'Favourite fruits', value: 'favouriteFruits', width: 200 },
+      { text: "PLAYER", value: "player" },
+      { text: "firstName", value: "firstName"},
+      { text: "NUMBER", value: "number", sortable: true},
+      { text: "POSITION", value: "position"},
+      { text: "HEIGHT", value: "indicator.height"},
+      { text: "WEIGHT (lbs)", value: "indicator.weight", sortable: true},
+      { text: "LAST ATTENDED", value: "lastAttended", width: 200},
+      { text: "COUNTRY", value: "country"},
     ];
     const items = ref<Item[]>([]);
     const itemsSelected = ref<Item[]>([items.value[0]]);
@@ -133,6 +128,8 @@ export default defineComponent({
     const serverOptions = ref<ServerOptions>({
       page: 1,
       rowsPerPage: 10,
+      sortBy: ['indicator.weight', 'number'],
+      sortType: ['desc', 'asc'],
     });
 
     const loading = ref(false);
@@ -143,7 +140,13 @@ export default defineComponent({
         serverCurrentPageItems,
         serverTotalItemsLength,
       } = await mockServerItems(serverOptions.value, 101);
-      items.value = serverCurrentPageItems;
+      items.value = [
+        { player: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
+        { player: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
+        { player: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
+        { player: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+        { player: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
+      ];
       serverItemsLength.value = serverTotalItemsLength;
       loading.value = false;
     };

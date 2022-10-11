@@ -115,12 +115,16 @@ export default {
     default: false,
   },
   sortBy: {
-    type: String,
+    type: [String, Array as PropType<String[]>],
     default: '',
   },
   sortType: {
-    type: String as PropType<SortType>,
+    type: [String as PropType<SortType>, Array as PropType<SortType[]>],
     default: 'asc',
+  },
+  multiSort: {
+    type: Boolean,
+    default: false,
   },
   tableMinHeight: {
     type: Number,
