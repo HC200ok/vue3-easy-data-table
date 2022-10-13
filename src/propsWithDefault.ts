@@ -170,4 +170,8 @@ export default {
     type: Boolean,
     default: false,
   },
+  pageSeperatorMessage: {
+    type: String,
+    default: 'of',
+  }
 };

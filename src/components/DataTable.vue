@@ -219,7 +219,7 @@
       </div>
       <div class="pagination__items-index">
         {{ `${currentPageFirstIndex}–${currentPageLastIndex}` }}
-        of {{ totalItemsLength }}
+        {{pageSeperatorMessage}} {{ totalItemsLength }}
       </div>
       <slot
         v-if="ifHasPaginationSlot"
@@ -327,6 +327,7 @@ const {
   tableHeight,
   tableMinHeight,
   themeColor,
+  pageSeperatorMessage,
 } = toRefs(props);
 
 // style related computed variables
