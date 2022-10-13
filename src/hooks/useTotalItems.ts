@@ -17,13 +17,24 @@ export default function useTotalItems(
   multiSort: Ref<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
+  const generateSearchingTarget = (item: Item): string => {
+    if (typeof searchField.value === 'string' && searchField.value !== '') return item[searchField.value];
+    if (Array.isArray(searchField.value)) {
+      let searchString = ''
+      searchField.value.forEach((field) => {
+        searchString += getItemValue(field, item);
+      });
+      return searchString;
+    }
+    return Object.values(item).join(' ');
+  };
+
   // items searching
   const itemsSearching = computed((): Item[] => {
     // searching feature is not available in server-side mode
     if (!isServerSideMode.value && searchValue.value !== '') {
       const regex = new RegExp(searchValue.value, 'i');
-      return items.value.filter((item) => regex.test(searchField.value !== '' ? item[searchField.value]
-        : Object.values(item).join(' ')));
+      return items.value.filter((item) => regex.test(generateSearchingTarget(item)));
     }
     return items.value;
   });

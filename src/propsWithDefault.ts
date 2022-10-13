@@ -95,7 +95,7 @@ export default {
     default: 'rows per page:',
   },
   searchField: {
-    type: String,
+    type: [String, Array as PropType<String[]>],
     default: '',
   },
   searchValue: {

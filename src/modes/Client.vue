@@ -139,7 +139,7 @@ import type {
 import DataTable from '../components/DataTable.vue';
 import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems } from '../mock';
 
-const searchField = ref('name');
+const searchField = ref(['name', 'indicator.weight']);
 const searchValue = ref('');
 const sortBy = ref(['indicator.weight', 'number']);
 const sortType = ref<SortType | SortType[] | undefined>(['desc', 'asc']);
