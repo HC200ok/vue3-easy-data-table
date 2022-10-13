@@ -60,6 +60,18 @@
         </div>
       </template>
 
+      <template #item-lastAttended="item">
+        <div style="padding: 15px">
+          {{ item.lastAttended }} camelCase
+        </div>
+      </template>
+
+      <template #item-player="item">
+        <div style="padding: 15px">
+          {{ item.player }} player
+        </div>
+      </template>
+
        <template #body.append>
         <span>body.append</span>
       </template>
