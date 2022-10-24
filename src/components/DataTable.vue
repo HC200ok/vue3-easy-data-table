@@ -542,6 +542,12 @@ watch(rowsPerPageRef, (value) => {
   }
 });
 
+watch(searchValue, () => {
+  if (!isServerSideMode.value) {
+    updatePage(1);
+  }
+});
+
 watch([currentPaginationNumber, clientSortOptions, searchField, searchValue, filterOptions], () => {
   clearExpandingItemIndexList();
 }, { deep: true });
