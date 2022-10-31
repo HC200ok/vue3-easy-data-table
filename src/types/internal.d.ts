@@ -23,4 +23,5 @@ export type ClientSortOptions = {
 
 export type MultipleSelectStatus = 'allSelected' | 'noneSelected' | 'partSelected'
 
-export type EmitsEventName = 'clickRow' | 'expandRow' | 'updateSort' | 'update:itemsSelected' | 'update:serverOptions'
+// eslint-disable-next-line max-len
+export type EmitsEventName = 'clickRow' | 'expandRow' | 'updateSort' | 'update:itemsSelected' | 'update:serverOptions' | 'updateFilter'

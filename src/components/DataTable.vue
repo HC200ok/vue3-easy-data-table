@@ -371,6 +371,7 @@ const emits = defineEmits([
   'clickRow',
   'expandRow',
   'updateSort',
+  'updateFilter',
   'update:itemsSelected',
   'update:serverOptions',
 ]);

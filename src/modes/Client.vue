@@ -32,9 +32,11 @@
       :body-item-class-name="bodyItemClassNameFunction"
       @click-row="showItem"
       @update-sort="updateSort"
+      @update-filter="updateFilter"
       multi-sort
       body-text-direction="left"
       header-text-direction="left"
+      :filter-options="filterOptions"
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -171,6 +173,11 @@ const headers: Header[] = [
 ];
 
 // const headers: Header[] = headersMocked;
+
+const updateFilter = (items: Item[]) => {
+  console.log('filter items');
+  console.log(JSON.stringify(items));
+};
 
 const items = ref<Item[]>([
   { player: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},

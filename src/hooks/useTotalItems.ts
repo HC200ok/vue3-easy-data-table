@@ -1,5 +1,5 @@
 import {
-  Ref, computed, ComputedRef,
+  Ref, computed, ComputedRef, watch,
 } from 'vue';
 import type { Item, FilterOption } from '../types/main';
 import type { ClientSortOptions, EmitsEventName } from '../types/internal';
@@ -73,6 +73,12 @@ export default function useTotalItems(
     }
     return itemsSearching.value;
   });
+
+  watch(itemsFiltering, (newVal) => {
+    if (filterOptions.value) {
+      emits('updateFilter', newVal);
+    }
+  }, { immediate: true, deep: true });
 
   function recursionMuiltSort(sortByArr: string[], sortDescArr: boolean[], itemsToSort: Item[], index: number): Item[] {
     const sortBy = sortByArr[index];
