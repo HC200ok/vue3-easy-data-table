@@ -18,9 +18,9 @@ export default function useTotalItems(
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const generateSearchingTarget = (item: Item): string => {
-    if (typeof searchField.value === 'string' && searchField.value !== '') return item[searchField.value];
+    if (typeof searchField.value === 'string' && searchField.value !== '') return getItemValue(searchField.value, item);
     if (Array.isArray(searchField.value)) {
-      let searchString = ''
+      let searchString = '';
       searchField.value.forEach((field) => {
         searchString += getItemValue(field, item);
       });

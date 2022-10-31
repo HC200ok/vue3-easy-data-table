@@ -82,8 +82,13 @@
             </th>
           </tr>
         </thead>
+        <slot
+          v-if="ifHasBodySlot"
+          name="body"
+          v-bind="pageItems"
+        />
         <tbody
-          v-if="headerColumns.length"
+          v-else-if="headerColumns.length"
           class="vue3-easy-data-table__body"
           :class="{'row-alternation': alternating}"
         >
@@ -347,6 +352,7 @@ const slots = useSlots();
 const ifHasPaginationSlot = computed(() => !!slots.pagination);
 const ifHasLoadingSlot = computed(() => !!slots.loading);
 const ifHasExpandSlot = computed(() => !!slots.expand);
+const ifHasBodySlot = computed(() => !!slots.body);
 
 // global dataTable $ref
 const dataTable = ref();
