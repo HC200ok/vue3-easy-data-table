@@ -154,6 +154,10 @@ export default {
     type: [Function, String] as PropType<BodyRowClassNameFunction | string>,
     default: '',
   },
+  bodyExpandRowClassName: {
+    type: [Function, String] as PropType<BodyRowClassNameFunction | string>,
+    default: '',
+  },
   bodyItemClassName: {
     type: [Function, String] as PropType<BodyItemClassNameFunction | string>,
     default: '',

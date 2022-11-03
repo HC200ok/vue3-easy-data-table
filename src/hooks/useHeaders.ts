@@ -63,7 +63,6 @@ export default function useHeaders(
     const headersSorting: HeaderForRender[] = fixedHeaders.map((header: HeaderForRender) => {
       const headerSorting: HeaderForRender = Object.assign(header);
 
-      if (multiSort.value) headerSorting.sortable = true;
       if (headerSorting.sortable) headerSorting.sortType = 'none';
 
       // server mode

@@ -156,7 +156,8 @@
             </tr>
             <tr
               v-if="ifHasExpandSlot && expandingItemIndexList.includes(index + prevPageEndIndex)"
-              :class="{'even-row': (index + 1) % 2 === 0}"
+              :class="[{'even-row': (index + 1) % 2 === 0},
+                       typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index)]"
             >
               <td
                 :colspan="headersForRender.length"
@@ -229,7 +230,7 @@
       </div>
       <div class="pagination__items-index">
         {{ `${currentPageFirstIndex}–${currentPageLastIndex}` }}
-        {{rowsOfPageSeparatorMessage}} {{ totalItemsLength }}
+        {{ rowsOfPageSeparatorMessage }} {{ totalItemsLength }}
       </div>
       <slot
         v-if="ifHasPaginationSlot"
