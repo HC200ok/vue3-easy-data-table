@@ -30,6 +30,7 @@
       :body-row-class-name="bodyRowClassNameFunction"
       :header-item-class-name="headerItemClassNameFunction"
       :body-item-class-name="bodyItemClassNameFunction"
+      :body-expand-row-class-name="bodyExpandRowClassNameFunction"
       @click-row="showItem"
       @update-sort="updateSort"
       @update-filter="updateFilter"
@@ -164,7 +165,7 @@ const filterOptions = [
 const headers: Header[] = [
   { text: "PLAYER", value: "player" },
   { text: "TEAM", value: "team"},
-  { text: "NUMBER", value: "number"},
+  { text: "NUMBER", value: "number", sortable: true},
   { text: "POSITION", value: "position"},
   { text: "HEIGHT", value: "indicator.height"},
   { text: "WEIGHT (lbs)", value: "indicator.weight", sortable: true},
@@ -241,6 +242,8 @@ const nameCriteria = ref('');
 //   return filterOptionsArray;
 // });
 const bodyRowClassNameFunction: BodyRowClassNameFunction = (item: Item, index: number): string => (index === 0 ? 'first-row test-row' : '');
+const bodyExpandRowClassNameFunction: BodyRowClassNameFunction = (item: Item, index: number): string => 'expand-row';
+
 const headerItemClassNameFunction: HeaderItemClassNameFunction = (header: Header, index: number): string => (header.value === 'name' ? 'name-header' : '');
 const bodyItemClassNameFunction: BodyItemClassNameFunction = (column: string, index: number): string => (column === 'name' ? 'name-item' : '');
 // $ref dataTable
