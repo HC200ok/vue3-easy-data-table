@@ -3,6 +3,7 @@ import {
 } from 'vue';
 import type { Item } from '../types/main';
 import type { MultipleSelectStatus } from '../types/internal';
+import { shallowClone } from '../utils';
 
 export default function usePageItems(
   currentPaginationNumber: Ref<number>,
@@ -36,7 +37,11 @@ export default function usePageItems(
 
   const itemsWithIndex = computed((): Item[] => {
     if (showIndex.value) {
-      return itemsInPage.value.map((item, index) => ({ index: currentPageFirstIndex.value + index, ...item }));
+      return itemsInPage.value.map((item, index) => {
+        const shallowCloned = shallowClone(item);
+        shallowCloned.index = currentPageFirstIndex.value + index;
+        return shallowCloned;
+      });
     }
     return itemsInPage.value;
   });
@@ -71,17 +76,27 @@ export default function usePageItems(
     if (!isMultipleSelectable.value) return itemsWithIndex.value;
     // multi select
     if (multipleSelectStatus.value === 'allSelected') {
-      return itemsWithIndex.value.map((item) => ({ checkbox: true, ...item }));
+      return itemsWithIndex.value.map((item) => {
+        const shallowCloned = shallowClone(item);
+        shallowCloned.checkbox = true;
+        return shallowCloned;
+      });
     } if (multipleSelectStatus.value === 'noneSelected') {
-      return itemsWithIndex.value.map((item) => ({ checkbox: false, ...item }));
+      return itemsWithIndex.value.map((item) => {
+        const shallowCloned = shallowClone(item);
+        shallowCloned.checkbox = false;
+        return shallowCloned;
+      });
     }
     return itemsWithIndex.value.map((item) => {
       const isSelected = selectItemsComputed.value.findIndex((selectItem) => {
-        const itemDeepCloned = { ...item };
-        delete itemDeepCloned.index;
-        return JSON.stringify(selectItem) === JSON.stringify(itemDeepCloned);
+        const shallowCloned = shallowClone(item);
+        delete shallowCloned.index;
+        return JSON.stringify(selectItem) === JSON.stringify(shallowCloned);
       }) !== -1;
-      return { checkbox: isSelected, ...item };
+      const shallowCloned = shallowClone(item);
+      shallowCloned.checkbox = isSelected;
+      return shallowCloned;
     });
   });
 

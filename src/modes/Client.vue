@@ -4,14 +4,23 @@
     <option>name</option>
     <option>indicator.weight</option>
   </select>
-  
+
   <br/>
 
   <span>search value: </span>
   <input type="text" v-model="searchValue">
   <div>
     <DataTable
+      :headers="userHeaders"
+      :items="users"
+    >
+      <template #item-displayName="user">
+        {{ user.displayName }}
+      </template>
+    </DataTable>
+    <!-- <DataTable
       ref="dataTable"
+      v-model:items-selected="itemsSelected"
       alternating
       border-cell
       no-hover
@@ -37,7 +46,6 @@
       multi-sort
       body-text-direction="left"
       header-text-direction="left"
-      :filter-options="filterOptions"
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -78,7 +86,7 @@
        <template #body.append>
         <span>body.append</span>
       </template>
-    </DataTable>
+    </DataTable> -->
 
     <!-- <div class="customize-footer">
       <div class="customize-rows-per-page">
@@ -142,6 +150,25 @@ import type {
 import DataTable from '../components/DataTable.vue';
 import { mockClientNestedItems, mockClientItems, mockDuplicateClientNestedItems, headersMocked } from '../mock';
 
+class User {
+  constructor(firstName, lastName) {
+    this.firstName = firstName;
+    this.lastName = lastName;
+  }
+  get displayName() {
+    return `${this.firstName} ${this.lastName}`;
+  }
+}
+
+const users: User[] = [new User("John","Smith")];
+console.log('typeof users');
+console.log(typeof users);
+const userHeaders: Header[] = [
+  { text: "Name", value: "displayName", sortable: true },
+  { text: "First Name", value: "firstName", sortable: true },
+  { text: "Last Name", value: "lastName", sortable: true },
+];
+
 const searchField = ref('indicator.weight');
 const searchValue = ref('');
 const sortBy = ref(['indicator.weight', 'number']);
@@ -200,7 +227,7 @@ const items = ref<Item[]>([
 //   { text: 'Favourite fruits', value: 'favouriteFruits'},
 // ];
 
-// const itemsSelected = ref<Item[]>([items.value[1]]);
+const itemsSelected = ref<Item[]>([items.value[1]]);
 
 const showItem = (item: ClickRowArgument) => {
   console.log('item');

@@ -40,7 +40,7 @@ export default function useTotalItems(
   });
   // items filtering
   const itemsFiltering = computed((): Item[] => {
-    let itemsFiltered = [...itemsSearching.value];
+    let itemsFiltered = JSON.parse(JSON.stringify(itemsSearching.value));
     if (filterOptions.value) {
       filterOptions.value.forEach((option: FilterOption) => {
         itemsFiltered = itemsFiltered.filter((item) => {
@@ -108,7 +108,7 @@ export default function useTotalItems(
     if (isServerSideMode.value) return items.value;
     if (clientSortOptions.value === null) return itemsFiltering.value;
     const { sortBy, sortDesc } = clientSortOptions.value;
-    const itemsFilteringSorted = [...itemsFiltering.value];
+    const itemsFilteringSorted = JSON.parse(JSON.stringify(itemsFiltering.value));
     // multi sort
     if (multiSort && Array.isArray(sortBy) && Array.isArray(sortDesc)) {
       if (sortBy.length === 0) return itemsFilteringSorted;

@@ -485,6 +485,9 @@ const {
   totalItemsLength,
 );
 
+console.log('pageItem');
+console.log(pageItems.value);
+
 const prevPageEndIndex = computed(() => {
   if (currentPaginationNumber.value === 0) return 0;
   return (currentPaginationNumber.value - 1) * rowsPerPageRef.value;

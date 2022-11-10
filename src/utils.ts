@@ -20,3 +20,10 @@ export function generateColumnContent(column: string, item: Item) {
   const content = getItemValue(column, item);
   return Array.isArray(content) ? content.join(',') : content;
 }
+
+export function shallowClone(obj: Item): Item {
+  return Object.create(
+    Object.getPrototypeOf(obj),
+    Object.getOwnPropertyDescriptors(obj),
+  );
+}
