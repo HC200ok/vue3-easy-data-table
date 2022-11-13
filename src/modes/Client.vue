@@ -38,6 +38,7 @@
       body-text-direction="left"
       header-text-direction="left"
       :filter-options="filterOptions"
+      click-event-type="double"
     >
       <template #expand="item">
         <div style="padding: 15px">

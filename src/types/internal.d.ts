@@ -21,6 +21,8 @@ export type ClientSortOptions = {
   sortDesc: boolean | boolean[],
 }
 
+export type ClickEventType = 'single' | 'double'
+
 export type MultipleSelectStatus = 'allSelected' | 'noneSelected' | 'partSelected'
 
 // eslint-disable-next-line max-len
