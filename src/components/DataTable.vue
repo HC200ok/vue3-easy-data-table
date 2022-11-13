@@ -114,7 +114,8 @@
             <tr
               :class="[{'even-row': (index + 1) % 2 === 0},
                        typeof bodyRowClassName === 'string' ? bodyRowClassName : bodyRowClassName(item, index)]"
-              @click="clickRow(item)"
+              @click="clickRow(item, 'single')"
+              @dblclick="clickRow(item, 'double')"
             >
               <td
                 v-for="(column, i) in headerColumns"
@@ -309,6 +310,7 @@ const props = defineProps({
 });
 
 const {
+  clickEventType,
   bodyTextDirection,
   checkboxColumnWidth,
   currentPage,
@@ -511,6 +513,7 @@ const {
 const {
   clickRow,
 } = useClickRow(
+  clickEventType,
   isMultipleSelectable,
   showIndex,
   emits,

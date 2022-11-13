@@ -4,6 +4,7 @@ import type {
   HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
   TextDirection,
 } from './types/main';
+import type { ClickEventType } from './types/internal';
 
 export default {
   alternating: {
@@ -177,5 +178,9 @@ export default {
   rowsOfPageSeparatorMessage: {
     type: String,
     default: 'of',
-  }
+  },
+  clickEventType: {
+    type: String as PropType<ClickEventType>,
+    default: 'single',
+  },
 };
