@@ -183,4 +183,8 @@ export default {
     type: String as PropType<ClickEventType>,
     default: 'single',
   },
+  clickRowToExpand: {
+    type: Boolean,
+    default: false,
+  },
 };

@@ -11,6 +11,7 @@
   <input type="text" v-model="searchValue">
   <div>
     <DataTable
+      click-row-to-expand
       ref="dataTable"
       alternating
       border-cell
