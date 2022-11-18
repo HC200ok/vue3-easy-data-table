@@ -56,7 +56,12 @@
                 :class="`direction-${headerTextDirection}`"
               >
                 <slot
-                  v-if="slots[`header-${header.value.toLowerCase()}`]"
+                  v-if="slots[`header-${header.value}`]"
+                  :name="`header-${header.value}`"
+                  v-bind="header"
+                />
+                <slot
+                  v-else-if="slots[`header-${header.value.toLowerCase()}`]"
                   :name="`header-${header.value.toLowerCase()}`"
                   v-bind="header"
                 />
