@@ -60,6 +60,11 @@
                   :name="`header-${header.value}`"
                   v-bind="header"
                 />
+                <slot
+                  v-else-if="slots[`header-${header.value.toLowerCase()}`]"
+                  :name="`header-${header.value.toLowerCase()}`"
+                  v-bind="header"
+                />
                 <span
                   v-else
                   class="header-text"
@@ -114,7 +119,10 @@
             <tr
               :class="[{'even-row': (index + 1) % 2 === 0},
                        typeof bodyRowClassName === 'string' ? bodyRowClassName : bodyRowClassName(item, index)]"
-              @click="clickRow(item, 'single')"
+              @click="($event) => {
+                clickRow(item, 'single');
+                clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
+              }"
               @dblclick="clickRow(item, 'double')"
             >
               <td
