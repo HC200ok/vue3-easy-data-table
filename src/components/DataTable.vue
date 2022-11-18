@@ -193,7 +193,8 @@
                 currentPaginationNumber,
                 maxPaginationNumber,
                 nextPage,
-                prevPage
+                prevPage,
+                updatePage
               },
               headers: headersForRender
             }"
