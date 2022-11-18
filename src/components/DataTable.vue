@@ -56,8 +56,8 @@
                 :class="`direction-${headerTextDirection}`"
               >
                 <slot
-                  v-if="slots[`header-${header.value}`]"
-                  :name="`header-${header.value}`"
+                  v-if="slots[`header-${header.value.toLowerCase()}`]"
+                  :name="`header-${header.value.toLowerCase()}`"
                   v-bind="header"
                 />
                 <span
