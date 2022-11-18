@@ -119,7 +119,10 @@
             <tr
               :class="[{'even-row': (index + 1) % 2 === 0},
                        typeof bodyRowClassName === 'string' ? bodyRowClassName : bodyRowClassName(item, index)]"
-              @click="clickRow(item, 'single')"
+              @click="($event) => {
+                clickRow(item, 'single');
+                clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
+              }"
               @dblclick="clickRow(item, 'double')"
             >
               <td
