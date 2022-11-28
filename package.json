@@ -3,7 +3,7 @@
   "author": "HC200ok",
   "description": "A customizable and easy-to-use data table component made with Vue.js 3.x.",
   "private": false,
-  "version": "1.5.16",
+  "version": "1.5.17",
   "types": "./types/main.d.ts",
   "license": "MIT",
   "files": [
@@ -37,7 +37,7 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "vue": "^3.2.25"
+    "vue": "^3.2.45"
   },
   "devDependencies": {
     "@types/node": "^17.0.29",
