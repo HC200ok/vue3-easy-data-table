@@ -11,6 +11,7 @@
   <input type="text" v-model="searchValue">
   <div>
     <DataTable
+      v-model:items-selected="itemsSelected"
       click-row-to-expand
       ref="dataTable"
       alternating
@@ -32,7 +33,6 @@
       :header-item-class-name="headerItemClassNameFunction"
       :body-item-class-name="bodyItemClassNameFunction"
       :body-expand-row-class-name="bodyExpandRowClassNameFunction"
-      @click-row="showItem"
       @update-sort="updateSort"
       @update-filter="updateFilter"
       multi-sort
@@ -40,6 +40,7 @@
       header-text-direction="left"
       :filter-options="filterOptions"
       click-event-type="double"
+      @select-row="showItem"
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -202,10 +203,10 @@ const items = ref<Item[]>([
 //   { text: 'Favourite fruits', value: 'favouriteFruits'},
 // ];
 
-// const itemsSelected = ref<Item[]>([items.value[1]]);
+const itemsSelected = ref<Item[]>([items.value[1]]);
 
 const showItem = (item: ClickRowArgument) => {
-  console.log('item');
+  console.log('item 111');
   console.log(JSON.stringify(item));
 };
 

@@ -147,6 +147,7 @@ export default function useTotalItems(
       const selectItemsArr: Item[] = selectItemsComputed.value;
       selectItemsArr.unshift(item);
       selectItemsComputed.value = selectItemsArr;
+      emits('selectRow', item);
     } else {
       selectItemsComputed.value = selectItemsComputed.value.filter((selectedItem) => JSON.stringify(selectedItem)
         !== JSON.stringify(item));
