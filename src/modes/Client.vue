@@ -41,6 +41,7 @@
       :filter-options="filterOptions"
       click-event-type="double"
       @select-row="showItem"
+      @deselect-row="deselectRow"
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -207,6 +208,11 @@ const itemsSelected = ref<Item[]>([items.value[1]]);
 
 const showItem = (item: ClickRowArgument) => {
   console.log('item 111');
+  console.log(JSON.stringify(item));
+};
+
+const deselectRow = (item: ClickRowArgument) => {
+  console.log('deselectRow');
   console.log(JSON.stringify(item));
 };
 
