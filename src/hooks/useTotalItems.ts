@@ -151,6 +151,7 @@ export default function useTotalItems(
     } else {
       selectItemsComputed.value = selectItemsComputed.value.filter((selectedItem) => JSON.stringify(selectedItem)
         !== JSON.stringify(item));
+      emits('deselectRow', item);
     }
   };
 

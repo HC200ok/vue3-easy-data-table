@@ -382,6 +382,7 @@ onMounted(() => {
 const emits = defineEmits([
   'clickRow',
   'selectRow',
+  'deselectRow',
   'expandRow',
   'updateSort',
   'updateFilter',
