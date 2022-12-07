@@ -60,8 +60,9 @@ const mockItemIntroduction = async (name: string): Promise<string> => {
   return introduction[name];
 };
 
-const loadIntroduction = async (index: number): Promise<void> => {
+const loadIntroduction = async (index: number, item: Item): Promise<void> => {
   const expandedItem = items.value[index];
+  console.log(item);
   if (!expandedItem.introduction) {
     expandedItem.expandLoading = true;
     expandedItem.introduction = await mockItemIntroduction(expandedItem.player);
