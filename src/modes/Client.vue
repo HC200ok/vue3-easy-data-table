@@ -1,12 +1,11 @@
 <template>
   <span>search field:</span>
-  <select v-model="searchField">
+  <!-- <select v-model="searchField">
     <option>name</option>
     <option>indicator.weight</option>
-  </select>
-  
-  <br/>
+  </select> -->
 
+  <br/>
   <span>search value: </span>
   <input type="text" v-model="searchValue">
   <div>
@@ -83,53 +82,6 @@
         <span>body.append</span>
       </template>
     </DataTable>
-
-    <!-- <div class="customize-footer">
-      <div class="customize-rows-per-page">
-        <select
-          class="select-items"
-          @change="updateRowsPerPageSelect"
-        >
-          <option
-            v-for="item in rowsPerPageOptions"
-            :key="item"
-            :selected="item === rowsPerPageActiveOption"
-            :value="item"
-          >
-            {{ item }} rows per page
-          </option>
-        </select>
-      </div>
-      <div class="customize-index">
-        Now displaying: {{ currentPageFirstIndex }} ~ {{ currentPageLastIndex }} of {{ totalItemsLength }}
-      </div>
-      <div class="customize-buttons">
-        <span
-          v-for="paginationNumber in maxPaginationNumber"
-          class="customize-button"
-          :class="{'active': paginationNumber === currentPaginationNumber}"
-          @click="updatePage(paginationNumber)"
-        >
-          {{ paginationNumber }}
-        </span>
-      </div>
-      <div class="customize-pagination">
-        <button
-          class="prev-page"
-          :disabled="isFirstPage"
-          @click="prevPage"
-        >
-          prev page
-        </button>
-        <button
-          class="next-page"
-          :disabled="isLastPage"
-          @click="nextPage"
-        >
-          next page
-        </button>
-      </div>
-    </div> -->
   </div>
 </template>
 
@@ -157,17 +109,8 @@ const switchToNested300 = () => {
 const switchToNested = () => {
   items.value = mockClientNestedItems(100);
 };
-
-const filterOptions = [
-  {
-    field: 'indicator.height',
-    comparison: (value: string, criteria: string) => value === criteria,
-    criteria: '6-9',
-  },
-];
-
 const headers: Header[] = [
-  { text: "PLAYER", value: "player" },
+  { text: "Name", value: "name" },
   { text: "TEAM", value: "team"},
   { text: "NUMBER", value: "number", sortable: true},
   { text: "POSITION", value: "position"},
@@ -185,11 +128,21 @@ const updateFilter = (items: Item[]) => {
 };
 
 const items = ref<Item[]>([
-  { player: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
-  { player: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
-  { player: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
-  { player: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
-  { player: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
+  { name: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
+  { name: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
+  { name: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
+  { name: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
+  { name: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
+  { name: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
+  { name: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
+  { name: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
+  { name: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
 ]);
 
 // const items = ref<Item[]>(mockClientItems());
@@ -228,28 +181,17 @@ const favouriteSportCriteria = ref('all');
 const showNameFilter = ref(false);
 const nameCriteria = ref('');
 
-// const filterOptions = computed((): FilterOption[] => {
-//   const filterOptionsArray: FilterOption[] = [];
-//   if (favouriteSportCriteria.value !== 'all') {
-//     filterOptionsArray.push({
-//       field: 'favouriteSport',
-//       comparison: '=',
-//       criteria: favouriteSportCriteria.value,
-//     });
-//   }
-//   filterOptionsArray.push({
-//     field: 'age',
-//     comparison: 'between',
-//     criteria: ageCriteria.value,
-//   });
-//   filterOptionsArray.push({
-//     field: 'name',
-//     criteria: nameCriteria.value,
-//     comparison: (value, criteria): boolean => (value != null
-//       && value.includes(`name-${criteria}`)),
-//   });
-//   return filterOptionsArray;
-// });
+const filterOptions = computed((): FilterOption[] => {
+  const filterOptionsArray: FilterOption[] = [];
+  filterOptionsArray.push({
+    field: 'name',
+    criteria: nameCriteria.value,
+    comparison: (value, criteria): boolean => (value != null
+      && value.includes(criteria)),
+  });
+  return filterOptionsArray;
+});
+
 const bodyRowClassNameFunction: BodyRowClassNameFunction = (item: Item, index: number): string => (index === 0 ? 'first-row test-row' : '');
 const bodyExpandRowClassNameFunction: BodyRowClassNameFunction = (item: Item, index: number): string => 'expand-row';
 
