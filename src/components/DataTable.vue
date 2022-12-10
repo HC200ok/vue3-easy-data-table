@@ -564,7 +564,7 @@ watch(rowsPerPageRef, (value) => {
   }
 });
 
-watch(searchValue, () => {
+watch([searchValue, filterOptions], () => {
   if (!isServerSideMode.value) {
     updatePage(1);
   }
