@@ -1,4 +1,4 @@
-import type { Item } from './types/main';
+import type { Header, Item } from './types/main';
 
 export function getItemValue(column: string, item: Item) {
   if (column.includes('.')) {
@@ -16,7 +16,18 @@ export function getItemValue(column: string, item: Item) {
   return item[column];
 }
 
-export function generateColumnContent(column: string, item: Item) {
+export function formatItemValue(column: string, rawContent: string, headers: Header[]) {
+  const header = headers.find((headerItem: Header) => headerItem.value === column);
+  if (header) {
+    if (header.formatFn) {
+      return header.formatFn(rawContent);
+    }
+  }
+  return rawContent;
+}
+
+export function generateColumnContent(column: string, item: Item, headers: Header[]) {
   const content = getItemValue(column, item);
-  return Array.isArray(content) ? content.join(',') : content;
+  const rawContent = Array.isArray(content) ? content.join(',') : content;
+  return formatItemValue(column, rawContent, headers);
 }
