@@ -133,7 +133,7 @@
                   'shadow': column === lastFixedColumn,
                   'can-expand': column === 'expand',
                 // eslint-disable-next-line max-len
-                }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, i), `direction-${bodyTextDirection}`]"
+                }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, index), `direction-${bodyTextDirection}`]"
                 @click="column === 'expand' ? updateExpandingItemIndexList(index + prevPageEndIndex, item, $event) : null"
               >
                 <slot
