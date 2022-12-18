@@ -40,7 +40,7 @@
                 'asc': header.sortable && header.sortType === 'asc',
                 'shadow': header.value === lastFixedColumn,
               // eslint-disable-next-line max-len
-              }, typeof headerItemClassName === 'string' ? headerItemClassName : headerItemClassName(header as Header, index)]"
+              }, typeof headerItemClassName === 'string' ? headerItemClassName : headerItemClassName(header as Header, index + 1)]"
               :style="getFixedDistance(header.value)"
               @click.stop="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
             >
@@ -118,7 +118,7 @@
           >
             <tr
               :class="[{'even-row': (index + 1) % 2 === 0},
-                       typeof bodyRowClassName === 'string' ? bodyRowClassName : bodyRowClassName(item, index)]"
+                       typeof bodyRowClassName === 'string' ? bodyRowClassName : bodyRowClassName(item, index + 1)]"
               @click="($event) => {
                 clickRow(item, 'single');
                 clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
@@ -133,7 +133,7 @@
                   'shadow': column === lastFixedColumn,
                   'can-expand': column === 'expand',
                 // eslint-disable-next-line max-len
-                }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, index), `direction-${bodyTextDirection}`]"
+                }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, index + 1), `direction-${bodyTextDirection}`]"
                 @click="column === 'expand' ? updateExpandingItemIndexList(index + prevPageEndIndex, item, $event) : null"
               >
                 <slot
@@ -166,7 +166,7 @@
             <tr
               v-if="ifHasExpandSlot && expandingItemIndexList.includes(index + prevPageEndIndex)"
               :class="[{'even-row': (index + 1) % 2 === 0},
-                       typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index)]"
+                       typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index + 1)]"
             >
               <td
                 :colspan="headersForRender.length"

@@ -47,8 +47,8 @@ export type UpdateSortArgument = {
   sortBy: string
 }
 
-export type HeaderItemClassNameFunction = (header: Header, index: number) => string
-export type BodyRowClassNameFunction = (item: Item, index: number) => string
-export type BodyItemClassNameFunction = (column: string, index: number) => string
+export type HeaderItemClassNameFunction = (header: Header, columnNumber: number) => string
+export type BodyRowClassNameFunction = (item: Item, rowNumber: number) => string
+export type BodyItemClassNameFunction = (column: string, rowNumber: number) => string
 
 export type TextDirection = 'center' | 'left' | 'right'
