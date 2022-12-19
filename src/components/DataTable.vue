@@ -168,7 +168,11 @@
               :class="[{'even-row': (index + 1) % 2 === 0},
                        typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index)]"
             >
-              <slot
+            <LoadingLine
+                v-if="item.expandLoading"
+                class="expand-loading"
+            />
+            <slot
                 name="expand"
                 v-bind="item"
               />
