@@ -109,7 +109,7 @@
                 nextPage,
                 prevPage
               },
-              headers: headersForRender
+              headers: headersForRender,
             }"
           />
           <template
@@ -159,29 +159,20 @@
                   />
                 </template>
                 <template v-else>
-                  {{ generateColumnContent(column, item) }}
+                  {{ generateColumnContent(column, item, headers) }}
                 </template>
               </td>
             </tr>
-            <tr
+            <template
               v-if="ifHasExpandSlot && expandingItemIndexList.includes(index + prevPageEndIndex)"
               :class="[{'even-row': (index + 1) % 2 === 0},
                        typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index)]"
             >
-              <td
-                :colspan="headersForRender.length"
-                class="expand"
-              >
-                <LoadingLine
-                  v-if="item.expandLoading"
-                  class="expand-loading"
-                />
-                <slot
-                  name="expand"
-                  v-bind="item"
-                />
-              </td>
-            </tr>
+              <slot
+                name="expand"
+                v-bind="item"
+              />
+            </template>
           </template>
           <slot
             name="body-append"
@@ -592,7 +583,7 @@ defineExpose({
 </script>
 
 <style>
-  :root {
+:root {
     /*table*/
     --easy-table-border: 1px solid #e0e0e0;
     --easy-table-row-border: 1px solid #e0e0e0;
@@ -640,16 +631,16 @@ defineExpose({
     --easy-table-scrollbar-corner-color: #fff;
     /*buttons-pagination*/
     --easy-table-buttons-pagination-border: 1px solid #e0e0e0;
-  }
+}
 </style>
 
 <style lang="scss" scoped>
 @import '../scss/vue3-easy-data-table.scss';
 
 .vue3-easy-data-table__main {
-  min-height: v-bind(tableMinHeightPx);
+    min-height: v-bind(tableMinHeightPx);
 }
 .vue3-easy-data-table__main.fixed-height {
-  height: v-bind(tableHeightPx);
+    height: v-bind(tableHeightPx);
 }
 </style>

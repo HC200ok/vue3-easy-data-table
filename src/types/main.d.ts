@@ -27,7 +27,8 @@ export type Header = {
   value: string
   sortable?: boolean
   fixed?: boolean
-  width?: number
+  width?: number,
+  formatFn?: Function
 }
 
 export type ServerOptions = {
