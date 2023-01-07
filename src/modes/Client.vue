@@ -315,6 +315,7 @@ const updateRowsPerPageSelect = (e: Event) => {
 
   --easy-table-rows-per-page-selector-width: 70px;
   --easy-table-rows-per-page-selector-option-padding: 10px;
+  --easy-table-rows-per-page-selector-z-index: 2;
 
   --easy-table-scrollbar-track-color: #4c5d7a;
   --easy-table-scrollbar-color: #4c5d7a;

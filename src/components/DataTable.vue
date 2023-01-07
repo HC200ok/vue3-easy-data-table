@@ -626,6 +626,7 @@ defineExpose({
     /**footer-rowsPerPage**/
     --easy-table-rows-per-page-selector-width: auto;
     --easy-table-rows-per-page-selector-option-padding: 5px;
+    --easy-table-rows-per-page-selector-z-index: auto;
     /*message*/
     --easy-table-message-font-color: #212121;
     --easy-table-message-font-size: 12px;

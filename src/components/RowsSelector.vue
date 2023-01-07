@@ -140,6 +140,7 @@ const themeColor = inject('themeColor');
     text-align: left;
     list-style-type: none;
     box-shadow: 0 5px 5px -3px rgb(0 0 0 / 20%), 0 8px 10px 1px rgb(0 0 0 / 14%), 0 3px 14px 2px rgb(0 0 0 / 12%);
+    z-index: var(--easy-table-rows-per-page-selector-z-index);
     li {
       cursor: pointer;
       padding: var(--easy-table-rows-per-page-selector-option-padding);
