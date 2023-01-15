@@ -187,4 +187,8 @@ export default {
     type: Boolean,
     default: false,
   },
+  tableNodeId: {
+    type: String,
+    default: '',
+  },
 };

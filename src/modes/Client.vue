@@ -10,6 +10,7 @@
   <input type="text" v-model="searchValue">
   <div>
     <DataTable
+      table-node-id="my-table"
       v-model:items-selected="itemsSelected"
       click-row-to-expand
       ref="dataTable"
