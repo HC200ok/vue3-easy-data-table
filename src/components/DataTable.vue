@@ -16,7 +16,7 @@
         'border-cell': borderCell,
       }"
     >
-      <table>
+      <table :id="tableNodeId">
         <colgroup>
           <col
             v-for="(header, index) in headersForRender"
@@ -319,6 +319,7 @@ const props = defineProps({
 });
 
 const {
+  tableNodeId,
   clickEventType,
   bodyTextDirection,
   checkboxColumnWidth,
