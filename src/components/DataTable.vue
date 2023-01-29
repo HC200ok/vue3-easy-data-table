@@ -389,6 +389,7 @@ const emits = defineEmits([
   'updateFilter',
   'update:itemsSelected',
   'update:serverOptions',
+  'updatePageItems',
 ]);
 
 const isMultipleSelectable = computed((): boolean => itemsSelected.value !== null);
@@ -575,6 +576,10 @@ watch([currentPaginationNumber, clientSortOptions, searchField, searchValue, fil
   clearExpandingItemIndexList();
 }, { deep: true });
 
+watch(pageItems, (value) => {
+  emits('updatePageItems', value);
+}, { deep: true });
+
 defineExpose({
   currentPageFirstIndex,
   currentPageLastIndex,
@@ -590,6 +595,7 @@ defineExpose({
   rowsPerPageActiveOption: rowsPerPageRef,
   updateRowsPerPageActiveOption: updateRowsPerPage,
 });
+
 </script>
 
 <style>
