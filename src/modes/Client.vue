@@ -42,6 +42,7 @@
       click-event-type="double"
       @select-row="showItem"
       @deselect-row="deselectRow"
+      @update-page-items="updateItems"
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -88,7 +89,7 @@
 
 <script lang="ts" setup>
 import {
-  computed, ref, reactive, toRefs,
+  computed, ref, reactive, toRefs, onMounted
 } from 'vue';
 // import { useRowsPerPage } from 'use-vue3-easy-data-table';
 // import type { UseRowsPerPageReturn } from 'use-vue3-easy-data-table';
@@ -125,6 +126,11 @@ const headers: Header[] = [
 
 const updateFilter = (items: Item[]) => {
   console.log('filter items');
+  console.log(JSON.stringify(items));
+};
+
+const updateItems = (items: Item[]) => {
+  console.log('page items');
   console.log(JSON.stringify(items));
 };
 
@@ -244,6 +250,15 @@ const updateRowsPerPageSelect = (e: Event) => {
 // const updateRowsPerPageSelect = (e: Event) => {
 //   updateRowsPerPageActiveOption(Number((e.target as HTMLInputElement).value));
 // };
+
+onMounted(() => {
+  console.log(dataTable.value);
+  console.log("document.querySelector('#my-table')");
+  const doc = new jsPDF();
+  console.log(doc);
+  doc.autoTable({ html: "#my-table" });
+  doc.save("table.pdf");
+});
 </script>
 
 <style scoped>
