@@ -390,6 +390,7 @@ const emits = defineEmits([
   'update:itemsSelected',
   'update:serverOptions',
   'updatePageItems',
+  'updateTotalItems',
 ]);
 
 const isMultipleSelectable = computed((): boolean => itemsSelected.value !== null);
@@ -579,6 +580,11 @@ watch([currentPaginationNumber, clientSortOptions, searchField, searchValue, fil
 watch(pageItems, (value) => {
   emits('updatePageItems', value);
 }, { deep: true });
+
+watch(totalItems, (value) => {
+  emits('updateTotalItems', value);
+}, { deep: true });
+
 
 defineExpose({
   currentPageFirstIndex,

@@ -43,6 +43,7 @@
       @select-row="showItem"
       @deselect-row="deselectRow"
       @update-page-items="updateItems"
+      @update-total-items="updateTotalItems"
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -131,6 +132,11 @@ const updateFilter = (items: Item[]) => {
 
 const updateItems = (items: Item[]) => {
   console.log('page items');
+  console.log(JSON.stringify(items));
+};
+
+const updateTotalItems = (items: Item[]) => {
+  console.log('total items');
   console.log(JSON.stringify(items));
 };
 
