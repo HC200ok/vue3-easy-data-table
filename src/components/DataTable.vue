@@ -351,6 +351,7 @@ const {
   tableMinHeight,
   themeColor,
   rowsOfPageSeparatorMessage,
+  showIndexSymbol,
 } = toRefs(props);
 
 // style related computed variables
@@ -415,6 +416,7 @@ const {
   isMultiSorting,
   getMultiSortNumber,
 } = useHeaders(
+  showIndexSymbol,
   checkboxColumnWidth,
   expandColumnWidth,
   fixedCheckbox,

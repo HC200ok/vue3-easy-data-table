@@ -7,6 +7,7 @@ import type {
 } from '../types/internal';
 
 export default function useHeaders(
+  showIndexSymbol: Ref<string>,
   checkboxColumnWidth: Ref<number>,
   expandColumnWidth: Ref<number>,
   fixedCheckbox: Ref<boolean>,
@@ -107,8 +108,8 @@ export default function useHeaders(
       headersWithIndex = headersWithExpand;
     } else {
       const headerIndex: HeaderForRender = (fixedIndex.value || hasFixedColumnsFromUser.value) ? {
-        text: '#', value: 'index', fixed: true, width: indexColumnWidth.value,
-      } : { text: '#', value: 'index' };
+        text: showIndexSymbol.value, value: 'index', fixed: true, width: indexColumnWidth.value,
+      } : { text: showIndexSymbol.value, value: 'index' };
       headersWithIndex = [headerIndex, ...headersWithExpand];
     }
     // checkbox

@@ -44,6 +44,7 @@
       @deselect-row="deselectRow"
       @update-page-items="updateItems"
       @update-total-items="updateTotalItems"
+      show-index-symbol="$"
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -257,14 +258,6 @@ const updateRowsPerPageSelect = (e: Event) => {
 //   updateRowsPerPageActiveOption(Number((e.target as HTMLInputElement).value));
 // };
 
-onMounted(() => {
-  console.log(dataTable.value);
-  console.log("document.querySelector('#my-table')");
-  const doc = new jsPDF();
-  console.log(doc);
-  doc.autoTable({ html: "#my-table" });
-  doc.save("table.pdf");
-});
 </script>
 
 <style scoped>
