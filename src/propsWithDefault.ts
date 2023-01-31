@@ -191,4 +191,8 @@ export default {
     type: String,
     default: '',
   },
+  showIndexSymbol: {
+    type: String,
+    default: '#',
+  }
 };

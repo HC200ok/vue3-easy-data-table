@@ -351,6 +351,7 @@ const {
   tableMinHeight,
   themeColor,
   rowsOfPageSeparatorMessage,
+  showIndexSymbol,
 } = toRefs(props);
 
 // style related computed variables
@@ -390,6 +391,7 @@ const emits = defineEmits([
   'update:itemsSelected',
   'update:serverOptions',
   'updatePageItems',
+  'updateTotalItems',
 ]);
 
 const isMultipleSelectable = computed((): boolean => itemsSelected.value !== null);
@@ -414,6 +416,7 @@ const {
   isMultiSorting,
   getMultiSortNumber,
 } = useHeaders(
+  showIndexSymbol,
   checkboxColumnWidth,
   expandColumnWidth,
   fixedCheckbox,
@@ -579,6 +582,11 @@ watch([currentPaginationNumber, clientSortOptions, searchField, searchValue, fil
 watch(pageItems, (value) => {
   emits('updatePageItems', value);
 }, { deep: true });
+
+watch(totalItems, (value) => {
+  emits('updateTotalItems', value);
+}, { deep: true });
+
 
 defineExpose({
   currentPageFirstIndex,
