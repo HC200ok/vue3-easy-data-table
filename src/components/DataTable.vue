@@ -123,7 +123,7 @@
                 clickRow(item, 'single', $event);
                 clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
               }"
-              @dblclick="($event) => clickRow(item, 'double', $event)"
+              @dblclick="($event) => {clickRow(item, 'double', $event)}"
             >
               <td
                 v-for="(column, i) in headerColumns"
