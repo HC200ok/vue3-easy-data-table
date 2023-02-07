@@ -120,10 +120,10 @@
               :class="[{'even-row': (index + 1) % 2 === 0},
                        typeof bodyRowClassName === 'string' ? bodyRowClassName : bodyRowClassName(item, index + 1)]"
               @click="($event) => {
-                clickRow(item, 'single');
+                clickRow(item, 'single', $event);
                 clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
               }"
-              @dblclick="clickRow(item, 'double')"
+              @dblclick="($event) => {clickRow(item, 'double', $event)}"
             >
               <td
                 v-for="(column, i) in headerColumns"

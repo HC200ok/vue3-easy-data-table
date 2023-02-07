@@ -8,7 +8,7 @@ export default function useClickRow(
   showIndex: Ref<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
-  const clickRow = (item: Item, clickType: ClickEventType) => {
+  const clickRow = (item: Item, clickType: ClickEventType, $event: Event) => {
     if (clickEventType.value !== clickType) return;
 
     const clickRowArgument = { ...item };
@@ -22,7 +22,7 @@ export default function useClickRow(
       delete clickRowArgument.index;
       clickRowArgument.indexInCurrentPage = index;
     }
-    emits('clickRow', clickRowArgument);
+    emits('clickRow', clickRowArgument, $event);
   };
 
   return {
