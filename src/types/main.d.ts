@@ -1,6 +1,6 @@
 export type SortType = 'asc' | 'desc'
 
-export type FilterComparison = '=' | '!=' | '>' | '>=' | '<' | '<=' | 'between';
+export type FilterComparison = '=' | '!=' | '>' | '>=' | '<' | '<=' | 'between' | 'in';
 
 export type Item = Record<string, any>
 
