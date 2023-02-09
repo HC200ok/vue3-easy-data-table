@@ -64,6 +64,8 @@ export default function useTotalItems(
               return itemValue >= criteria;
             case 'between':
               return itemValue >= Math.min(...criteria) && itemValue <= Math.max(...criteria);
+            case 'in':
+              return criteria.includes(itemValue);
             default:
               return itemValue === criteria;
           }

@@ -18,6 +18,10 @@ export type FilterOption = {
   criteria: number
 } | {
   field: string
+  comparison: 'in'
+  criteria: number[] | string[]
+}| {
+  field: string
   comparison: (value: any, criteria: string) => boolean
   criteria: string
 }
