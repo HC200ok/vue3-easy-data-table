@@ -199,9 +199,8 @@ const filterOptions = computed((): FilterOption[] => {
   const filterOptionsArray: FilterOption[] = [];
   filterOptionsArray.push({
     field: 'name',
-    criteria: nameCriteria.value,
-    comparison: (value, criteria): boolean => (value != null
-      && value.includes(criteria)),
+    criteria: ['name-1', 'name-2'],
+    comparison: 'in',
   });
   return filterOptionsArray;
 });
