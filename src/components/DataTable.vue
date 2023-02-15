@@ -221,7 +221,9 @@
         v-if="!pageItems.length && !loading"
         class="vue3-easy-data-table__message"
       >
-        {{ emptyMessage }}
+        <slot name="empty-message">
+          {{ emptyMessage }}
+        </slot>
       </div>
     </div>
     <div
