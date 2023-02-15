@@ -70,6 +70,10 @@
         </div>
       </template>
 
+      <template #header="header">
+        {{ header.text.toLocaleLowerCase() }}
+      </template>
+
       <template #item-lastAttended="item">
         <div style="padding: 15px">
           {{ item.lastAttended }} camelCase
