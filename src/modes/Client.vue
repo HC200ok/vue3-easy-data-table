@@ -71,7 +71,7 @@
       </template>
 
       <template #header="header">
-        [{{ header.text }}]
+        {{ header.text.toLocaleLowerCase() }}
       </template>
 
       <template #item-lastAttended="item">
