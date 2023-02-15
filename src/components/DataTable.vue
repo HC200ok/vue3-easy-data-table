@@ -65,6 +65,11 @@
                   :name="`header-${header.value.toLowerCase()}`"
                   v-bind="header"
                 />
+                <slot
+                  v-else-if="slots['header']"
+                  name="header"
+                  v-bind="header"
+                  />   
                 <span
                   v-else
                   class="header-text"
