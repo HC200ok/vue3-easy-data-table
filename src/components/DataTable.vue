@@ -227,7 +227,7 @@
         class="vue3-easy-data-table__message"
       >
         <slot name="empty-message">
-          {{ emptyMessage }}
+          <span v-html="emptyMessage"></span>
         </slot>
       </div>
     </div>
