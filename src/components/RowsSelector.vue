@@ -21,7 +21,7 @@
         :class="{selected: item === rowsComputed }"
         @click="changeSelectedRows(item)"
       >
-        {{ item === "-1" ? 'All' : item }}
+        {{ item === -1 ? 'All' : item }}
       </li>
     </ul>
   </div>
