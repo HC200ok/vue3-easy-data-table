@@ -25,8 +25,8 @@
           />
         </colgroup>
         <slot
-          v-if="slots['customize-header']"
-          name="customize-header"
+          v-if="slots['customize-headers']"
+          name="customize-headers"
         />
         <thead
           v-else-if="headersForRender.length && !hideHeader"

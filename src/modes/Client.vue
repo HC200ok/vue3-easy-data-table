@@ -46,7 +46,7 @@
       @update-total-items="updateTotalItems"
       show-index-symbol="$"
     >
-     <template #customize-header>
+     <template #customize-headers>
         <thead class="my-static-header">
           <tr>
             <th colspan="3" rowspan="2"></th>
