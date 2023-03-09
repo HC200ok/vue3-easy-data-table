@@ -24,7 +24,7 @@
             :style="getColStyle(header)"
           />
         </colgroup>
-        <slot v-if="slots['header-static']" name="header-static"/>
+        <slot v-if="slots['customize-header']" name="customize-header"/>
         <thead
           v-else-if="headersForRender.length && !hideHeader"
           class="vue3-easy-data-table__header"
