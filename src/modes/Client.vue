@@ -46,6 +46,25 @@
       @update-total-items="updateTotalItems"
       show-index-symbol="$"
     >
+     <template #customize-header>
+        <thead class="my-static-header">
+          <tr>
+            <th colspan="3" rowspan="2"></th>
+            <th colspan="4">member info</th>
+            <th colspan="4">indicator</th>
+          </tr>
+          <tr>
+            <th>name</th>
+            <th>team</th>
+            <th>number</th>
+            <th>position</th>
+            <th>height</th>
+            <th>weight</th>
+            <th>lastAttended</th>
+            <th>country</th>
+          </tr>
+        </thead>
+      </template>
       <template #expand="item">
         <div style="padding: 15px">
           {{ item.name }} won championships
@@ -341,6 +360,12 @@ const updateRowsPerPageSelect = (e: Event) => {
   --easy-table-scrollbar-thumb-color: #2d3a4f;
 
   --easy-table-loading-mask-background-color: #2d3a4f;
+}
+
+.my-static-header th {
+  color: white;
+  border-right: 1px solid #445269;
+  border-bottom: 1px solid #445269;
 }
 
 </style>
