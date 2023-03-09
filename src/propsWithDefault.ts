@@ -132,7 +132,7 @@ export default {
     default: 180,
   },
   tableHeight: {
-    type: Number,
+    type: [Number, String],
     default: null,
   },
   themeColor: {

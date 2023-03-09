@@ -367,7 +367,7 @@ const {
 } = toRefs(props);
 
 // style related computed variables
-const tableHeightPx = computed(() => (tableHeight.value ? `${tableHeight.value}px` : null));
+const tableHeightPx = computed(() => (tableHeight.value ? (isFinite(tableHeight.value) ? `${tableHeight.value}px` : tableHeight.value) : null));
 const tableMinHeightPx = computed(() => `${tableMinHeight.value}px`);
 
 // global style related variable
