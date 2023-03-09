@@ -129,6 +129,7 @@
                 clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
               }"
               @dblclick="($event) => {clickRow(item, 'double', $event)}"
+              @contextmenu.prevent="($event) => {emits('contextmenuRow', item, $event)}"
             >
               <td
                 v-for="(column, i) in headerColumns"
@@ -390,6 +391,7 @@ onMounted(() => {
 
 const emits = defineEmits([
   'clickRow',
+  'contextmenuRow',
   'selectRow',
   'deselectRow',
   'expandRow',
