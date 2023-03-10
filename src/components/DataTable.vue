@@ -146,6 +146,11 @@
                   :name="`item-${column.toLowerCase()}`"
                   v-bind="item"
                 />
+                <slot
+                  v-if="slots['item']"
+                  :name="item"
+                  v-bind="item"
+                />
                 <template v-else-if="column === 'expand'">
                   <i
                     class="expand-icon"
