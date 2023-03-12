@@ -278,6 +278,7 @@
           #buttonsPagination
         >
           <ButtonsPagination
+            :key="JSON.stringify(serverOptionsComputed)"
             :current-pagination-number="currentPaginationNumber"
             :max-pagination-number="maxPaginationNumber"
             @update-page="updatePage"
