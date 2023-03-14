@@ -17,7 +17,7 @@ export type FilterOption = {
   comparison: '>' | '>=' | '<' | '<='
   criteria: number
 } | {
-  field: string
+  field: number | string
   comparison: 'in'
   criteria: number[] | string[]
 }| {

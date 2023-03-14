@@ -24,8 +24,12 @@
             :style="getColStyle(header)"
           />
         </colgroup>
+        <slot
+          v-if="slots['customize-headers']"
+          name="customize-headers"
+        />
         <thead
-          v-if="headersForRender.length && !hideHeader"
+          v-else-if="headersForRender.length && !hideHeader"
           class="vue3-easy-data-table__header"
           :class="[headerClassName]"
         >
@@ -65,6 +69,11 @@
                   :name="`header-${header.value.toLowerCase()}`"
                   v-bind="header"
                 />
+                <slot
+                  v-else-if="slots['header']"
+                  name="header"
+                  v-bind="header"
+                />   
                 <span
                   v-else
                   class="header-text"
@@ -124,6 +133,7 @@
                 clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
               }"
               @dblclick="($event) => {clickRow(item, 'double', $event)}"
+              @contextmenu.prevent="($event) => {emits('contextmenuRow', item, $event)}"
             >
               <td
                 v-for="(column, i) in headerColumns"
@@ -227,7 +237,9 @@
         v-if="!pageItems.length && !loading"
         class="vue3-easy-data-table__message"
       >
-        {{ emptyMessage }}
+        <slot name="empty-message">
+          {{ emptyMessage }}
+        </slot>
       </div>
     </div>
     <div
@@ -389,6 +401,7 @@ onMounted(() => {
 
 const emits = defineEmits([
   'clickRow',
+  'contextmenuRow',
   'selectRow',
   'deselectRow',
   'expandRow',
