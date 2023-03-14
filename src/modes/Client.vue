@@ -89,11 +89,13 @@
         </div>
       </template>
 
-      <template #header="header">
-        {{ header.text.toLocaleLowerCase() }}
+      <template #item-general="item">
+        <div style="padding: 15px">
+          {{ item }} camelCase
+        </div>
       </template>
 
-      <template #item-lastAttended="item">
+      <!-- <template #item-lastAttended="item">
         <div style="padding: 15px">
           {{ item.lastAttended }} camelCase
         </div>
@@ -107,7 +109,7 @@
 
        <template #body.append>
         <span>body.append</span>
-      </template>
+      </template> -->
     </DataTable>
   </div>
 </template>
