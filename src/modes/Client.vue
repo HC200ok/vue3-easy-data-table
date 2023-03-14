@@ -89,9 +89,9 @@
         </div>
       </template>
 
-      <template #item-general="item">
+      <template #item="{column, item}">
         <div style="padding: 15px">
-          {{ item }} camelCase
+          column: {{ column }} item: {{ item }}
         </div>
       </template>
 

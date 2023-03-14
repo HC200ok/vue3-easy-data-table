@@ -147,9 +147,9 @@
                 @click="column === 'expand' ? updateExpandingItemIndexList(index + prevPageEndIndex, item, $event) : null"
               >
                 <slot
-                  v-if="slots['item-general']"
-                  name="item-general"
-                  v-bind="generateColumnContent(column, item)"
+                  v-if="slots['item']"
+                  name="item"
+                  v-bind="{column, item}"
                 />
                 <slot
                   v-else-if="slots[`item-${column}`]"
