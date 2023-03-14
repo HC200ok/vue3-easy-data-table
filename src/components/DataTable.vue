@@ -137,7 +137,12 @@
                 @click="column === 'expand' ? updateExpandingItemIndexList(index + prevPageEndIndex, item, $event) : null"
               >
                 <slot
-                  v-if="slots[`item-${column}`]"
+                  v-if="slots['item-general']"
+                  name="item-general"
+                  v-bind="generateColumnContent(column, item)"
+                />
+                <slot
+                  v-else-if="slots[`item-${column}`]"
                   :name="`item-${column}`"
                   v-bind="item"
                 />
@@ -146,11 +151,7 @@
                   :name="`item-${column.toLowerCase()}`"
                   v-bind="item"
                 />
-                <slot
-                  v-if="slots['item']"
-                  :name="item"
-                  v-bind="item"
-                />
+                
                 <template v-else-if="column === 'expand'">
                   <i
                     class="expand-icon"
