@@ -1,4 +1,4 @@
-import type {SortType, TextDirection} from './main';
+import type { SortType, TextDirection } from './main';
 
 export type ServerOptionsComputed = {
   page: number
