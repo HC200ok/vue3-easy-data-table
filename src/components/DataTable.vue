@@ -57,7 +57,7 @@
               <span
                 v-else
                 class="header"
-                :class="`direction-${headerTextDirection}`"
+                :class="[header.textAlign ? `direction-${header.textAlign}` : `direction-${headerTextDirection}`]"
               >
                 <slot
                   v-if="slots[`header-${header.value}`]"
@@ -73,7 +73,7 @@
                   v-else-if="slots['header']"
                   name="header"
                   v-bind="header"
-                />   
+                />
                 <span
                   v-else
                   class="header-text"
@@ -143,7 +143,9 @@
                   'shadow': column === lastFixedColumn,
                   'can-expand': column === 'expand',
                 // eslint-disable-next-line max-len
-                }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, index + 1), `direction-${bodyTextDirection}`]"
+                }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, index + 1),
+                getTextAlign(column)
+                ]"
                 @click="column === 'expand' ? updateExpandingItemIndexList(index + prevPageEndIndex, item, $event) : null"
               >
                 <slot
@@ -161,7 +163,7 @@
                   :name="`item-${column.toLowerCase()}`"
                   v-bind="item"
                 />
-                
+
                 <template v-else-if="column === 'expand'">
                   <i
                     class="expand-icon"
@@ -569,6 +571,12 @@ const getFixedDistance = (column: string, type: 'td' | 'th' = 'th') => {
   }
   return undefined;
 };
+
+const getTextAlign = (column: string): string | undefined => {
+  const header = headersForRender.value.find((header) => header.value === column)
+  const align  = header?.textAlign || bodyTextDirection.value
+  return align ? `direction-${align}` : undefined
+}
 
 watch(loading, (newVal, oldVal) => {
   if (serverOptionsComputed.value) {

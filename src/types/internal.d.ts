@@ -1,4 +1,4 @@
-import type { SortType } from './main';
+import type {SortType, TextDirection} from './main';
 
 export type ServerOptionsComputed = {
   page: number
@@ -14,6 +14,7 @@ export type HeaderForRender = {
   sortType?: SortType | 'none',
   fixed?: Boolean,
   width?: number,
+  textAlign?: TextDirection
 }
 
 export type ClientSortOptions = {

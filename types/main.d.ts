@@ -32,6 +32,7 @@ export type Header = {
   sortable?: boolean
   fixed?: boolean
   width?: number
+  textAlign?: TextDirection
 }
 
 export type ServerOptions = {
