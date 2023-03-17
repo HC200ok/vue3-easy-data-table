@@ -13,7 +13,7 @@ export function getItemValue(column: string, item: Item) {
     }
     return content;
   }
-  return item[column];
+  return item[column] ?? '';
 }
 
 export function generateColumnContent(column: string, item: Item) {
