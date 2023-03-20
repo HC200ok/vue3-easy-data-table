@@ -147,14 +147,9 @@
                 getTextAlign(column)
                 ]"
                 @click="column === 'expand' ? updateExpandingItemIndexList(index + prevPageEndIndex, item, $event) : null"
-              >
+              > 
                 <slot
-                  v-if="slots['item']"
-                  name="item"
-                  v-bind="{column, item}"
-                />
-                <slot
-                  v-else-if="slots[`item-${column}`]"
+                  v-if="slots[`item-${column}`]"
                   :name="`item-${column}`"
                   v-bind="item"
                 />
@@ -163,7 +158,6 @@
                   :name="`item-${column.toLowerCase()}`"
                   v-bind="item"
                 />
-
                 <template v-else-if="column === 'expand'">
                   <i
                     class="expand-icon"
@@ -176,6 +170,11 @@
                     @change="toggleSelectItem(item)"
                   />
                 </template>
+                <slot
+                  v-else-if="slots['item']"
+                  name="item"
+                  v-bind="{column, item}"
+                />
                 <template v-else>
                   {{ generateColumnContent(column, item) }}
                 </template>

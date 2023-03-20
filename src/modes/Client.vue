@@ -89,11 +89,11 @@
         </div>
       </template>
 
-      <template #item="{column, item}">
+      <!-- <template #item="{column, item}">
         <div style="padding: 15px">
           column: {{ column }} item: {{ item }}
         </div>
-      </template>
+      </template> -->
 
       <!-- <template #item-lastAttended="item">
         <div style="padding: 15px">
