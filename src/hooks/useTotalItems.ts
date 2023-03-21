@@ -137,6 +137,7 @@ export default function useTotalItems(
 
   const toggleSelectAll = (isChecked: boolean): void => {
     selectItemsComputed.value = isChecked ? totalItems.value : [];
+    if (isChecked) emits('selectAll');
   };
 
   const toggleSelectItem = (item: Item):void => {

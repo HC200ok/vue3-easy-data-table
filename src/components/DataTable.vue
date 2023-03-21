@@ -410,6 +410,7 @@ const emits = defineEmits([
   'update:serverOptions',
   'updatePageItems',
   'updateTotalItems',
+  'selectAll'
 ]);
 
 const isMultipleSelectable = computed((): boolean => itemsSelected.value !== null);

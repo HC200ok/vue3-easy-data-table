@@ -26,6 +26,7 @@
       border-cell
       multi-sort
       @update-sort="updateSort"
+      @select-all="selectAll"
     >
       <template #expand="item">
         <div style="padding: 15px">
@@ -134,6 +135,10 @@ export default defineComponent({
 
     const loading = ref(false);
 
+    const selectAll = () => {
+      console.log("sssss")
+    }
+
     const loadFromServer = async () => {
       loading.value = true;
       const {
@@ -215,6 +220,7 @@ export default defineComponent({
       updatePage,
       bodyRowClassName,
       updateSort,
+      selectAll,
     };
   },
 
