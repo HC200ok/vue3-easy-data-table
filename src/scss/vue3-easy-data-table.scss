@@ -193,11 +193,11 @@ table {
   color: var(--easy-table-body-row-font-color);
   font-size: var(--easy-table-body-row-font-size);
 
-  &:nth-child(-n+3) {
-    td {
-      border-bottom: var(--easy-table-row-border)!important;
-    }
-  }
+  // &:nth-child(-n+3) {
+  //   td {
+  //     border-bottom: var(--easy-table-row-border)!important;
+  //   }
+  // }
   &:last-child {
     td {
       border-bottom: none;
