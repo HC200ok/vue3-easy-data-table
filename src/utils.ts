@@ -11,7 +11,7 @@ export function getItemValue(column: string, item: Item) {
       i += 1;
       if (content === undefined) break;
     }
-    return content;
+    return content ?? '';
   }
   return item[column] ?? '';
 }
