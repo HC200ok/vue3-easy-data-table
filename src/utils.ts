@@ -2,16 +2,24 @@ import type { Item } from './types/main';
 
 export function getItemValue(column: string, item: Item) {
   if (column.includes('.')) {
-    let content: any = '';
     const keys = column.split('.');
     const { length } = keys;
+
+    let content;
     let i = 0;
+
     while (i < length) {
-      content = (i === 0 ? item[keys[i]] : content[keys[i]]);
+      if (i === 0) {
+        content = item[keys[0]];
+      } else if (content && typeof content === 'object') {
+        content = content[keys[i]];
+      } else {
+        content = '';
+        break;
+      }
       i += 1;
-      if (content === undefined) break;
     }
-    return content;
+    return content ?? '';
   }
   return item[column] ?? '';
 }

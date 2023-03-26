@@ -38,7 +38,6 @@
       multi-sort
       body-text-direction="left"
       header-text-direction="left"
-      :filter-options="filterOptions"
       click-event-type="double"
       @select-row="showItem"
       @deselect-row="deselectRow"
@@ -46,7 +45,7 @@
       @update-total-items="updateTotalItems"
       show-index-symbol="$"
     >
-     <template #customize-headers>
+     <!-- <template #customize-headers>
         <thead class="my-static-header">
           <tr>
             <th colspan="3" rowspan="2"></th>
@@ -64,7 +63,7 @@
             <th>country</th>
           </tr>
         </thead>
-      </template>
+      </template> -->
       <template #expand="item">
         <div style="padding: 15px">
           {{ item.name }} won championships
@@ -166,25 +165,25 @@ const updateTotalItems = (items: Item[]) => {
   console.log(JSON.stringify(items));
 };
 
-// const items = ref<Item[]>([
-//   { name: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
-//   { name: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
-//   { name: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
-//   { name: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
-//   { name: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
-//   { name: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
-//   { name: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
-//   { name: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
-//   { name: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
-//   { name: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
-//   { name: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
-//   { name: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
-//   { name: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
-//   { name: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
-//   { name: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
-// ]);
+const items = ref<Item[]>([
+  { name: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
+  { name: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
+  { name: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
+  { name: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
+  { name: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
+  { name: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
+  { name: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},
+  { name: "Kevin Durant", firstName: "BKN", number: 7, position: 'F', indicator: {"height": '6-10', "weight": 240}, lastAttended: "Texas-Austin", country: "USA"},
+  { name: "Lebron James", firstName: "LAL", number: 7, position: 'F', indicator: {"height": '6-9', "weight": 185}, lastAttended: "St. Vincent-St. Mary HS (OH)", country: "USA"},
+  { name: "Giannis Antetokounmpo", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 242}, lastAttended: "Filathlitikos", country: "Greece"},
+  { name: "HC", firstName: "MIL", number: 34, position: 'F', indicator: {"height": '6-11', "weight": 243}, lastAttended: "Filathlitikos", country: "Greece"},
+]);
 
-const items = ref<Item[]>(mockClientItems());
+// const items = ref<Item[]>(mockClientItems());
 
 // const headers: Header[] = [
 //   { text: 'Name', value: 'name'},
@@ -220,15 +219,15 @@ const favouriteSportCriteria = ref('all');
 const showNameFilter = ref(false);
 const nameCriteria = ref('');
 
-const filterOptions = computed((): FilterOption[] => {
-  const filterOptionsArray: FilterOption[] = [];
-  filterOptionsArray.push({
-    field: 'name',
-    criteria: ['name-1', 'name-2'],
-    comparison: 'in',
-  });
-  return filterOptionsArray;
-});
+// const filterOptions = computed((): FilterOption[] => {
+//   const filterOptionsArray: FilterOption[] = [];
+//   filterOptionsArray.push({
+//     field: 'name',
+//     criteria: ['name-1', 'name-2'],
+//     comparison: 'in',
+//   });
+//   return filterOptionsArray;
+// });
 
 const bodyRowClassNameFunction: BodyRowClassNameFunction = (item: Item, index: number): string => (index === 0 ? 'first-row test-row' : '');
 const bodyExpandRowClassNameFunction: BodyRowClassNameFunction = (item: Item, index: number): string => 'expand-row';

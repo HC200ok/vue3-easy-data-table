@@ -1,7 +1,7 @@
 <template>
-  <ServerSideMode />
+  <!-- <ServerSideMode /> -->
   <br><br>
-  <!-- <ClientMode /> -->
+  <ClientMode />
   <br><br>
   <!-- <ExpandLoading/> -->
 </template>
