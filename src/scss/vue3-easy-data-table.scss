@@ -2,12 +2,17 @@
   border: var(--easy-table-border);
   position: relative;
   box-sizing: border-box;
+  overflow: hidden; // responsive any height (@myso-kr)
+  display: flex; // responsive any height (@myso-kr)
+  flex-direction: column; // responsive any height (@myso-kr)
 }
 .vue3-easy-data-table__main {
   border: none;
   width: 100%;
   overflow: auto;
   background-color: var(--easy-table-body-row-background-color);
+  flex-grow: 1; // responsive any height (@myso-kr)
+  flex: 1 1 0%; // responsive any height (@myso-kr)
 
   &::-webkit-scrollbar-track
   {
