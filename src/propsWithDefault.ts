@@ -81,7 +81,7 @@ export default {
   },
   loading: {
     type: Boolean,
-    deault: false,
+    default: false,
   },
   rowsPerPage: {
     type: Number,
