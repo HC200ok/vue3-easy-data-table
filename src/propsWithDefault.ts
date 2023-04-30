@@ -194,5 +194,9 @@ export default {
   showIndexSymbol: {
     type: String,
     default: '#',
+  },
+  preventContextMenuRow: {
+    type: Boolean,
+    default: true
   }
 };
