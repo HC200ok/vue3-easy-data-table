@@ -133,7 +133,7 @@
                 clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
               }"
               @dblclick="($event) => {clickRow(item, 'double', $event)}"
-              @contextmenu.prevent="($event) => {emits('contextmenuRow', item, $event)}"
+              @contextmenu="($event) => {contextMenuRow(item, $event)}"
             >
               <td
                 v-for="(column, i) in headerColumns"
@@ -369,6 +369,7 @@ const {
   themeColor,
   rowsOfPageSeparatorMessage,
   showIndexSymbol,
+  preventContextMenuRow
 } = toRefs(props);
 
 // style related computed variables
@@ -553,6 +554,11 @@ const {
   showIndex,
   emits,
 );
+
+const contextMenuRow = (item: Item, $event: MouseEvent) => {
+  if (preventContextMenuRow.value) $event.preventDefault();
+  emits('contextmenuRow', item, $event);
+}
 
 // template style generation function
 const getColStyle = (header: HeaderForRender): string | undefined => {
