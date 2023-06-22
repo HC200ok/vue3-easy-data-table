@@ -4,7 +4,10 @@
     :class="{'first-page': isFirstPage}"
     @click="emits('clickPrevPage')"
   >
-    <span class="arrow arrow-right"></span>
+    <span 
+    class="arrow"
+    :class="`arrow-${rtl? 'left' : 'right'}`"
+    ></span>
   </div>
   <slot
     v-if="slots.buttonsPagination"
@@ -15,7 +18,9 @@
     :class="{'last-page': isLastPage}"
     @click="emits('clickNextPage')"
   >
-    <span class="arrow arrow-left"></span>
+    <span class="arrow" 
+    :class="`arrow-${rtl? 'right' : 'left'}`"
+    ></span>
   </div>
 </template>
 
@@ -25,6 +30,7 @@ import { useSlots } from 'vue';
 defineProps({
   isFirstPage: { type: Boolean, required: false },
   isLastPage: { type: Boolean, required: false },
+  rtl: { type: Boolean, required: false },
 });
 
 const emits = defineEmits(['clickPrevPage', 'clickNextPage']);
