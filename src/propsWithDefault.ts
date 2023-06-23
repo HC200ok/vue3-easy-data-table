@@ -179,6 +179,10 @@ export default {
     type: String,
     default: 'of',
   },
+  RTL: {
+    type: Boolean,
+    default: false
+  },
   clickEventType: {
     type: String as PropType<ClickEventType>,
     default: 'single',

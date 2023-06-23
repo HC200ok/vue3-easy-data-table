@@ -2,7 +2,7 @@
   <div
     ref="dataTable"
     class="vue3-easy-data-table"
-    :class="[tableClassName]"
+    :class="[tableClassName, {RTL}]"
   >
     <div
       ref="tableBody"
@@ -13,7 +13,7 @@
         'show-shadow': showShadow,
         'table-fixed': fixedHeaders.length,
         'hoverable': !noHover,
-        'border-cell': borderCell,
+        'border-cell': borderCell
       }"
     >
       <table :id="tableNodeId">
@@ -277,6 +277,7 @@
         :is-last-page="isLastPage"
         @click-next-page="nextPage"
         @click-prev-page="prevPage"
+        RTL
       >
         <template
           v-if="buttonsPagination"
@@ -368,6 +369,7 @@ const {
   tableMinHeight,
   themeColor,
   rowsOfPageSeparatorMessage,
+  RTL,
   showIndexSymbol,
   preventContextMenuRow
 } = toRefs(props);
