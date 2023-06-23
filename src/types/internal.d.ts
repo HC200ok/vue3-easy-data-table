@@ -26,4 +26,4 @@ export type ClickEventType = 'single' | 'double'
 export type MultipleSelectStatus = 'allSelected' | 'noneSelected' | 'partSelected'
 
 // eslint-disable-next-line max-len
-export type EmitsEventName = 'clickRow' | 'selectRow' | 'deselectRow' | 'expandRow' | 'updateSort' | 'update:itemsSelected' | 'update:serverOptions' | 'updateFilter' | 'updatePageItems' | 'updateTotalItems' | 'selectAll'
+export type EmitsEventName = 'clickRow' | 'selectRow' | 'deselectRow' | 'expandRow' | 'updateSort' | 'update:itemsSelected' | 'update:serverOptions' | 'updateFilter' | 'updatePageItems' | 'updateTotalItems' | 'selectAll' | 'update:itemsExpanded'
