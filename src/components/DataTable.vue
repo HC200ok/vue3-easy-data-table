@@ -369,6 +369,8 @@ const {
   themeColor,
   rowsOfPageSeparatorMessage,
   showIndexSymbol,
+  itemsExpanded,
+  itemsKey,
   preventContextMenuRow
 } = toRefs(props);
 
@@ -411,7 +413,8 @@ const emits = defineEmits([
   'update:serverOptions',
   'updatePageItems',
   'updateTotalItems',
-  'selectAll'
+  'selectAll',
+  'update:itemsExpanded',
 ]);
 
 const isMultipleSelectable = computed((): boolean => itemsSelected.value !== null);
@@ -485,6 +488,7 @@ const {
   serverItemsLength,
   multiSort,
   emits,
+  itemsKey,
 );
 
 const {
@@ -521,6 +525,7 @@ const {
   showIndex,
   totalItems,
   totalItemsLength,
+  itemsKey,
 );
 
 const prevPageEndIndex = computed(() => {
@@ -536,6 +541,8 @@ const {
   pageItems,
   prevPageEndIndex,
   emits,
+  itemsExpanded,
+  itemsKey,
 );
 
 const {

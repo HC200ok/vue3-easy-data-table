@@ -1,9 +1,9 @@
 import {
   Ref, computed, ComputedRef, watch,
 } from 'vue';
-import type { Item, FilterOption } from '../types/main';
+import type { Item, FilterOption, ItemKey } from '../types/main';
 import type { ClientSortOptions, EmitsEventName } from '../types/internal';
-import { getItemValue } from '../utils';
+import { areItemsEqual, getItemValue } from '../utils';
 
 export default function useTotalItems(
   clientSortOptions: Ref<ClientSortOptions | null>,
@@ -16,6 +16,7 @@ export default function useTotalItems(
   serverItemsLength: Ref<number>,
   multiSort: Ref<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
+  itemsKey: Ref<ItemKey>
 ) {
   const generateSearchingTarget = (item: Item): string => {
     if (typeof searchField.value === 'string' && searchField.value !== '') return getItemValue(searchField.value, item);
@@ -152,8 +153,8 @@ export default function useTotalItems(
       selectItemsComputed.value = selectItemsArr;
       emits('selectRow', item);
     } else {
-      selectItemsComputed.value = selectItemsComputed.value.filter((selectedItem) => JSON.stringify(selectedItem)
-        !== JSON.stringify(item));
+      selectItemsComputed.value = selectItemsComputed.value
+        .filter((selectedItem) => !areItemsEqual(selectedItem, item, itemsKey.value));
       emits('deselectRow', item);
     }
   };

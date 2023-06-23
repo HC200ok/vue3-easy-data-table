@@ -3,6 +3,7 @@ import type {
   SortType, Item, ServerOptions, FilterOption,
   HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
   TextDirection,
+  ItemKeyFn,
 } from './types/main';
 import type { ClickEventType } from './types/internal';
 
@@ -195,8 +196,20 @@ export default {
     type: String,
     default: '#',
   },
+  itemsExpanded: {
+    type: Array as PropType<Item[]>,
+    default: [],
+  },
+  /** String object key('id' it's the most common)
+   * or Function that returns a unique value for a row.
+   * It improves the tracking of expanded and checked rows.
+  */
+  itemsKey: {
+    type: [Function as PropType<ItemKeyFn>, String],
+    default: undefined,
+  },
   preventContextMenuRow: {
     type: Boolean,
     default: true
-  }
+  },
 };
