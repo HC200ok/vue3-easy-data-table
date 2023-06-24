@@ -186,6 +186,9 @@ const themeColor = inject('themeColor');
     &:last-of-type {
       border-radius: 0 4px 4px 0;
     }
+    &:only-of-type {
+      border-radius: 4px;
+    }
     &.button {
       &.active {
         background-color: v-bind(themeColor);
