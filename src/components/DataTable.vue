@@ -277,7 +277,7 @@
         :is-last-page="isLastPage"
         @click-next-page="nextPage"
         @click-prev-page="prevPage"
-        RTL
+        :RTL="RTL"
       >
         <template
           v-if="buttonsPagination"
