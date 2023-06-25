@@ -239,6 +239,9 @@ table {
     padding: 3px;
     transform: rotate(-45deg);
     transition: 0.2s;
+    &:dir(rtl) {
+      transform: rotate(135deg);
+    }
     &.expanding {
       transform: rotate(45deg);
     }
