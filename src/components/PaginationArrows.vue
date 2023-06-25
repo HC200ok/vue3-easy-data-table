@@ -5,8 +5,7 @@
     @click="emits('clickPrevPage')"
   >
     <span 
-    class="arrow"
-    :class="`arrow-${RTL? 'left' : 'right'}`"
+    class="arrow arrow-prev"
     ></span>
   </div>
   <slot
@@ -18,8 +17,7 @@
     :class="{'last-page': isLastPage}"
     @click="emits('clickNextPage')"
   >
-    <span class="arrow" 
-    :class="`arrow-${RTL? 'right' : 'left'}`"
+    <span class="arrow arrow-next" 
     ></span>
   </div>
 </template>
@@ -30,7 +28,6 @@ import { useSlots } from 'vue';
 defineProps({
   isFirstPage: { type: Boolean, required: false },
   isLastPage: { type: Boolean, required: false },
-  RTL: { type: Boolean, required: false },
 });
 
 const emits = defineEmits(['clickPrevPage', 'clickNextPage']);
@@ -47,11 +44,13 @@ const slots = useSlots();
       height: 8px;
       border-top: 2px solid #000;
       border-left: 2px solid #000;
-      &.arrow-left {
-        transform: rotate(135deg);
-      }
-      &.arrow-right {
+      &.arrow-prev {
         transform: rotate(-45deg);
+        &:dir(rtl) {transform: rotate(135deg);}
+      }
+      &.arrow-next {
+        transform: rotate(135deg);
+        &:dir(rtl) {transform: rotate(-45deg);}
       }
     }
   }

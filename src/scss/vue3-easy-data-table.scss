@@ -2,10 +2,6 @@
   border: var(--easy-table-border);
   position: relative;
   box-sizing: border-box;
-
-  &.RTL {direction: rtl;
-    .vue3-easy-data-table__body td .expand-icon:not(.expanding) {transform: rotate(135deg);}
-  }
 }
 .vue3-easy-data-table__main {
   border: none;
