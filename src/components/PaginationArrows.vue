@@ -4,7 +4,9 @@
     :class="{'first-page': isFirstPage}"
     @click="emits('clickPrevPage')"
   >
-    <span class="arrow arrow-right"></span>
+    <span 
+    class="arrow arrow-prev"
+    ></span>
   </div>
   <slot
     v-if="slots.buttonsPagination"
@@ -15,7 +17,8 @@
     :class="{'last-page': isLastPage}"
     @click="emits('clickNextPage')"
   >
-    <span class="arrow arrow-left"></span>
+    <span class="arrow arrow-next" 
+    ></span>
   </div>
 </template>
 
@@ -41,11 +44,13 @@ const slots = useSlots();
       height: 8px;
       border-top: 2px solid #000;
       border-left: 2px solid #000;
-      &.arrow-left {
-        transform: rotate(135deg);
-      }
-      &.arrow-right {
+      &.arrow-prev {
         transform: rotate(-45deg);
+        &:dir(rtl) {transform: rotate(135deg);}
+      }
+      &.arrow-next {
+        transform: rotate(135deg);
+        &:dir(rtl) {transform: rotate(-45deg);}
       }
     }
   }

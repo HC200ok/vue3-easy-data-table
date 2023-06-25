@@ -13,7 +13,7 @@
         'show-shadow': showShadow,
         'table-fixed': fixedHeaders.length,
         'hoverable': !noHover,
-        'border-cell': borderCell,
+        'border-cell': borderCell
       }"
     >
       <table :id="tableNodeId">

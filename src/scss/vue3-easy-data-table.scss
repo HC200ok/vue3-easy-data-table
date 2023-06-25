@@ -218,7 +218,7 @@ table {
   border-bottom: var(--easy-table-row-border);
 
   &.direction-left {
-    text-align: left;
+    text-align: start;
   }
 
   &.direction-center {
@@ -226,7 +226,7 @@ table {
   }
 
   &.direction-right {
-    text-align: right;
+    text-align: end;
   }
 
   position: relative;
@@ -239,6 +239,9 @@ table {
     padding: 3px;
     transform: rotate(-45deg);
     transition: 0.2s;
+    &:dir(rtl) {
+      transform: rotate(135deg);
+    }
     &.expanding {
       transform: rotate(45deg);
     }

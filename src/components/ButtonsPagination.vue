@@ -177,26 +177,29 @@ const themeColor = inject('themeColor');
     line-height: calc(var(--easy-table-footer-font-size) * 1.8);
     border-top: var(--easy-table-buttons-pagination-border);
     border-bottom: var(--easy-table-buttons-pagination-border);
-    border-right: var(--easy-table-buttons-pagination-border);
+    border-inline-end: var(--easy-table-buttons-pagination-border);
     text-align: center;
     &:first-of-type  {
-      border-left: var(--easy-table-buttons-pagination-border);
-      border-top-left-radius: 4px;
-      border-bottom-left-radius: 4px;
+      border-inline-start: var(--easy-table-buttons-pagination-border);
+      border-end-start-radius: 4px;
+      border-start-start-radius: 4px;
     }
     &:last-of-type {
-      border-top-right-radius: 4px;
-      border-bottom-right-radius: 4px;
+      border-end-end-radius: 4px;
+      border-start-end-radius: 4px;
+    }
+    &:only-of-type {
+      border-radius: 4px;
     }
     &.button {
       &.active {
         background-color: v-bind(themeColor);
-        border-left: var(--easy-table-buttons-pagination-border);
+        border-inline-start: var(--easy-table-buttons-pagination-border);
         border-color: v-bind(themeColor)!important;
         color: #fff;
       }
       &.active-prev {
-        border-right: none;
+        border-inline-end: none;
       }
     }
   }
