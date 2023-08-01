@@ -132,6 +132,9 @@
                 clickRow(item, 'single', $event);
                 clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
               }"
+              @mouseover="($event) => {
+                hoverRow(item, $event)
+              }"
               @dblclick="($event) => {clickRow(item, 'double', $event)}"
               @contextmenu="($event) => {contextMenuRow(item, $event)}"
             >
@@ -318,10 +321,10 @@ import useTotalItems from '../hooks/useTotalItems';
 
 import type { Header, Item } from '../types/main';
 import type { HeaderForRender } from '../types/internal';
-
 // eslint-disable-next-line import/extensions
 import { generateColumnContent } from '../utils';
 import propsWithDefault from '../propsWithDefault';
+import useHoverRow from '../hooks/useHoverRow';
 
 const props = defineProps({
   ...propsWithDefault,
@@ -401,6 +404,7 @@ onMounted(() => {
 
 const emits = defineEmits([
   'clickRow',
+  'hoverRow',
   'contextmenuRow',
   'selectRow',
   'deselectRow',
@@ -551,6 +555,13 @@ const {
 } = useClickRow(
   clickEventType,
   isMultipleSelectable,
+  showIndex,
+  emits,
+);
+
+const {
+  hoverRow,
+} = useHoverRow(
   showIndex,
   emits,
 );
