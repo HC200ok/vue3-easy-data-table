@@ -68,7 +68,8 @@ export function getSlotRenderFunctions(
             } else {
               ;(vnode as any).appContext = currentInstance.appContext;
               render(vnode, $tmpDiv);
-              return vnode.el?.innerText
+
+              return vnode.el?.innerText ?? vnode.el?.wholeText
             }
           } catch(err) {
             return ''

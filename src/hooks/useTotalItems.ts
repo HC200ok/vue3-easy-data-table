@@ -30,7 +30,7 @@ export default function useTotalItems(
     } 
 
     return Object.entries(item)
-      .map(([field, value]) => slotsRenders.get(`item-${field}`)?.(item) ?? value[field])
+      .map(([field, value]) => slotsRenders.get(`item-${field}`)?.(item) ?? value)
       .join(' ');
   };
 
