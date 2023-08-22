@@ -3,7 +3,7 @@ import {
 } from 'vue';
 import type { Item, FilterOption } from '../types/main';
 import type { ClientSortOptions, EmitsEventName } from '../types/internal';
-import { getItemValue } from '../utils';
+import { getItemValue, createRegExpSafelly } from '../utils';
 
 export default function useTotalItems(
   clientSortOptions: Ref<ClientSortOptions | null>,
@@ -41,7 +41,7 @@ export default function useTotalItems(
     ( searchValue ) => {
       // searching feature is not available in server-side mode
       if (!isServerSideMode.value && searchValue !== '') {
-        const regex = new RegExp(searchValue, 'i');
+        const regex = createRegExpSafelly(searchValue, 'i');
         itemsSearching.value = items.value.filter((item) => regex.test(generateSearchingTarget(item)));
         return
       }
@@ -51,42 +51,51 @@ export default function useTotalItems(
   )
 
   // items filtering
-  const itemsFiltering = computed((): Item[] => {
-    let itemsFiltered = [...itemsSearching.value];
-    if (filterOptions.value) {
-      filterOptions.value.forEach((option: FilterOption) => {
-        itemsFiltered = itemsFiltered.filter((item) => {
-          const { field, comparison, criteria } = option;
-          if (typeof comparison === 'function') {
-            return comparison(getItemValue(field, item), criteria as string);
-          }
-          const itemValue = getItemValue(field, item);
-          switch (comparison) {
-            case '=':
-              return itemValue === criteria;
-            case '!=':
-              return itemValue !== criteria;
-            case '>':
-              return itemValue > criteria;
-            case '<':
-              return itemValue < criteria;
-            case '<=':
-              return itemValue <= criteria;
-            case '>=':
-              return itemValue >= criteria;
-            case 'between':
-              return itemValue >= Math.min(...criteria) && itemValue <= Math.max(...criteria);
-            case 'in':
-              return criteria.includes(itemValue);
-            default:
-              return itemValue === criteria;
-          }
+  const itemsFiltering = ref<Item[]>([])
+  watch(
+    () => [itemsSearching.value, filterOptions.value] as [Item[], FilterOption[]],
+    ( [itemsSearching, filterOptions] ) => {
+      let itemsFiltered = [...itemsSearching];
+      if (filterOptions) {
+        filterOptions.forEach((option: FilterOption) => {
+          itemsFiltered = itemsFiltered.filter((item) => {
+            const { field, comparison, criteria } = option;
+            const itemValue = getItemFieldValue(field as string, item);
+            
+            if (typeof comparison === 'function') {
+              const creteriaRegExp = createRegExpSafelly(criteria as string, 'i')
+              return comparison(itemValue, criteria, creteriaRegExp);
+            }
+  
+            switch (comparison) {
+              case '=':
+                return itemValue === criteria;
+              case '!=':
+                return itemValue !== criteria;
+              case '>':
+                return itemValue > criteria;
+              case '<':
+                return itemValue < criteria;
+              case '<=':
+                return itemValue <= criteria;
+              case '>=':
+                return itemValue >= criteria;
+              case 'between':
+                return itemValue >= Math.min(...criteria) && +itemValue <= Math.max(...criteria);
+              case 'in':
+                return (criteria as any).includes(itemValue );
+              default:
+                return itemValue === criteria;
+            }
+          });
         });
-      });
-      return itemsFiltered;
-    }
-    return itemsSearching.value;
-  });
+        itemsFiltering.value = itemsFiltered;
+        return
+      }
+       itemsFiltering.value = itemsSearching;
+    },
+    { immediate: true }
+  )
 
   watch(itemsFiltering, (newVal) => {
     if (filterOptions.value) {

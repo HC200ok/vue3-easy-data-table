@@ -37,6 +37,7 @@
       @update-filter="updateFilter"
       multi-sort
       body-text-direction="left"
+      :filter-options="filterOptions"
       header-text-direction="left"
       click-event-type="double"
       @select-row="showItem"
@@ -76,7 +77,7 @@
             class="filter-icon"
             @click.stop="showNameFilter=!showNameFilter"
           >
-            icon
+            &lt;ICON>
           </span>
           {{ header.text }}
           <div
@@ -84,6 +85,24 @@
             class="filter-menu filter-age-menu"
           >
             <input v-model="nameCriteria">
+          </div>
+        </div>
+      </template>
+
+      <template #header-country="header">
+        <div class="filter-column">
+          <span
+            class="filter-icon"
+            @click.stop="showCountryFilter=!showCountryFilter"
+          >
+            &lt;ICON>
+          </span>
+          {{ header.text }}
+          <div
+            v-if="showCountryFilter"
+            class="filter-menu filter-age-menu"
+          >
+            <input v-model="countryCriteria">
           </div>
         </div>
       </template>
@@ -111,7 +130,11 @@
       </template> -->
 
       <template #item-country="item">
-        {{ countries.find( country => country.id === item.country )?.name ?? null }}
+        <span style="color: red">
+          <div>
+            {{ countries.find( country => country.id === item.country )?.name ?? null }}
+          </div>
+        </span>
       </template>
     </DataTable>
   </div>
@@ -218,7 +241,7 @@ const deselectRow = (item: ClickRowArgument) => {
 };
 
 const updateSort = (sortOption: UpdateSortArgument) => {
-  // console.log(sortOption);
+  console.log(sortOption);
 };
 // filtering
 
@@ -228,17 +251,26 @@ const favouriteSportCriteria = ref('all');
 
 const showNameFilter = ref(false);
 const nameCriteria = ref('');
+const showCountryFilter = ref(false)
+const countryCriteria = ref('')
 
-// const filterOptions = computed((): FilterOption[] => {
-//   const filterOptionsArray: FilterOption[] = [];
-//   filterOptionsArray.push({
-//     field: 'name',
-//     criteria: nameCriteria.value,
-//     comparison: (value, criteria): boolean => (value != null && criteria != null &&
-//       typeof value === 'string' && value.includes(`${criteria}`)),
-//   });
-//   return filterOptionsArray;
-// });
+const filterOptions = computed((): FilterOption[] => {
+  const filterOptionsArray: FilterOption[] = [];
+  filterOptionsArray.push({
+    field: 'name',
+    criteria: nameCriteria.value,
+    comparison: (value, criteria, criteriaRegExp): boolean => (value != null && criteria != null &&
+      typeof value === 'string' && criteriaRegExp.test(value)),
+  });
+  filterOptionsArray.push({
+    field: 'country',
+    criteria: countryCriteria.value,
+    comparison: (value, criteria, criteriaRegExp ): boolean => {
+      return typeof value === 'string' && criteriaRegExp.test(value)
+    }
+  });
+  return filterOptionsArray;
+});
 
 const bodyRowClassNameFunction: BodyRowClassNameFunction = (item: Item, index: number): string => (index === 0 ? 'first-row test-row' : '');
 const bodyExpandRowClassNameFunction: BodyRowClassNameFunction = (item: Item, index: number): string => 'expand-row';

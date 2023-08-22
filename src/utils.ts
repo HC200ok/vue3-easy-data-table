@@ -6,6 +6,10 @@ import {
 } from 'vue';
 import type { Item } from './types/main';
 
+export const createRegExpSafelly = ( regExpPattern: string, flags?: string ) => new RegExp(
+  regExpPattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+  flags)
+
 export function getItemValue(column: string, item: Item) {
   if (column.includes('.')) {
     const keys = column.split('.');
@@ -57,14 +61,27 @@ export function getSlotRenderFunctions(
       let renderedText = '';
       for (let i = 0; i < vnodes.length; i += 1) {
         const vnode = vnodes[i];
-        (vnode as any).appContext = currentInstance.appContext;
-        render(vnode, $tmpDiv);
-        renderedText += $tmpDiv.innerText;
+         renderedText += (() => {
+          try {
+            if(vnode.type.toString() === Symbol('Text').toString()) {
+              return vnode.children
+            } else {
+              ;(vnode as any).appContext = currentInstance.appContext;
+              render(vnode, $tmpDiv);
+              return vnode.el?.innerText
+            }
+          } catch(err) {
+            return ''
+          } 
+        })()
+
       }
 
       return renderedText;
     };
   };
+
+
 
   const slotsNames = Object.keys(slots);
   for (let i = 0; i < slotsNames.length; i += 1) {
