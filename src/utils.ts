@@ -35,6 +35,7 @@ export function generateColumnContent(column: string, item: Item) {
   return Array.isArray(content) ? content.join(',') : content;
 }
 
+const $tmpDiv = document.createElement('div');
 export function getSlotRenderFunctions(
   slots: ReturnType<typeof useSlots>,
   currentInstance: ReturnType<typeof getCurrentInstance>,
@@ -53,7 +54,6 @@ export function getSlotRenderFunctions(
 
       const vnodes = fieldSlot(item);
 
-      const $tmpDiv = document.createElement('div');
       let renderedText = '';
       for (let i = 0; i < vnodes.length; i += 1) {
         const vnode = vnodes[i];

@@ -155,18 +155,18 @@ const headers: Header[] = [
 // const headers: Header[] = headersMocked;
 
 const updateFilter = (items: Item[]) => {
-  console.log('filter items');
-  console.log(JSON.stringify(items));
+  // console.log('filter items');
+  // console.log(JSON.stringify(items));
 };
 
 const updateItems = (items: Item[]) => {
-  console.log('page items');
-  console.log(JSON.stringify(items));
+  // console.log('page items');
+  // console.log(JSON.stringify(items));
 };
 
 const updateTotalItems = (items: Item[]) => {
-  console.log('total items');
-  console.log(JSON.stringify(items));
+  // console.log('total items');
+  // console.log(JSON.stringify(items));
 };
 
 // Simulate decomposed data
@@ -208,17 +208,17 @@ const items = ref<Item[]>([
 const itemsSelected = ref<Item[]>([items.value[1]]);
 
 const showItem = (item: ClickRowArgument) => {
-  console.log('item 111');
-  console.log(JSON.stringify(item));
+  // console.log('item 111');
+  // console.log(JSON.stringify(item));
 };
 
 const deselectRow = (item: ClickRowArgument) => {
-  console.log('deselectRow');
-  console.log(JSON.stringify(item));
+  // console.log('deselectRow');
+  // console.log(JSON.stringify(item));
 };
 
 const updateSort = (sortOption: UpdateSortArgument) => {
-  console.log(sortOption);
+  // console.log(sortOption);
 };
 // filtering
 
@@ -233,8 +233,9 @@ const nameCriteria = ref('');
 //   const filterOptionsArray: FilterOption[] = [];
 //   filterOptionsArray.push({
 //     field: 'name',
-//     criteria: ['name-1', 'name-2'],
-//     comparison: 'in',
+//     criteria: nameCriteria.value,
+//     comparison: (value, criteria): boolean => (value != null && criteria != null &&
+//       typeof value === 'string' && value.includes(`${criteria}`)),
 //   });
 //   return filterOptionsArray;
 // });

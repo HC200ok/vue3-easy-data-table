@@ -1,5 +1,5 @@
 import {
-  Ref, computed, ComputedRef, watch,
+  Ref, computed, ComputedRef, watch, ref
 } from 'vue';
 import type { Item, FilterOption } from '../types/main';
 import type { ClientSortOptions, EmitsEventName } from '../types/internal';
@@ -25,11 +25,9 @@ export default function useTotalItems(
     if (typeof searchField.value === 'string' && searchField.value !== '') return getItemFieldValue(searchField.value, item);
     if (Array.isArray(searchField.value)) {
       let searchString = '';
-      searchField.value.forEach((field) => {
-        searchString += getItemFieldValue(field, item);
-      });
+      searchField.value.forEach((field) => searchString += getItemFieldValue(field, item) );
       return searchString;
-    }
+    } 
 
     return Object.entries(item)
       .map(([field, value]) => slotsRenders.get(`item-${field}`)?.(item) ?? value[field])
@@ -37,14 +35,21 @@ export default function useTotalItems(
   };
 
   // items searching
-  const itemsSearching = computed((): Item[] => {
-    // searching feature is not available in server-side mode
-    if (!isServerSideMode.value && searchValue.value !== '') {
-      const regex = new RegExp(searchValue.value, 'i');
-      return items.value.filter((item) => regex.test(generateSearchingTarget(item)));
-    }
-    return items.value;
-  });
+  const itemsSearching = ref<Item[]>([])
+  watch(
+    () => searchValue.value,
+    ( searchValue ) => {
+      // searching feature is not available in server-side mode
+      if (!isServerSideMode.value && searchValue !== '') {
+        const regex = new RegExp(searchValue, 'i');
+        itemsSearching.value = items.value.filter((item) => regex.test(generateSearchingTarget(item)));
+        return
+      }
+      itemsSearching.value = items.value;
+    },
+    { immediate: true }
+  )
+
   // items filtering
   const itemsFiltering = computed((): Item[] => {
     let itemsFiltered = [...itemsSearching.value];
