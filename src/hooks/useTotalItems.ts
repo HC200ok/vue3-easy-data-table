@@ -34,11 +34,12 @@ export default function useTotalItems(
       .join(' ');
   };
 
+
   // items searching
   const itemsSearching = ref<Item[]>([])
   watch(
-    () => searchValue.value,
-    ( searchValue ) => {
+    () => [searchValue.value, items.value] as [ string, Item[] ],
+    ( [ searchValue ] ) => {
       // searching feature is not available in server-side mode
       if (!isServerSideMode.value && searchValue !== '') {
         const regex = createRegExpSafelly(searchValue, 'i');
