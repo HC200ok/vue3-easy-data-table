@@ -73,7 +73,7 @@
                   v-else-if="slots['header']"
                   name="header"
                   v-bind="header"
-                />   
+                />
                 <span
                   v-else
                   class="header-text"
@@ -145,7 +145,7 @@
                 // eslint-disable-next-line max-len
                 }, typeof bodyItemClassName === 'string' ? bodyItemClassName : bodyItemClassName(column, index + 1), `direction-${bodyTextDirection}`]"
                 @click="column === 'expand' ? updateExpandingItemIndexList(index + prevPageEndIndex, item, $event) : null"
-              > 
+              >
                 <slot
                   v-if="slots[`item-${column}`]"
                   :name="`item-${column}`"
@@ -295,7 +295,7 @@
 
 <script setup lang="ts">
 import {
-  useSlots, computed, toRefs, ref, watch, provide, onMounted, PropType,
+  useSlots, computed, toRefs, ref, watch, provide, onMounted, PropType, getCurrentScope, getCurrentInstance,
 } from 'vue';
 
 import MultipleSelectCheckBox from './MultipleSelectCheckBox.vue';
@@ -320,7 +320,7 @@ import type { Header, Item } from '../types/main';
 import type { HeaderForRender } from '../types/internal';
 
 // eslint-disable-next-line import/extensions
-import { generateColumnContent } from '../utils';
+import { generateColumnContent, getSlotRenderFunctions } from '../utils';
 import propsWithDefault from '../propsWithDefault';
 
 const props = defineProps({
@@ -369,7 +369,7 @@ const {
   themeColor,
   rowsOfPageSeparatorMessage,
   showIndexSymbol,
-  preventContextMenuRow
+  preventContextMenuRow,
 } = toRefs(props);
 
 // style related computed variables
@@ -411,7 +411,7 @@ const emits = defineEmits([
   'update:serverOptions',
   'updatePageItems',
   'updateTotalItems',
-  'selectAll'
+  'selectAll',
 ]);
 
 const isMultipleSelectable = computed((): boolean => itemsSelected.value !== null);
@@ -468,6 +468,8 @@ const {
   rowsPerPage,
 );
 
+const currentInstance = getCurrentInstance();
+const slotsRenders = getSlotRenderFunctions(slots, currentInstance);
 const {
   totalItems,
   selectItemsComputed,
@@ -485,6 +487,7 @@ const {
   serverItemsLength,
   multiSort,
   emits,
+  slotsRenders,
 );
 
 const {
@@ -558,7 +561,7 @@ const {
 const contextMenuRow = (item: Item, $event: MouseEvent) => {
   if (preventContextMenuRow.value) $event.preventDefault();
   emits('contextmenuRow', item, $event);
-}
+};
 
 // template style generation function
 const getColStyle = (header: HeaderForRender): string | undefined => {
@@ -611,7 +614,6 @@ watch(pageItems, (value) => {
 watch(totalItems, (value) => {
   emits('updateTotalItems', value);
 }, { deep: true });
-
 
 defineExpose({
   currentPageFirstIndex,

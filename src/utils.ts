@@ -1,3 +1,9 @@
+import {
+  type useSlots,
+  type getCurrentInstance,
+  render,
+  type Slot,
+} from 'vue';
 import type { Item } from './types/main';
 
 export function getItemValue(column: string, item: Item) {
@@ -27,4 +33,49 @@ export function getItemValue(column: string, item: Item) {
 export function generateColumnContent(column: string, item: Item) {
   const content = getItemValue(column, item);
   return Array.isArray(content) ? content.join(',') : content;
+}
+
+export function getSlotRenderFunctions(
+  slots: ReturnType<typeof useSlots>,
+  currentInstance: ReturnType<typeof getCurrentInstance>,
+) {
+  const renderFunctionsMap = new Map<string, (item: object) => string>();
+
+  const getSlotRenderedContent = (fieldSlot?: Slot) => {
+    if (!fieldSlot) {
+      return null;
+    }
+
+    return (item: Item): string => {
+      if (!fieldSlot || !currentInstance?.appContext) {
+        return '';
+      }
+
+      const vnodes = fieldSlot(item);
+
+      const $tmpDiv = document.createElement('div');
+      let renderedText = '';
+      for (let i = 0; i < vnodes.length; i += 1) {
+        const vnode = vnodes[i];
+        (vnode as any).appContext = currentInstance.appContext;
+        render(vnode, $tmpDiv);
+        renderedText += $tmpDiv.innerText;
+      }
+
+      return renderedText;
+    };
+  };
+
+  const slotsNames = Object.keys(slots);
+  for (let i = 0; i < slotsNames.length; i += 1) {
+    const slot = slotsNames[i];
+    if (/item-.+/.test(slot) && slots[slot]) {
+      const getSlotRenderedContentFn = getSlotRenderedContent(slots[slot]);
+      if (getSlotRenderedContentFn) {
+        renderFunctionsMap.set(slot, getSlotRenderedContentFn);
+      }
+    }
+  }
+
+  return renderFunctionsMap;
 }

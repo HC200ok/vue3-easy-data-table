@@ -16,17 +16,24 @@ export default function useTotalItems(
   serverItemsLength: Ref<number>,
   multiSort: Ref<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
+  slotsRenders: Map<string, (item: Item) => string>,
 ) {
+  const getItemFieldValue = (column: string, item: Item) => slotsRenders.get(`item-${column}`)?.(item)
+  ?? getItemValue(column, item);
+
   const generateSearchingTarget = (item: Item): string => {
-    if (typeof searchField.value === 'string' && searchField.value !== '') return getItemValue(searchField.value, item);
+    if (typeof searchField.value === 'string' && searchField.value !== '') return getItemFieldValue(searchField.value, item);
     if (Array.isArray(searchField.value)) {
       let searchString = '';
       searchField.value.forEach((field) => {
-        searchString += getItemValue(field, item);
+        searchString += getItemFieldValue(field, item);
       });
       return searchString;
     }
-    return Object.values(item).join(' ');
+
+    return Object.entries(item)
+      .map(([field, value]) => slotsRenders.get(`item-${field}`)?.(item) ?? value[field])
+      .join(' ');
   };
 
   // items searching
