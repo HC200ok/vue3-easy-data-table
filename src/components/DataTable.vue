@@ -133,7 +133,8 @@
                 clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
               }"
               @mouseover="($event) => {
-                hoverRow(item, $event)
+                hoverRow(item, $event);
+                hoverRowToShowElement && updateHoverRowIndex(index + prevPageEndIndex, item, $event);
               }"
               @dblclick="($event) => {clickRow(item, 'double', $event)}"
               @contextmenu="($event) => {contextMenuRow(item, $event)}"
@@ -196,6 +197,21 @@
                 />
                 <slot
                   name="expand"
+                  v-bind="item"
+                />
+              </td>
+            </tr>
+            <tr
+              v-if="ifHasHoverSlot && hoverRowIndex === index + prevPageEndIndex"
+              :class="[{'even-row': (index + 1) % 2 === 0},
+                       typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index + 1)]"
+            >
+              <td
+                :colspan="headersForRender.length"
+                class="expand"
+              >
+                <slot
+                  name="hover"
                   v-bind="item"
                 />
               </td>
@@ -325,6 +341,7 @@ import type { HeaderForRender } from '../types/internal';
 import { generateColumnContent } from '../utils';
 import propsWithDefault from '../propsWithDefault';
 import useHoverRow from '../hooks/useHoverRow';
+import useHoverRowElement from '../hooks/useHoverRowElement';
 
 const props = defineProps({
   ...propsWithDefault,
@@ -387,6 +404,7 @@ const slots = useSlots();
 const ifHasPaginationSlot = computed(() => !!slots.pagination);
 const ifHasLoadingSlot = computed(() => !!slots.loading);
 const ifHasExpandSlot = computed(() => !!slots.expand);
+const ifHasHoverSlot = computed(() => !!slots.hover);
 const ifHasBodySlot = computed(() => !!slots.body);
 
 // global dataTable $ref
@@ -409,6 +427,7 @@ const emits = defineEmits([
   'selectRow',
   'deselectRow',
   'expandRow',
+  'showHoverElement',
   'updateSort',
   'updateFilter',
   'update:itemsSelected',
@@ -543,6 +562,16 @@ const {
 );
 
 const {
+  hoverRowIndex,
+  updateHoverRowIndex,
+  clearHoverRowIndex,
+} = useHoverRowElement(
+  pageItems,
+  prevPageEndIndex,
+  emits,
+);
+
+const {
   fixedHeaders,
   lastFixedColumn,
   fixedColumnsInfos,
@@ -593,6 +622,7 @@ watch(loading, (newVal, oldVal) => {
     if (newVal === false && oldVal === true) {
       updateCurrentPaginationNumber(serverOptionsComputed.value.page);
       clearExpandingItemIndexList();
+      clearHoverRowIndex();
     }
   }
 });
@@ -613,6 +643,7 @@ watch([searchValue, filterOptions], () => {
 
 watch([currentPaginationNumber, clientSortOptions, searchField, searchValue, filterOptions], () => {
   clearExpandingItemIndexList();
+  clearHoverRowIndex();
 }, { deep: true });
 
 watch(pageItems, (value) => {

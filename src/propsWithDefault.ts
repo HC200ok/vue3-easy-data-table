@@ -187,6 +187,10 @@ export default {
     type: Boolean,
     default: false,
   },
+  hoverRowToShowElement: {
+    type: Boolean,
+    default: false,
+  },
   tableNodeId: {
     type: String,
     default: '',
