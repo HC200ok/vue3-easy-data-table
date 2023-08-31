@@ -71,8 +71,8 @@
       </template>
 
       <template #hover="item">
-        <div style="padding: 15px">
-          {{ item.name }} is ze coolest
+        <div style="padding: 10px 0px 0px 15px;">
+          This might show menu options or something for {{ item.name }}...
         </div>
       </template>
 

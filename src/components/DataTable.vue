@@ -203,19 +203,30 @@
             </tr>
             <tr
               v-if="ifHasHoverSlot && hoverRowIndex === index + prevPageEndIndex"
-              :class="[{'even-row': (index + 1) % 2 === 0},
-                       typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index + 1)]"
+              :class="['hover-row']"
             >
               <td
                 :colspan="headersForRender.length"
-                class="expand"
               >
+              <div :class="[{'even-row': (index + 1) % 2 === 0}, typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index + 1)]">
                 <slot
                   name="hover"
                   v-bind="item"
                 />
+              </div>
+                
               </td>
             </tr>
+            <!-- <div
+              v-if="ifHasHoverSlot && hoverRowIndex === index + prevPageEndIndex"
+              :class="[{'even-row': (index + 1) % 2 === 0},
+                       typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index + 1)]"
+            >
+                <slot
+                  name="hover"
+                  v-bind="item"
+                />
+            </div> -->
           </template>
           <slot
             name="body-append"
@@ -735,4 +746,5 @@ defineExpose({
 .vue3-easy-data-table__main.fixed-height {
   height: v-bind(tableHeightPx);
 }
+
 </style>
