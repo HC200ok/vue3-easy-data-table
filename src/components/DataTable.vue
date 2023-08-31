@@ -105,6 +105,7 @@
           v-else-if="headerColumns.length"
           class="vue3-easy-data-table__body"
           :class="{'row-alternation': alternating}"
+          @mouseleave="hoverRowToShowElement && clearHoverRowIndex()"
         >
           <slot
             name="body-prepend"
@@ -208,7 +209,7 @@
               <td
                 :colspan="headersForRender.length"
               >
-              <div :class="[{'even-row': (index + 1) % 2 === 0}, typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index + 1)]">
+              <div :class="[{'even-row': (index + 1) % 2 === 0}]">
                 <slot
                   name="hover"
                   v-bind="item"
@@ -217,16 +218,6 @@
                 
               </td>
             </tr>
-            <!-- <div
-              v-if="ifHasHoverSlot && hoverRowIndex === index + prevPageEndIndex"
-              :class="[{'even-row': (index + 1) % 2 === 0},
-                       typeof bodyExpandRowClassName === 'string' ? bodyExpandRowClassName : bodyExpandRowClassName(item, index + 1)]"
-            >
-                <slot
-                  name="hover"
-                  v-bind="item"
-                />
-            </div> -->
           </template>
           <slot
             name="body-append"
