@@ -204,12 +204,12 @@
             </tr>
             <tr
               v-if="ifHasHoverSlot && hoverRowIndex === index + prevPageEndIndex"
-              :class="['hover-row']"
+              :class="['hover-row', {'even-row': (index + 1) % 2 === 0}]"
             >
               <td
                 :colspan="headersForRender.length"
               >
-              <div :class="[{'even-row': (index + 1) % 2 === 0}]">
+              <div>
                 <slot
                   name="hover"
                   v-bind="item"
