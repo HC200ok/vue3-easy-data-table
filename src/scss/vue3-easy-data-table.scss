@@ -261,7 +261,7 @@ table {
 // hover row feature related
 .hover-row {
   height: 0 !important;
-  visibility: visible;
+  padding: 0;
 
   td {
     height: 0;
@@ -274,8 +274,6 @@ table {
       margin-top: calc(var(--easy-table-body-row-height) * -1);
       height: var(--easy-table-body-row-height);
       background-color: inherit;
-      left: 0;
-      z-index: 10;
     }
   }
 }
