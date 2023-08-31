@@ -266,6 +266,7 @@ table {
   td {
     height: 0;
     padding: 0;
+    margin: 0;
     position: relative;
 
     div {
@@ -274,7 +275,6 @@ table {
       height: var(--easy-table-body-row-height);
       background-color: inherit;
       left: 0;
-      width: 100%;
       z-index: 10;
     }
   }

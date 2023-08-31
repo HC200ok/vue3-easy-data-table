@@ -48,7 +48,7 @@
               :style="getFixedDistance(header.value)"
               @click.stop="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
             >
-              <MultipleSelectCheckBox
+            <MultipleSelectCheckBox
                 v-if="header.text === 'checkbox'"
                 :key="multipleSelectStatus"
                 :status="multipleSelectStatus"
@@ -142,6 +142,7 @@
             >
               <td
                 v-for="(column, i) in headerColumns"
+                :id="`checkBoxTD_${index}`"
                 :key="i"
                 :style="getFixedDistance(column, 'td')"
                 :class="[{
@@ -209,7 +210,7 @@
               <td
                 :colspan="headersForRender.length"
               >
-              <div>
+              <div :style="getHoverStyle(index)">
                 <slot
                   name="hover"
                   v-bind="item"
@@ -609,11 +610,29 @@ const getColStyle = (header: HeaderForRender): string | undefined => {
   return undefined;
 };
 
-const getFixedDistance = (column: string, type: 'td' | 'th' = 'th') => {
+const getHoverStyle = (index:number): string | undefined => {
+
+  let checkBoxTDId = `checkBoxTD_${index}`;
+  let checkboxTD = document.getElementById(checkBoxTDId);
+  if(checkboxTD)
+  {
+    const width = checkboxTD.clientWidth + 2;
+    return `width: calc(100% - ${width}px); min-width: calc(100% - ${width}px); margin-left:  ${width}px`;
+  }
+  
+  return undefined;
+};
+
+const getFixedDistance = (column: string, type: 'td' | 'th' = 'th', setMarginLeft: boolean = false) => {
   if (!fixedHeaders.value.length) return undefined;
   const columInfo = fixedColumnsInfos.value.find((info) => info.value === column);
   if (columInfo) {
-    return `left: ${columInfo.distance}px;z-index: ${type === 'th' ? 3 : 1};position: sticky;`;
+    if(!setMarginLeft)
+    {
+      return `left: ${columInfo.distance}px;z-index: ${type === 'th' ? 3 : 1};position: sticky;`;
+    } else {
+      return `margin-left: ${columInfo.distance}px;`;
+    }
   }
   return undefined;
 };
@@ -670,7 +689,7 @@ defineExpose({
   updatePage,
   rowsPerPageOptions: rowsItemsComputed,
   rowsPerPageActiveOption: rowsPerPageRef,
-  updateRowsPerPageActiveOption: updateRowsPerPage,
+  updateRowsPerPageActiveOption: updateRowsPerPage
 });
 
 </script>
