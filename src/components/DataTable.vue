@@ -48,7 +48,7 @@
               :style="getFixedDistance(header.value)"
               @click.stop="(header.sortable && header.sortType) ? updateSortField(header.value, header.sortType) : null"
             >
-              <MultipleSelectCheckBox
+            <MultipleSelectCheckBox
                 v-if="header.text === 'checkbox'"
                 :key="multipleSelectStatus"
                 :status="multipleSelectStatus"
@@ -105,6 +105,7 @@
           v-else-if="headerColumns.length"
           class="vue3-easy-data-table__body"
           :class="{'row-alternation': alternating}"
+          @mouseleave="hoverRowToShowElement && clearHoverRowIndex()"
         >
           <slot
             name="body-prepend"
@@ -132,11 +133,16 @@
                 clickRow(item, 'single', $event);
                 clickRowToExpand && updateExpandingItemIndexList(index + prevPageEndIndex, item, $event);
               }"
+              @mouseover="($event) => {
+                hoverRow(item, $event);
+                hoverRowToShowElement && updateHoverRowIndex(index + prevPageEndIndex, item, $event);
+              }"
               @dblclick="($event) => {clickRow(item, 'double', $event)}"
               @contextmenu="($event) => {contextMenuRow(item, $event)}"
             >
               <td
                 v-for="(column, i) in headerColumns"
+                :id="`checkBoxTD_${index}`"
                 :key="i"
                 :style="getFixedDistance(column, 'td')"
                 :class="[{
@@ -195,6 +201,22 @@
                   name="expand"
                   v-bind="item"
                 />
+              </td>
+            </tr>
+            <tr
+              v-if="ifHasHoverSlot && hoverRowIndex === index + prevPageEndIndex"
+              :class="['hover-row', {'even-row': (index + 1) % 2 === 0}]"
+            >
+              <td
+                :colspan="headersForRender.length"
+              >
+              <div :style="getHoverStyle(index)">
+                <slot
+                  name="hover"
+                  v-bind="item"
+                />
+              </div>
+                
               </td>
             </tr>
           </template>
@@ -318,10 +340,11 @@ import useTotalItems from '../hooks/useTotalItems';
 
 import type { Header, Item } from '../types/main';
 import type { HeaderForRender } from '../types/internal';
-
 // eslint-disable-next-line import/extensions
 import { generateColumnContent } from '../utils';
 import propsWithDefault from '../propsWithDefault';
+import useHoverRow from '../hooks/useHoverRow';
+import useHoverRowElement from '../hooks/useHoverRowElement';
 
 const props = defineProps({
   ...propsWithDefault,
@@ -384,6 +407,7 @@ const slots = useSlots();
 const ifHasPaginationSlot = computed(() => !!slots.pagination);
 const ifHasLoadingSlot = computed(() => !!slots.loading);
 const ifHasExpandSlot = computed(() => !!slots.expand);
+const ifHasHoverSlot = computed(() => !!slots.hover);
 const ifHasBodySlot = computed(() => !!slots.body);
 
 // global dataTable $ref
@@ -401,10 +425,12 @@ onMounted(() => {
 
 const emits = defineEmits([
   'clickRow',
+  'hoverRow',
   'contextmenuRow',
   'selectRow',
   'deselectRow',
   'expandRow',
+  'showHoverElement',
   'updateSort',
   'updateFilter',
   'update:itemsSelected',
@@ -539,6 +565,16 @@ const {
 );
 
 const {
+  hoverRowIndex,
+  updateHoverRowIndex,
+  clearHoverRowIndex,
+} = useHoverRowElement(
+  pageItems,
+  prevPageEndIndex,
+  emits,
+);
+
+const {
   fixedHeaders,
   lastFixedColumn,
   fixedColumnsInfos,
@@ -555,6 +591,13 @@ const {
   emits,
 );
 
+const {
+  hoverRow,
+} = useHoverRow(
+  showIndex,
+  emits,
+);
+
 const contextMenuRow = (item: Item, $event: MouseEvent) => {
   if (preventContextMenuRow.value) $event.preventDefault();
   emits('contextmenuRow', item, $event);
@@ -567,11 +610,29 @@ const getColStyle = (header: HeaderForRender): string | undefined => {
   return undefined;
 };
 
-const getFixedDistance = (column: string, type: 'td' | 'th' = 'th') => {
+const getHoverStyle = (index:number): string | undefined => {
+
+  let checkBoxTDId = `checkBoxTD_${index}`;
+  let checkboxTD = document.getElementById(checkBoxTDId);
+  if(checkboxTD)
+  {
+    const width = checkboxTD.clientWidth + 2;
+    return `width: calc(100% - ${width}px); min-width: calc(100% - ${width}px); margin-left:  ${width}px`;
+  }
+  
+  return undefined;
+};
+
+const getFixedDistance = (column: string, type: 'td' | 'th' = 'th', setMarginLeft: boolean = false) => {
   if (!fixedHeaders.value.length) return undefined;
   const columInfo = fixedColumnsInfos.value.find((info) => info.value === column);
   if (columInfo) {
-    return `left: ${columInfo.distance}px;z-index: ${type === 'th' ? 3 : 1};position: sticky;`;
+    if(!setMarginLeft)
+    {
+      return `left: ${columInfo.distance}px;z-index: ${type === 'th' ? 3 : 1};position: sticky;`;
+    } else {
+      return `margin-left: ${columInfo.distance}px;`;
+    }
   }
   return undefined;
 };
@@ -582,6 +643,7 @@ watch(loading, (newVal, oldVal) => {
     if (newVal === false && oldVal === true) {
       updateCurrentPaginationNumber(serverOptionsComputed.value.page);
       clearExpandingItemIndexList();
+      clearHoverRowIndex();
     }
   }
 });
@@ -602,6 +664,7 @@ watch([searchValue, filterOptions], () => {
 
 watch([currentPaginationNumber, clientSortOptions, searchField, searchValue, filterOptions], () => {
   clearExpandingItemIndexList();
+  clearHoverRowIndex();
 }, { deep: true });
 
 watch(pageItems, (value) => {
@@ -626,7 +689,7 @@ defineExpose({
   updatePage,
   rowsPerPageOptions: rowsItemsComputed,
   rowsPerPageActiveOption: rowsPerPageRef,
-  updateRowsPerPageActiveOption: updateRowsPerPage,
+  updateRowsPerPageActiveOption: updateRowsPerPage
 });
 
 </script>
@@ -693,4 +756,5 @@ defineExpose({
 .vue3-easy-data-table__main.fixed-height {
   height: v-bind(tableHeightPx);
 }
+
 </style>

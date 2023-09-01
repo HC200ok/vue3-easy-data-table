@@ -258,6 +258,26 @@ table {
   cursor: pointer;
 }
 
+// hover row feature related
+.hover-row {
+  height: 0 !important;
+  padding: 0;
+
+  td {
+    height: 0;
+    padding: 0;
+    margin: 0;
+    position: relative;
+
+    div {
+      position: absolute;
+      margin-top: calc(var(--easy-table-body-row-height) * -1);
+      height: var(--easy-table-body-row-height);
+      background-color: inherit;
+    }
+  }
+}
+
 .vue3-easy-data-table__footer {
   background-color: var(--easy-table-footer-background-color);
   color: var(--easy-table-footer-font-color);
