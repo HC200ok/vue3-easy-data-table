@@ -616,8 +616,10 @@ const getHoverStyle = (index:number): string | undefined => {
   let checkboxTD = document.getElementById(checkBoxTDId);
   if(checkboxTD)
   {
+    console.log(checkboxTD)
     const width = checkboxTD.clientWidth + 2;
-    return `width: calc(100% - ${width}px); min-width: calc(100% - ${width}px); margin-left:  ${width}px`;
+    const height = checkboxTD.clientHeight - 1;
+    return `width: calc(100% - ${width}px); min-width: calc(100% - ${width}px); margin-left:  ${width}px; top: ${-height}px; height: ${height}px; min-height: ${height}px`;
   }
   
   return undefined;
