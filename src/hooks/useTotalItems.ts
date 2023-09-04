@@ -36,6 +36,7 @@ export default function useTotalItems(
 
 
   // items searching
+  const ItemsChangingToggler = ref(0)
   const itemsSearching = ref<Item[]>([])
   watch(
     () => [searchValue.value, items.value] as [ string, Item[] ],
@@ -46,15 +47,17 @@ export default function useTotalItems(
         itemsSearching.value = items.value.filter((item) => regex.test(generateSearchingTarget(item)));
         return
       }
+
+      ItemsChangingToggler.value++
       itemsSearching.value = items.value;
     },
-    { immediate: true }
+    { immediate: true, deep: true}
   )
 
   // items filtering
   const itemsFiltering = ref<Item[]>([])
   watch(
-    () => [itemsSearching.value, filterOptions.value] as [Item[], FilterOption[]],
+    () => [itemsSearching.value, filterOptions.value, ItemsChangingToggler.value] as [Item[], FilterOption[], number],
     ( [itemsSearching, filterOptions] ) => {
       let itemsFiltered = [...itemsSearching];
       if (filterOptions) {
@@ -130,8 +133,12 @@ export default function useTotalItems(
   // flow: searching => filtering => sorting
   // (last step: sorting)
   const totalItems = computed((): Item[] => {
+    ItemsChangingToggler.value
+   
     if (isServerSideMode.value) return items.value;
-    if (clientSortOptions.value === null) return itemsFiltering.value;
+    if (clientSortOptions.value === null) {
+      return itemsFiltering.value
+    };
     const { sortBy, sortDesc } = clientSortOptions.value;
     const itemsFilteringSorted = [...itemsFiltering.value];
     // multi sort
