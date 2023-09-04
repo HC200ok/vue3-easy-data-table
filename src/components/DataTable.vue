@@ -256,8 +256,13 @@
         />
       </div>
       <div class="pagination__items-index">
-        {{ `${currentPageFirstIndex}–${currentPageLastIndex}` }}
-        {{ rowsOfPageSeparatorMessage }} {{ totalItemsLength }}
+        <slot name="paginationItemsIndex"
+        :currentPageFirstIndex="currentPageFirstIndex"
+        :currentPageLastIndex="currentPageLastIndex"
+        :totalItemsLength="totalItemsLength">
+          {{ `${currentPageFirstIndex}–${currentPageLastIndex}` }}
+          {{ rowsOfPageSeparatorMessage }} {{ totalItemsLength }}
+        </slot>
       </div>
       <slot
         v-if="ifHasPaginationSlot"
