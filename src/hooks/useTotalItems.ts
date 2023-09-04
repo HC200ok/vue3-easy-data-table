@@ -61,32 +61,33 @@ export default function useTotalItems(
         filterOptions.forEach((option: FilterOption) => {
           itemsFiltered = itemsFiltered.filter((item) => {
             const { field, comparison, criteria } = option;
-            const itemValue = getItemFieldValue(field as string, item);
+            const propValue = getItemValue(field as string, item)
             
             if (typeof comparison === 'function') {
               const creteriaRegExp = createRegExpSafelly(criteria as string, 'i')
-              return comparison(itemValue, criteria, creteriaRegExp);
+              const renderedValue = getItemFieldValue(field as string, item);
+              return comparison(renderedValue, criteria, creteriaRegExp);
             }
   
             switch (comparison) {
               case '=':
-                return itemValue === criteria;
+                return propValue === criteria;
               case '!=':
-                return itemValue !== criteria;
+                return propValue !== criteria;
               case '>':
-                return itemValue > criteria;
+                return propValue > criteria;
               case '<':
-                return itemValue < criteria;
+                return propValue < criteria;
               case '<=':
-                return itemValue <= criteria;
+                return propValue <= criteria;
               case '>=':
-                return itemValue >= criteria;
+                return propValue >= criteria;
               case 'between':
-                return itemValue >= Math.min(...criteria) && +itemValue <= Math.max(...criteria);
+                return propValue >= Math.min(...criteria) && +propValue <= Math.max(...criteria);
               case 'in':
-                return (criteria as any).includes(itemValue );
+                return (criteria as any).includes( propValue );
               default:
-                return itemValue === criteria;
+                return propValue === criteria;
             }
           });
         });
