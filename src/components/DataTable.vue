@@ -80,12 +80,15 @@
                 >
                   {{ header.text }}
                 </span>
-                <i
-                  v-if="header.sortable"
-                  :key="header.sortType ? header.sortType : 'none'"
-                  class="sortType-icon"
-                  :class="{'desc': header.sortType === 'desc'}"
-                ></i>
+                  <slot v-if="header.sortable" :key="header.sortType ? header.sortType : 'none'" name="sortIcon" :sortType="header.sortType">
+                    <i
+                      v-if="header.sortable"
+                      :key="header.sortType ? header.sortType : 'none'"
+                      class="sortType-icon"
+                      :class="{'desc': header.sortType === 'desc'}"
+                    ></i>
+                  </slot>
+               
                 <span
                   v-if="multiSort && isMultiSorting(header.value)"
                   class="multi-sort__number"
