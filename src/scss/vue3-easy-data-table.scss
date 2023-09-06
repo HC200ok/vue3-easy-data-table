@@ -258,6 +258,43 @@ table {
   cursor: pointer;
 }
 
+// hover row feature related
+.hover-row {
+  height: 0 !important;
+  padding: 0;
+
+  td {
+    height: 0;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    border: none;
+
+    div {
+      position: absolute;
+      right: 0px;
+      z-index: 10;
+      background-color: inherit;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -80px;
+        bottom: 0;
+        width: 90px;
+        background: linear-gradient(to right, transparent, var(--easy-table-body-row-background-color))
+      }
+    }
+
+    div.even-row {
+      &::before {
+        background: linear-gradient(to right, transparent, var(--easy-table-body-even-row-background-color))
+      }
+    }
+  }
+}
+
 .vue3-easy-data-table__footer {
   background-color: var(--easy-table-footer-background-color);
   color: var(--easy-table-footer-font-color);

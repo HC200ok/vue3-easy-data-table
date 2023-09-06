@@ -1,22 +1,16 @@
 {
-  "name": "vue3-easy-data-table",
+  "name": "wl-vue3-easy-data-table",
   "author": "HC200ok",
   "description": "A customizable and easy-to-use data table component made with Vue.js 3.x.",
   "private": false,
-  "version": "1.5.47",
+  "version": "1.5.48",
   "types": "./types/main.d.ts",
   "license": "MIT",
   "files": [
     "dist",
     "types"
   ],
-  "keywords": [
-    "vue3",
-    "data-table-component",
-    "data-table",
-    "vue3-component",
-    "vue-component"
-  ],
+  "keywords": [],
   "homepage": "https://github.com/HC200ok/vue3-easy-data-table",
   "main": "./dist/vue3-easy-data-table.umd.js",
   "module": "./dist/vue3-easy-data-table.es.js",

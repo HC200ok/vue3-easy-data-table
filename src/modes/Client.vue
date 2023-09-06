@@ -12,7 +12,7 @@
     <DataTable
       table-node-id="my-table"
       v-model:items-selected="itemsSelected"
-      click-row-to-expand
+      hover-row-to-show-element
       ref="dataTable"
       alternating
       border-cell
@@ -67,6 +67,12 @@
       <template #expand="item">
         <div style="padding: 15px">
           {{ item.name }} won championships
+        </div>
+      </template>
+
+      <template #hover="item">
+        <div style="padding: 10px 0px 0px 15px;">
+          This might show menu options or something for {{ item.name }}...
         </div>
       </template>
 
