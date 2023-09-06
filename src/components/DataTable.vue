@@ -210,7 +210,7 @@
               <td
                 :colspan="headersForRender.length"
               >
-              <div :style="getHoverStyle(index)">
+              <div :style="getHoverStyle(index)" :class="{'even-row': alternating && (index + 1) % 2 === 0}">
                 <slot
                   name="hover"
                   v-bind="item"
@@ -610,18 +610,32 @@ const getColStyle = (header: HeaderForRender): string | undefined => {
   return undefined;
 };
 
+// const getHoverStyle = (index:number): string | undefined => {
+
+//   let checkBoxTDId = `checkBoxTD_${index}`;
+//   let checkboxTD = document.getElementById(checkBoxTDId);
+//   if(checkboxTD)
+//   {
+//     const width = checkboxTD.clientWidth + 2;
+//     const height = checkboxTD.clientHeight - 1;
+//     return `width: calc(100% - ${width}px); min-width: calc(100% - ${width}px); margin-left:  ${width}px; top: ${-height}px; height: ${height}px; min-height: ${height}px`;
+//   }
+  
+//   return undefined;
+// };
+
 const getHoverStyle = (index:number): string | undefined => {
 
-  let checkBoxTDId = `checkBoxTD_${index}`;
-  let checkboxTD = document.getElementById(checkBoxTDId);
-  if(checkboxTD)
-  {
-    const width = checkboxTD.clientWidth + 2;
-    const height = checkboxTD.clientHeight - 1;
-    return `width: calc(100% - ${width}px); min-width: calc(100% - ${width}px); margin-left:  ${width}px; top: ${-height}px; height: ${height}px; min-height: ${height}px`;
-  }
-  
-  return undefined;
+let checkBoxTDId = `checkBoxTD_${index}`;
+let checkboxTD = document.getElementById(checkBoxTDId);
+if(checkboxTD)
+{
+  const width = checkboxTD.clientWidth + 2;
+  const height = checkboxTD.clientHeight;
+return `margin-left: ${width}px; top: ${-height}px; height: ${height - 2}px; min-height: ${height - 2}px`;
+}
+
+return undefined;
 };
 
 const getFixedDistance = (column: string, type: 'td' | 'th' = 'th', setMarginLeft: boolean = false) => {
