@@ -1,7 +1,7 @@
 import {
   Ref, computed, ComputedRef, watch,
 } from 'vue';
-import type { Item, FilterOption } from '../types/main';
+import type {Item, FilterOption, MultiSortFunction, SortFunction} from '../types/main';
 import type { ClientSortOptions, EmitsEventName } from '../types/internal';
 import { getItemValue } from '../utils';
 
@@ -15,6 +15,8 @@ export default function useTotalItems(
   searchValue: Ref<string>,
   serverItemsLength: Ref<number>,
   multiSort: Ref<boolean>,
+  sortFn: Ref<SortFunction | null>,
+  multiSortFunction: Ref<MultiSortFunction | null>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
   const generateSearchingTarget = (item: Item): string => {
@@ -111,17 +113,21 @@ export default function useTotalItems(
     if (clientSortOptions.value === null) return itemsFiltering.value;
     const { sortBy, sortDesc } = clientSortOptions.value;
     const itemsFilteringSorted = [...itemsFiltering.value];
+    console.log(multiSort.value)
+
     // multi sort
-    if (multiSort && Array.isArray(sortBy) && Array.isArray(sortDesc)) {
+    if (multiSort.value && Array.isArray(sortBy) && Array.isArray(sortDesc)) {
       if (sortBy.length === 0) return itemsFilteringSorted;
-      return recursionMuiltSort(sortBy, sortDesc, itemsFilteringSorted, sortBy.length - 1);
+      return (multiSortFunction.value ?? recursionMuiltSort)(sortBy, sortDesc, itemsFilteringSorted, sortBy.length - 1);
     }
-    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-    return itemsFilteringSorted.sort((a, b) => {
+
+    const defaultSortFn = (a: Item, b: Item): -1 | 0 | 1 => {
       if (getItemValue(sortBy as string, a) < getItemValue(sortBy as string, b)) return sortDesc ? 1 : -1;
       if (getItemValue(sortBy as string, a) > getItemValue(sortBy as string, b)) return sortDesc ? -1 : 1;
       return 0;
-    });
+    }
+    // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+    return itemsFilteringSorted.sort((a, b) => sortFn.value?.(a, b, sortBy as string, sortDesc as boolean, getItemValue, defaultSortFn) ?? defaultSortFn(a, b));
   });
 
   // eslint-disable-next-line max-len

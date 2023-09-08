@@ -369,7 +369,9 @@ const {
   themeColor,
   rowsOfPageSeparatorMessage,
   showIndexSymbol,
-  preventContextMenuRow
+  preventContextMenuRow,
+  sortFunction,
+  multiSortFunction,
 } = toRefs(props);
 
 // style related computed variables
@@ -484,6 +486,8 @@ const {
   searchValue,
   serverItemsLength,
   multiSort,
+  sortFunction,
+  multiSortFunction,
   emits,
 );
 

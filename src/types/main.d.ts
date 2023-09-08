@@ -1,3 +1,5 @@
+import {getItemValue as getItemValueFn} from "../utils";
+
 export type SortType = 'asc' | 'desc'
 
 export type FilterComparison = '=' | '!=' | '>' | '>=' | '<' | '<=' | 'between' | 'in';
@@ -50,6 +52,9 @@ export type UpdateSortArgument = {
   sortType: SortType | null
   sortBy: string
 }
+
+export type SortFunction = (a: Item, b: Item, sortBy: string, sortDesc: boolean, getItemValue: typeof getItemValueFn, defaultSortFunction: (a: Item, b: Item) => number) => number;
+export type MultiSortFunction = (sortByArr: string[], sortDescArr: boolean[], itemsToSort: Item[], index: number) => Item[];
 
 export type HeaderItemClassNameFunction = (header: Header, columnNumber: number) => string
 export type BodyRowClassNameFunction = (item: Item, rowNumber: number) => string
