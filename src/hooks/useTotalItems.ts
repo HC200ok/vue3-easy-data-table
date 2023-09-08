@@ -113,7 +113,6 @@ export default function useTotalItems(
     if (clientSortOptions.value === null) return itemsFiltering.value;
     const { sortBy, sortDesc } = clientSortOptions.value;
     const itemsFilteringSorted = [...itemsFiltering.value];
-    console.log(multiSort.value)
 
     // multi sort
     if (multiSort.value && Array.isArray(sortBy) && Array.isArray(sortDesc)) {
