@@ -2,9 +2,9 @@ import { PropType } from 'vue';
 import type {
   SortType, Item, ServerOptions, FilterOption,
   HeaderItemClassNameFunction, BodyItemClassNameFunction, BodyRowClassNameFunction,
-  TextDirection,
+  TextDirection, MultiSortFunction, SortFunction
 } from './types/main';
-import type { ClickEventType } from './types/internal';
+import type {ClickEventType} from './types/internal';
 
 export default {
   alternating: {
@@ -126,6 +126,14 @@ export default {
   multiSort: {
     type: Boolean,
     default: false,
+  },
+  sortFunction: {
+    type: Function as PropType<SortFunction> | null,
+    default: null
+  },
+  multiSortFunction: {
+    type: Function as PropType<MultiSortFunction> | null,
+    default: null
   },
   tableMinHeight: {
     type: Number,
