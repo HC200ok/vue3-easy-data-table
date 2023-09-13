@@ -219,3 +219,54 @@ describe('Server side paginate and sort', () => {
     }]);
   });
 });
+
+describe('Row Tracking', () => {
+  it('should select the first item',  async () => {
+    // Arrange
+    const rowsPerPage = 2
+    const mockItems = mockClientItems(rowsPerPage);
+    const firstItem = {...mockItems[0], address: 'New ADDRESS !@#!'}
+    const wrapper = mount(DataTable, {
+      props: {
+        itemsSelected: [firstItem],
+        items: mockItems,
+        headers: headersMocked,
+        rowsPerPage,
+        itemsKey: 'name'
+      },
+    });
+    
+    // Act
+    let checkboxes = wrapper.findAll('.easy-checkbox input');
+
+    // Assert
+    expect(checkboxes).toHaveLength(rowsPerPage + 1)
+    const checkedList = checkboxes.map(checkbox => checkbox.element.checked)
+    expect(checkedList).toEqual([false, true, false]);
+  })
+
+  it('should expand the first item',  async () => {
+    // Arrange
+    const rowsPerPage = 2
+    const mockItems = mockClientItems(rowsPerPage);
+    const firstItem = {...mockItems[0], address: 'New ADDRESS !@#!'}
+    const wrapper = mount(DataTable, {
+      props: {
+        itemsExpanded: [firstItem],
+        items: mockItems,
+        headers: headersMocked,
+        rowsPerPage,
+        itemsKey: 'name',
+      },
+      slots: {
+        expand: `<template #expand="item"> Hello expanded row </template>`
+      } 
+    });
+
+    // Act
+    let expandedIcons = wrapper.findAll('.expand-icon.expanding');
+
+    // Assert
+    expect(expandedIcons).toHaveLength(1)
+  })
+})

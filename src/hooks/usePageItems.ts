@@ -1,8 +1,9 @@
 import {
   Ref, computed, ComputedRef, WritableComputedRef,
 } from 'vue';
-import type { Item } from '../types/main';
+import type { Item, ItemKey } from '../types/main';
 import type { MultipleSelectStatus } from '../types/internal';
+import { areItemsEqual, getItemIndex } from '../utils';
 
 export default function usePageItems(
   currentPaginationNumber: Ref<number>,
@@ -14,6 +15,7 @@ export default function usePageItems(
   showIndex: Ref<boolean>,
   totalItems: ComputedRef<Item[]>,
   totalItemsLength: ComputedRef<number>,
+  itemsKey: Ref<ItemKey>
 ) {
   const currentPageFirstIndex = computed((): number => (currentPaginationNumber.value - 1)
     * rowsPerPageRef.value + 1);
@@ -45,21 +47,13 @@ export default function usePageItems(
     if (selectItemsComputed.value.length === 0) {
       return 'noneSelected';
     }
-    const isNoneSelected = selectItemsComputed.value.every((itemSelected) => {
-      if (totalItems.value.findIndex((item) => JSON.stringify(itemSelected) === JSON.stringify(item)) !== -1) {
-        return false;
-      }
-      return true;
-    });
+    const isNoneSelected = selectItemsComputed.value
+      .every((itemSelected) => getItemIndex(totalItems.value, itemSelected, itemsKey.value) === -1);
     if (isNoneSelected) return 'noneSelected';
 
     if (selectItemsComputed.value.length === totalItems.value.length) {
-      const isAllSelected = selectItemsComputed.value.every((itemSelected) => {
-        if (totalItems.value.findIndex((item) => JSON.stringify(itemSelected) === JSON.stringify(item)) === -1) {
-          return false;
-        }
-        return true;
-      });
+      const isAllSelected = selectItemsComputed.value
+        .every((itemSelected) => (getItemIndex(totalItems.value, itemSelected, itemsKey.value) !== -1));
       return isAllSelected ? 'allSelected' : 'partSelected';
     }
 
@@ -79,7 +73,7 @@ export default function usePageItems(
       const isSelected = selectItemsComputed.value.findIndex((selectItem) => {
         const itemDeepCloned = { ...item };
         delete itemDeepCloned.index;
-        return JSON.stringify(selectItem) === JSON.stringify(itemDeepCloned);
+        return areItemsEqual(selectItem, itemDeepCloned, itemsKey.value)
       }) !== -1;
       return { checkbox: isSelected, ...item };
     });
