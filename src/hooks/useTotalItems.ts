@@ -25,7 +25,7 @@ export default function useTotalItems(
     if (typeof searchField.value === 'string' && searchField.value !== '') return getItemFieldValue(searchField.value, item);
     if (Array.isArray(searchField.value)) {
       let searchString = '';
-      searchField.value.forEach((field) => searchString += getItemFieldValue(field, item) );
+      searchField.value.forEach((field) => searchString += getItemFieldValue(field, item));
       return searchString;
     } 
 

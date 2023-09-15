@@ -57,7 +57,6 @@ export function getSlotRenderFunctions(
       }
 
       const vnodes = fieldSlot(item);
-
       let renderedText = '';
       for (let i = 0; i < vnodes.length; i += 1) {
         const vnode = vnodes[i];
@@ -69,7 +68,7 @@ export function getSlotRenderFunctions(
               ;(vnode as any).appContext = currentInstance.appContext;
               render(vnode, $tmpDiv);
 
-              return vnode.el?.innerText ?? vnode.el?.wholeText
+              return $tmpDiv.innerText
             }
           } catch(err) {
             return ''
@@ -77,7 +76,6 @@ export function getSlotRenderFunctions(
         })()
 
       }
-
       return renderedText;
     };
   };
