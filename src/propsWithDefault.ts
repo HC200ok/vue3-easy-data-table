@@ -103,6 +103,10 @@ export default {
     type: String,
     default: '',
   },
+  customSearch: {
+    type: Object as PropType<(item: Item) => boolean> | null,
+    default: null,
+  },
   serverOptions: {
     type: Object as PropType<ServerOptions> | null,
     default: null,

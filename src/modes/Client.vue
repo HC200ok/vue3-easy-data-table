@@ -33,6 +33,7 @@
       :header-item-class-name="headerItemClassNameFunction"
       :body-item-class-name="bodyItemClassNameFunction"
       :body-expand-row-class-name="bodyExpandRowClassNameFunction"
+      :custom-search="customSearchFunction"
       @update-sort="updateSort"
       @update-filter="updateFilter"
       multi-sort
@@ -164,6 +165,21 @@ const updateTotalItems = (items: Item[]) => {
   console.log('total items');
   console.log(JSON.stringify(items));
 };
+
+// Example of Custom search by name and height
+// e.g.: searchValue = 'h 6-11'
+const customSearchFunction = (item: Item) => {
+  const keyword = searchValue.value.toLowerCase();
+
+  return keyword
+      .split(' ')
+      .every((word) => {
+        const nameMatched = item.name.toLowerCase().includes(word);
+        const heightMatched = item.indicator.height.toLowerCase().includes(word);
+
+        return nameMatched || heightMatched;
+      });
+}
 
 const items = ref<Item[]>([
   { name: "Stephen Curry", firstName: "GSW", number: 30, position: 'G', indicator: {"height": '6-2', "weight": 185}, lastAttended: "Davidson", country: "USA"},

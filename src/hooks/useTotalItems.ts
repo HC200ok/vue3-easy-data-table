@@ -13,10 +13,21 @@ export default function useTotalItems(
   itemsSelected: Ref<Item[]>,
   searchField: Ref<string>,
   searchValue: Ref<string>,
+  customSearch: (item: Item) => boolean | undefined,
   serverItemsLength: Ref<number>,
   multiSort: Ref<boolean>,
   emits: (event: EmitsEventName, ...args: any[]) => void,
 ) {
+  const defaultSearchFunction = (item: Item) => {
+    if (searchValue.value === '') {
+      return true;
+    }
+
+    const regExp = new RegExp(searchValue.value, 'i');
+    return regExp.test(generateSearchingTarget(item));
+  };
+
+
   const generateSearchingTarget = (item: Item): string => {
     if (typeof searchField.value === 'string' && searchField.value !== '') return getItemValue(searchField.value, item);
     if (Array.isArray(searchField.value)) {
@@ -32,9 +43,9 @@ export default function useTotalItems(
   // items searching
   const itemsSearching = computed((): Item[] => {
     // searching feature is not available in server-side mode
-    if (!isServerSideMode.value && searchValue.value !== '') {
-      const regex = new RegExp(searchValue.value, 'i');
-      return items.value.filter((item) => regex.test(generateSearchingTarget(item)));
+    if (!isServerSideMode.value) {
+      const searchFn =  customSearch ?? defaultSearchFunction;
+      return items.value.filter(searchFn);
     }
     return items.value;
   });
